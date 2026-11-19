@@ -12,6 +12,12 @@
 
 **机甲觉醒 · 帧级博弈 · 硬核格斗**
 
+<p align="center">
+  <img src="demo/assets/poster.webp" alt="MECHA·MON 八大机甲阵容" width="1000">
+</p>
+
+<sub>首批 8 台机甲 · 8 种属性 · 32 个帧数据驱动招式</sub>
+
 </div>
 
 ---
