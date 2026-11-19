@@ -1,10 +1,9 @@
 // ============================================================================
-// MECHA·MON - UE5 GAS Framework Skeleton
+// MECHA·MON - UE5 Real-time Combat System (GAS)
 // 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
-#include "BattleManager.h"
+#include "Battle/BattleManager.h"
 #include "MechaCharacter.h"
-#include "MechaAttributeSet.h"
 #include "Net/UnrealNetwork.h"
 
 ABattleManager::ABattleManager()
@@ -12,49 +11,67 @@ ABattleManager::ABattleManager()
     bReplicates = true;
 }
 
-void ABattleManager::StartBattle(const TArray<AMechaCharacter*>& InPlayerTeam,
-                                 const TArray<AMechaCharacter*>& InEnemyTeam)
+void ABattleManager::StartMatch(AMechaCharacter* InPlayerOne, AMechaCharacter* InPlayerTwo)
 {
-    PlayerTeam = InPlayerTeam;
-    EnemyTeam = InEnemyTeam;
-    CurrentTurn = 1;
-    CurrentActorIndex = 0;
-    ComputeTurnOrder();
-    // [扩展点] 广播战斗开始事件，驱动 UI
+    PlayerOne = InPlayerOne;
+    PlayerTwo = InPlayerTwo;
+    PlayerRoundsWon = 0;
+    OpponentRoundsWon = 0;
+    CurrentRound = 1;
+    ResetRound();
+
+    // [扩展点] 广播对局开始事件，驱动 Ban/Pick 结果与战斗 HUD
 }
 
-void ABattleManager::ComputeTurnOrder()
+void ABattleManager::TickRound(float DeltaSeconds)
 {
-    TurnOrder.Reset();
-    TurnOrder.Append(PlayerTeam);
-    TurnOrder.Append(EnemyTeam);
-
-    // 按速度属性降序排列
-    TurnOrder.Sort([](const AMechaCharacter& A, const AMechaCharacter& B)
+    if (RoundTimeRemaining <= 0.f)
     {
-        return A.GetMechaAttributes()->GetSpeed() > B.GetMechaAttributes()->GetSpeed();
-    });
-}
-
-void ABattleManager::EndTurn()
-{
-    CurrentActorIndex++;
-    if (CurrentActorIndex >= TurnOrder.Num())
-    {
-        CurrentActorIndex = 0;
-        CurrentTurn++;
-        // [扩展点] 回合结束回复 12 点能量、结算 DoT、检查回合上限
+        return;
     }
-    CheckBattleEnd();
+
+    RoundTimeRemaining -= DeltaSeconds;
+    if (RoundTimeRemaining <= 0.f)
+    {
+        RoundTimeRemaining = 0.f;
+        // [扩展点] 时间耗尽按剩余生命比例判定胜方
+    }
 }
 
-void ABattleManager::CheckBattleEnd()
+void ABattleManager::NotifyRoundFinished(AMechaCharacter* Winner)
 {
-    // [扩展点] 任一方全部生命归零则结算胜负
+    if (Winner == PlayerOne)
+    {
+        ++PlayerRoundsWon;
+    }
+    else if (Winner == PlayerTwo)
+    {
+        ++OpponentRoundsWon;
+    }
+
+    CheckMatchEnd();
+    if (PlayerRoundsWon < RoundsToWin && OpponentRoundsWon < RoundsToWin)
+    {
+        ++CurrentRound;
+        ResetRound();
+    }
+}
+
+void ABattleManager::CheckMatchEnd()
+{
+    // [扩展点] BO3 结束：写入天梯结果、战斗日志与观战数据
+}
+
+void ABattleManager::ResetRound()
+{
+    RoundTimeRemaining = 99.f;
+    // [扩展点] 重置双方生命/能量/防御槽与位置，清空输入缓冲
 }
 
 void ABattleManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(ABattleManager, RandomSeed);
+    DOREPLIFETIME(ABattleManager, PlayerRoundsWon);
+    DOREPLIFETIME(ABattleManager, OpponentRoundsWon);
+    DOREPLIFETIME(ABattleManager, CurrentRound);
 }

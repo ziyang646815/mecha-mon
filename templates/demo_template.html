@@ -303,7 +303,86 @@ footer b{color:var(--cyan)}
 .scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.18;pointer-events:none;animation:scan 5s linear infinite}
 @keyframes scan{0%{top:0}100%{top:100%}}
 
-/* --- 特性卡片（高级感收尾） --- */
+/* --- 实时格斗 HUD --- */
+.fight-hud{display:flex;align-items:center;justify-content:center;gap:26px;padding:14px 20px 2px;font-family:Consolas,monospace}
+.fight-hud .round-pips{display:flex;gap:6px}
+.fight-hud .pip{width:12px;height:12px;border:1px solid var(--line);transform:rotate(45deg)}
+.fight-hud .pip.win{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.fight-hud .pip.lose{background:var(--red);border-color:var(--red)}
+.fight-hud .timer{font-size:40px;font-weight:900;color:var(--text);line-height:1;min-width:74px;text-align:center}
+.fight-hud .timer.urgent{color:var(--red);animation:blink .6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.fight-hud .lbl{font-size:10px;color:var(--muted);letter-spacing:2px;text-align:center}
+.hp-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:6px 24px 0}
+.hp-block .row{display:flex;justify-content:space-between;font-size:11px;font-family:Consolas,monospace;color:var(--muted);margin-bottom:4px}
+.hp-block .row b{color:var(--text)}
+.hp-track{height:16px;background:#0a1120;border:1px solid var(--line);position:relative;overflow:hidden;
+  clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.hp-block.right .hp-track{clip-path:polygon(8px 0,100% 0,100% 100%,0 100%)}
+.hp-track i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#16a34a,var(--green));transition:width .12s linear}
+.hp-block.right .hp-track i{background:linear-gradient(90deg,var(--red),#b91c1c)}
+.hp-track .lag{position:absolute;top:0;height:100%;background:rgba(255,255,255,.25);transition:width .5s ease .15s}
+.meter-track{height:7px;background:#0a1120;border:1px solid var(--line);margin-top:5px;position:relative}
+.meter-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan-d),var(--cyan));transition:width .15s}
+.meter-track.ready i{background:linear-gradient(90deg,var(--orange-d),var(--orange));box-shadow:0 0 12px var(--orange)}
+.stage{
+  position:relative;height:262px;margin:10px 24px 0;overflow:hidden;
+  background:linear-gradient(180deg,#0a1528 0%,#0a1426 62%,#101d33 100%);
+  border:1px solid var(--line);
+}
+.stage::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(transparent 94%,rgba(0,229,255,.07) 95%),
+             repeating-linear-gradient(90deg,transparent,transparent 58px,rgba(30,47,77,.4) 59px);
+  opacity:.55}
+.stage .floor{position:absolute;left:0;right:0;bottom:0;height:52px;border-top:2px solid rgba(0,229,255,.25);
+  background:repeating-linear-gradient(90deg,rgba(0,229,255,.05) 0 1px,transparent 1px 40px)}
+.stage .sun{position:absolute;left:50%;top:26px;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,26,.16),transparent 68%);border:1px solid rgba(255,107,26,.12)}
+.fighter2{position:absolute;bottom:38px;width:150px;text-align:center;transition:none;will-change:transform,left}
+.fighter2 svg{width:100%;height:150px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.6))}
+.fighter2 .tag{font-family:Consolas,monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+.fighter2.p2 svg{transform:scaleX(-1)}
+.fighter2 .shadow{position:absolute;bottom:-6px;left:18%;right:18%;height:9px;background:#000;border-radius:50%;filter:blur(3px);opacity:.5}
+.state-tag{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-family:Consolas,monospace;font-size:10px;
+  letter-spacing:1px;padding:2px 7px;border:1px solid;opacity:0;transition:opacity .08s;white-space:nowrap}
+.state-tag.show{opacity:1}
+.state-tag.hitstun{color:var(--red);border-color:var(--red)}
+.state-tag.blockstun{color:var(--cyan);border-color:var(--cyan)}
+.state-tag.parry{color:#ffe08a;border-color:#ffe08a;box-shadow:0 0 14px rgba(255,224,138,.6)}
+.state-tag.armor{color:var(--orange);border-color:var(--orange)}
+.combo{position:absolute;top:12px;left:20px;font-family:Consolas,monospace;opacity:0;transition:opacity .15s}
+.combo.show{opacity:1}
+.combo b{font-size:36px;color:var(--orange);display:block;line-height:1;text-shadow:0 0 18px rgba(255,107,26,.6)}
+.combo small{font-size:10px;color:var(--muted);letter-spacing:2px}
+.flash-box{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:12}
+.flash-box.go{animation:fbox .18s ease-out}
+@keyframes fbox{0%{opacity:.75}100%{opacity:0}}
+.hitspark{position:absolute;width:46px;height:46px;z-index:13;pointer-events:none;transform:translate(-50%,-50%)}
+.hitspark.go{animation:spark .3s ease-out forwards}
+@keyframes spark{0%{opacity:1;transform:translate(-50%,-50%) scale(.4) rotate(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.8) rotate(90deg)}}
+.frame-monitor{padding:12px 24px 6px}
+.frame-monitor .fm-head{display:flex;justify-content:space-between;align-items:center;font-family:Consolas,monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.frame-monitor .fm-head b{color:var(--cyan)}
+.frames{display:flex;height:22px;border:1px solid var(--line);background:#0a1120;width:100%;position:relative}
+.frames .seg{height:100%;position:relative;display:grid;place-items:center;font-family:Consolas,monospace;font-size:9px;color:#04101c;font-weight:700}
+.frames .su{background:#2b8cff}
+.frames .ac{background:var(--red)}
+.frames .rc{background:#3d4d68;color:#c8d6ec}
+.frames .pw{background:#ffe08a;color:#5a4300}
+.frames .marker{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;box-shadow:0 0 8px #fff;transition:left .05s linear;z-index:3}
+.frames-legend{display:flex;gap:16px;margin-top:7px;font-family:Consolas,monospace;font-size:9px;color:var(--muted);flex-wrap:wrap}
+.frames-legend span::before{content:"";display:inline-block;width:8px;height:8px;margin-right:5px;vertical-align:middle}
+.frames-legend .l-su::before{background:#2b8cff}.frames-legend .l-ac::before{background:var(--red)}
+.frames-legend .l-rc::before{background:#3d4d68}.frames-legend .l-pw::before{background:#ffe08a}
+.key-guide{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px 24px 16px}
+.key-guide .k{background:#0a1120;border:1px solid var(--line);padding:7px 4px;text-align:center;transition:.1s;cursor:pointer;user-select:none}
+.key-guide .k:hover,.key-guide .k.press{border-color:var(--cyan);background:rgba(0,229,255,.12)}
+.key-guide .k b{display:block;font-family:Consolas,monospace;font-size:13px;color:var(--cyan)}
+.key-guide .k small{font-size:9px;color:var(--muted)}
+.fight-actions{display:flex;gap:10px;padding:0 24px 16px;align-items:center;flex-wrap:wrap}
+.fight-actions .btn{padding:9px 18px;font-size:11px}
+.fight-actions .hint{font-size:10px;color:var(--muted);margin-left:auto;letter-spacing:1px}
+@media(max-width:980px){.key-guide{grid-template-columns:repeat(4,1fr)}.fight-hud{gap:12px}}
 .feature-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px}
 .feat{background:linear-gradient(150deg,var(--panel),var(--bg2));border:1px solid var(--line);padding:18px 16px;position:relative;overflow:hidden}
 .feat::before{content:"";position:absolute;right:-16px;top:-16px;width:56px;height:56px;border:1px solid var(--c);transform:rotate(45deg);opacity:.25}
@@ -318,7 +397,7 @@ footer b{color:var(--cyan)}
 <!-- 开机自检序列 -->
 <div id="boot"><div class="boot-box">
   <div class="boot-brand">MECHA·MON</div>
-  <div class="boot-sub">TACTICAL SIMULATION SYSTEM // BOOT SEQUENCE</div>
+  <div class="boot-sub">REAL-TIME COMBAT SYSTEM // BOOT SEQUENCE</div>
   <div class="boot-lines" id="bootLines"></div>
   <div class="boot-bar"><i id="bootBar"></i></div>
   <div class="boot-pct" id="bootPct">INITIALIZING ... 0%</div>
@@ -342,7 +421,7 @@ footer b{color:var(--cyan)}
 
 <header class="hero" id="home"><div class="wrap hero-grid">
   <div>
-    <div class="eyebrow" id="eyebrow">TACTICAL COMBAT SYSTEM</div>
+    <div class="eyebrow" id="eyebrow">REAL-TIME MECHA COMBAT</div>
     <h1><span class="l1 glitch" data-text="MECHA">MECHA</span><span class="l2 glitch" data-text="MON">MON</span></h1>
     <div class="tagline" id="tagline"></div>
     <p class="hero-desc" id="heroDesc"></p>
@@ -362,32 +441,78 @@ footer b{color:var(--cyan)}
 
 <section id="battle"><div class="wrap">
   <div class="sec-head">
-    <div class="sec-num">// 01 — LIVE SIMULATION</div>
-    <h2>对战演示</h2>
-    <p class="sec-sub">选择双方机甲，真实按属性克制、能量消耗与伤害公式结算。点击技能即可出手，敌方由 AI 自动应战。</p>
+    <div class="sec-num">// 01 — COMBAT SIMULATOR</div>
+    <h2>实时对战演示</h2>
+    <p class="sec-sub">60Hz 帧驱动实时格斗。用键盘操控机甲：移动、轻击、重击、必杀，并在对手命中瞬间按下防御触发弹反。所有判定严格遵循 startup / active / recovery 帧窗口与僵直、霸体、取消规则。</p>
   </div>
   <div class="battle-shell">
     <div class="battle-top">
-      <span>MECHA ARENA // SIMULATION BUILD</span>
-      <span class="turn-badge" id="turnLabel">TURN 01</span>
+      <span>MECHA ARENA // 60Hz LOGIC TICK</span>
+      <span class="turn-badge" id="roundLabel">ROUND 01</span>
     </div>
-    <div class="arena">
-      <div class="scanline"></div>
-      <div class="fighter" id="fighterP"></div>
-      <div class="vs"><b>VS</b><small>BATTLE</small></div>
-      <div class="fighter enemy" id="fighterE"></div>
+    <div class="fight-hud">
+      <div class="round-pips" id="pipsP"></div>
+      <div><div class="timer" id="timer">99</div><div class="lbl">COUNTDOWN</div></div>
+      <div class="round-pips" id="pipsE"></div>
+    </div>
+    <div class="hp-wrap">
+      <div class="hp-block">
+        <div class="row"><b id="nameP">PLAYER</b><span id="hpNumP">1000</span></div>
+        <div class="hp-track"><i id="hpBarP"></i><span class="lag" id="hpLagP"></span></div>
+        <div class="meter-track" id="meterBoxP"><i id="meterBarP"></i></div>
+      </div>
+      <div class="hp-block right">
+        <div class="row"><span id="hpNumE">1000</span><b id="nameE">OPPONENT</b></div>
+        <div class="hp-track"><i id="hpBarE"></i><span class="lag" id="hpLagE"></span></div>
+        <div class="meter-track" id="meterBoxE"><i id="meterBarE"></i></div>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+      <div class="sun"></div><div class="floor"></div><div class="scanline"></div>
+      <div class="combo" id="combo"><b>0</b><small>HITS COMBO</small></div>
+      <div class="fighter2 p1" id="fighterP"></div>
+      <div class="fighter2 p2" id="fighterE"></div>
+      <div class="flash-box" id="hitFlash"></div>
     </div>
     <div class="pick-row">
-      <div class="pick-box"><label>我方机甲 / PLAYER</label><select id="selP"></select></div>
-      <div class="pick-box"><label>敌方机甲 / OPPONENT</label><select id="selE"></select></div>
+      <div class="pick-box"><label>我方机甲 / PLAYER (P1)</label><select id="selP"></select></div>
+      <div class="pick-box"><label>敌方机甲 / OPPONENT (CPU)</label><select id="selE"></select></div>
     </div>
-    <div class="battle-actions" id="skills"></div>
+    <div class="frame-monitor">
+      <div class="fm-head"><span>FRAME DATA MONITOR // 帧数据监视器</span><span id="frameStatus">STATE: <b>IDLE</b></span></div>
+      <div class="frames" id="frames">
+        <div class="seg su" style="width:33%">STARTUP</div>
+        <div class="seg ac" style="width:33%">ACTIVE</div>
+        <div class="seg rc" style="width:34%">RECOVERY</div>
+        <div class="marker" id="frameMarker" style="left:0"></div>
+      </div>
+      <div class="frames-legend">
+        <span class="l-su">STARTUP 前摇</span><span class="l-ac">ACTIVE 判定</span>
+        <span class="l-rc">RECOVERY 后摇</span><span class="l-pw">PARRY WINDOW 弹反窗口</span>
+        <span id="frameNote">待机中 — 出招后显示实时帧进度</span>
+      </div>
+    </div>
+    <div class="key-guide" id="keyGuide">
+      <div class="k" data-key="a"><b>A / D</b><small>移动</small></div>
+      <div class="k" data-key="j"><b>J</b><small>轻击</small></div>
+      <div class="k" data-key="k"><b>K</b><small>重击</small></div>
+      <div class="k" data-key="l"><b>L</b><small>必杀</small></div>
+      <div class="k" data-key="u"><b>U</b><small>超必杀</small></div>
+      <div class="k" data-key="s"><b>S</b><small>防御/弹反</small></div>
+      <div class="k" data-key="space"><b>SPACE</b><small>跳跃</small></div>
+      <div class="k" data-key="shift"><b>SHIFT</b><small>冲刺</small></div>
+    </div>
+    <div class="fight-actions">
+      <button class="btn" onclick="fightReset()">↻ 重新对战</button>
+      <button class="btn ghost" onclick="autoFight()">⚡ 自动演示</button>
+      <button class="btn ghost" onclick="toggleSlow()">◷ 慢动作 ×<span id="slowVal">1</span></button>
+      <span class="hint">提示：先按 J 轻击命中 → 立刻按 K 可取消后摇连段；在对手攻击亮红瞬间按 S 触发弹反</span>
+    </div>
     <div class="battle-foot">
       <div class="log" id="log"></div>
       <div class="ctrl">
-        <button class="btn" onclick="startBattle()">↻ 重置对战</button>
-        <button class="btn ghost" onclick="autoPlay()">⚡ 自动演示</button>
         <div class="eff-badge" id="effBadge">属性倍率 —</div>
+        <div class="eff-badge" id="stateBadge">弹反窗口 4F · 弹反硬直 36F · 霸体抵消轻击</div>
       </div>
     </div>
   </div>
@@ -397,7 +522,7 @@ footer b{color:var(--cyan)}
   <div class="sec-head">
     <div class="sec-num">// 02 — MECHA DATABASE</div>
     <h2>机甲图鉴</h2>
-    <p class="sec-sub">首批 8 台机甲，覆盖 8 种属性与 6 种战斗定位。每台机甲 4 个专属技能，共 32 个 GAS 能力。</p>
+    <p class="sec-sub">首批 8 台机甲，覆盖 8 种属性与 6 种战斗定位。每台机甲 4 个专属招式，共 32 个帧数据驱动的 GAS 能力。</p>
   </div>
   <div class="roster" id="rosterGrid"></div>
 </div></section>
@@ -413,10 +538,10 @@ footer b{color:var(--cyan)}
     <div class="legend-list" id="typeLegend"></div>
   </div>
   <div class="feature-strip">
-    <div class="feat" style="--c:#00e5ff"><div class="fi">◈</div><h5>单一数据源</h5><p>机甲/技能/数值全部由 Python 配置驱动，文档、代码、演示三端自动同步。</p></div>
-    <div class="feat" style="--c:#ff6b1a"><div class="fi">⚡</div><h5>真实战斗结算</h5><p>属性克制、能量消耗、暴击波动按公式实时演算，非静态贴图。</p></div>
-    <div class="feat" style="--c:#33e08b"><div class="fi">⬡</div><h5>GAS 原生架构</h5><p>ASC / AttributeSet / Ability / Tag 分层，C++ 骨架可直接导入 UE5。</p></div>
-    <div class="feat" style="--c:#a855f7"><div class="fi">✦</div><h5>电竞化设计</h5><p>3v3 + Ban/Pick + 天梯段位，回合制高可读性，观赛门槛低。</p></div>
+    <div class="feat" style="--c:#00e5ff"><div class="fi">◈</div><h5>单一数据源</h5><p>机甲/招式/帧窗口全部由 Python 配置驱动，文档、代码、演示三端自动同步。</p></div>
+    <div class="feat" style="--c:#ff6b1a"><div class="fi">⚡</div><h5>帧级判定</h5><p>60Hz 逻辑帧驱动，前摇/判定/后摇逐帧结算，hitstop 与僵直真实反馈。</p></div>
+    <div class="feat" style="--c:#33e08b"><div class="fi">⬡</div><h5>GAS 原生架构</h5><p>ASC / AttributeSet / CombatAbility / FrameData 分层，C++ 基座可直接导入 UE5。</p></div>
+    <div class="feat" style="--c:#a855f7"><div class="fi">✦</div><h5>操作深度</h5><p>弹反/霸体/取消/连招构成攻防博弈，高操作上限与电竞观赏性。</p></div>
   </div>
 </div></section>
 
@@ -424,7 +549,7 @@ footer b{color:var(--cyan)}
   <div class="sec-head">
     <div class="sec-num">// 04 — TECHNICAL ARCHITECTURE</div>
     <h2>技术架构 · UE5 GAS</h2>
-    <p class="sec-sub">基于 Unreal Engine 5 的 Gameplay Ability System 构建。技能、属性、状态、表现四层解耦，天然支持竞技网络同步与数据驱动。</p>
+    <p class="sec-sub">基于 Unreal Engine 5 的 Gameplay Ability System 构建。招式、帧数据、判定、表现四层解耦，判定与动画分离，天然支持竞技网络同步与数据驱动。</p>
   </div>
   <div class="arch-grid" id="archGrid"></div>
   <div class="code-block" id="codeBlock"></div>
@@ -575,11 +700,11 @@ document.getElementById('footVersion').textContent = PROJ.version;
 })();
 document.getElementById('tagline').textContent = PROJ.tagline;
 document.getElementById('heroDesc').textContent =
-  PROJ.name_cn + " 是一款以机甲收集与回合制策略对战为核心的竞技游戏。组建 3 台机甲的作战小队，通过属性克制、技能组合与能量管理击败对手。本演示由统一数据源驱动，完整呈现 UE5 GAS 战斗系统设计。";
+  PROJ.name_cn + " 是一款实时 1v1 机甲格斗竞技游戏。以 60Hz 逻辑帧驱动，招式严格遵循前摇、判定、后摇的帧窗口规则；玩家通过弹反、防御、霸体与取消构筑攻防博弈。本演示由统一数据源驱动，完整呈现 UE5 GAS 战斗系统设计。";
 document.getElementById('heroStats').innerHTML = `
   <div><b>${DATA.mechas.length}</b><small>机甲 MECHAS</small></div>
   <div><b>${DATA.elements.length}</b><small>属性 ELEMENTS</small></div>
-  <div><b>32</b><small>技能 ABILITIES</small></div>
+  <div><b>32</b><small>招式 MOVES</small></div>
   <div><b>UE5</b><small>ENGINE</small></div>`;
 document.getElementById('heroMech').innerHTML = mechaSVG(byId('BLAZE'),'hero');
 
@@ -601,21 +726,32 @@ document.getElementById('archGrid').innerHTML = DATA.gas.map((g,i)=>`
     <p>${g.desc}</p>
   </div>`).join('');
 
-document.getElementById('codeBlock').innerHTML = `<span class="c">// 技能释放 → 伤害结算管线（GAS）</span>
-<span class="k">bool</span> UMechaAbilityBase::CanActivateAbility(...)
+document.getElementById('codeBlock').innerHTML = `<span class="c">// 帧驱动招式判定管线（60Hz / GAS）</span>
+<span class="k">void</span> UCombatAbility::TickFrameData(<span class="k">int32</span> Frame)
 {
-    <span class="k">if</span> (!Super::CanActivateAbility(...)) <span class="k">return false</span>;
-    <span class="c">// 校验 Status.Frozen / Status.Stunned 标签</span>
-    <span class="k">return true</span>;
+    <span class="k">const</span> FCombatFrameData&amp; F = MoveData->Frames;   <span class="c">// DataAsset 帧配置</span>
+    <span class="k">if</span> (Frame &lt; F.StartupFrames) <span class="k">return</span>;        <span class="c">// 前摇：无判定</span>
+
+    <span class="k">if</span> (Frame &lt;= F.StartupFrames + F.ActiveFrames) {          <span class="c">// 判定帧</span>
+        TArray&lt;FHitResult&gt; Hits = Hitbox->QueryHurtbox();          <span class="c">// 自定义 box 查询</span>
+        <span class="k">for</span> (<span class="k">auto</span>&amp; Hit : Hits) ResolveHit(Hit, F);
+    }
+    <span class="k">if</span> (Frame >= F.StartupFrames + F.ActiveFrames + F.RecoveryFrames)
+        EndAbility();                                       <span class="c">// 后摇结束</span>
 }
 
-<span class="k">void</span> UMechaAbilityBase::ActivateAbility(...)
+<span class="k">void</span> UCombatAbility::ResolveHit(<span class="k">const</span> FHitResult&amp; Hit, <span class="k">const</span> FCombatFrameData&amp; F)
 {
-    CommitAbility(Handle, ActorInfo, ActivationInfo);        <span class="c">// 扣能量 / 进冷却</span>
-    FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(HitEffectClass, 1, Ctx);
-    Spec.Data->SetSetByCallerMagnitude(Data_Power, BasePower);
-    ApplyGameplayEffectToTarget(...);                        <span class="c">// 属性克制在 AttributeSet 中结算</span>
-    EndAbility(...);
+    <span class="k">if</span> (Victim->Parry->IsInWindow(F.ParryWindow)) {            <span class="c">// 弹反 4F 窗口</span>
+        Victim->Parry->Punish(36); GrantMeter(30); <span class="k">return</span>;
+    }
+    <span class="k">if</span> (Victim->IsBlocking()) { ApplyBlockstun(F.Blockstun); <span class="k">return</span>; }
+    <span class="k">if</span> (Victim->Armor->Absorbs(F)) { <span class="k">return</span>; }   <span class="c">// 霸体抵消</span>
+
+    ApplyDamage(F.Damage, TypeChart);                       <span class="c">// 属性倍率结算</span>
+    Hitstop->Freeze(F.HitstopFrames);                       <span class="c">// 命中停顿</span>
+    Victim->ApplyHitstun(F.Hitstun);                        <span class="c">// 僵直</span>
+    BroadcastEvent(Event_Hit);
 }`;
 
 document.getElementById('timeline').innerHTML = DATA.phases.map((p,i)=>`
@@ -628,60 +764,124 @@ document.getElementById('timeline').innerHTML = DATA.phases.map((p,i)=>`
     <div class="status">${p.status}</div>
   </div>`).join('');
 
-/* ---------- 战斗模拟 ---------- */
-let S = {p:null,e:null,php:0,ehp:0,pen:0,een:0,turn:1,over:false};
-const selP = document.getElementById('selP'), selE = document.getElementById('selE');
-selP.innerHTML = DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
-selE.innerHTML = DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
-selE.value = 'TIDAL';
+/* ================= 实时格斗引擎（60Hz 逻辑帧） =================
+   状态机：IDLE / WALK / ATTACK / GUARD / PARRY / HITSTUN / BLOCKSTUN / JUMP / DASH / DOWN
+   判定严格按帧：startup → active(hitbox) → recovery；命中触发 hitstop + 僵直；
+   防御窗口内触发弹反；霸体抵消；取消路线支持连段；伤害随连击数递减。        */
+const R = DATA.rules;
+const sysMoves = Object.fromEntries(DATA.system_moves.map(m=>[m.id,m]));
+const byMoveInput = (moves, key) => moves.find(m=>m.input===key);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-function fighterHTML(m,hp,maxHp,en,side){
-  const t = TMAP[m.element];
-  const pct = Math.max(0,hp/maxHp*100);
-  return `${mechaSVG(m,side)}
-    <div class="fname">${m.name_cn}</div>
-    <div class="fmeta">${t.name_cn} · ${m.role} · ${m.codename}</div>
-    <div class="bars">
-      <div class="bar-row"><span>ARMOR / 装甲</span><span>${Math.max(0,Math.round(hp))} / ${maxHp}</span></div>
-      <div class="bar hp ${pct<30?'low':''}"><i style="width:${pct}%"></i></div>
-      <div class="bar-row" style="margin-top:8px"><span>ENERGY / 能量</span><span>${Math.round(en)} / 120</span></div>
-      <div class="bar en"><i style="width:${en/120*100}%"></i></div>
-    </div>`;
+const G = {
+  p:null, e:null, running:false, over:false, paused:false,
+  frame:0, timeLeft:R.round_time_sec, round:1, winsP:0, winsE:0,
+  timerAcc:0, slow:1, auto:false, autoAcc:0, last:0, acc:0,
+  comboP:0, comboE:0, comboTimerP:0, comboTimerE:0,
+  freeze:0, keys:{}, moveList:[],
+};
+const KEYMAP = {a:'left',d:'right',ArrowLeft:'left',ArrowRight:'right',
+  j:'J',k:'K',l:'L',u:'U',s:'S',' ':'SPACE',Spacebar:'SPACE',
+  Shift:'SHIFT',ShiftLeft:'SHIFT',ShiftRight:'SHIFT'};
+const MOVE_BY_KEY = {J:'Light',K:'Heavy',L:'Special',U:'Ultimate'};
+const CLS_TO_INPUT = {Light:'J',Heavy:'K',Special:'L',Ultimate:'U'};
+
+const selP=document.getElementById('selP'), selE=document.getElementById('selE');
+selP.innerHTML=DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
+selE.innerHTML=DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
+selE.value='TIDAL';
+
+function makeFighter(m,side){
+  return {
+    def:m, side, x: side==='p'?120:520, y:0, vx:0, vy:0, facing: side==='p'?1:-1,
+    hp:1000, meter:0, guard:100,
+    state:'IDLE', stateFrame:0, move:null, hitDone:false,
+    hitstun:0, blockstun:0, guarding:false, parryFlash:0, armorHits:0,
+    comboCount:0, lastHitFrame:-999, flash:0,
+  };
 }
-function logMsg(html,cls){ const d=document.createElement('div'); d.innerHTML=html; if(cls)d.className=cls; document.getElementById('log').appendChild(d); document.getElementById('log').scrollTop=99999; }
+function logMsg(html,cls){const d=document.createElement('div');d.innerHTML=html;if(cls)d.className=cls;
+  const box=document.getElementById('log');box.appendChild(d);box.scrollTop=99999;
+  while(box.children.length>60) box.removeChild(box.firstChild);}
+
+function fighterEl(f){return document.getElementById(f.side==='p'?'fighterP':'fighterE');}
 function renderFighters(){
-  document.getElementById('fighterP').innerHTML = fighterHTML(S.p,S.php,S.p.hp,S.pen,'p');
-  document.getElementById('fighterE').innerHTML = fighterHTML(S.e,S.ehp,S.e.hp,S.een,'e');
-  document.getElementById('turnLabel').textContent = 'TURN ' + String(S.turn).padStart(2,'0');
-  const v = eff(S.p.element,S.e.element);
-  document.getElementById('effBadge').innerHTML = `${TMAP[S.p.element].name_cn} → ${TMAP[S.e.element].name_cn} : ${effLabel(v)}`;
+  [G.p,G.e].forEach(f=>{
+    const el=fighterEl(f);
+    if(!el.dataset.ready){
+      el.innerHTML=`${mechaSVG(f.def,'fg_'+f.side)}<div class="tag">${f.def.codename}</div>
+        <div class="state-tag hitstun">HITSTUN</div><div class="state-tag blockstun">BLOCKSTUN</div>
+        <div class="state-tag parry">PARRY!</div><div class="state-tag armor">ARMOR</div>`;
+      el.dataset.ready='1';
+    }
+    const yoff = f.y>0?`translateY(${-f.y}px)`:'';
+    el.style.left=(f.x-75)+'px';
+    el.style.transform=yoff;
+    el.style.zIndex = f.side==='p'?5:4;
+  });
+  document.getElementById('nameP').textContent=G.p.def.name_cn;
+  document.getElementById('nameE').textContent=G.e.def.name_cn;
+  const v=eff(G.p.def.element,G.e.def.element);
+  document.getElementById('effBadge').innerHTML=`${TMAP[G.p.def.element].name_cn} → ${TMAP[G.e.def.element].name_cn} : ${effLabel(v)}`;
 }
-function renderSkills(){
-  const box = document.getElementById('skills');
-  box.innerHTML = S.p.abilities.map((a,i)=>{
-    const ok = S.pen >= a.cost && !S.over;
-    const c = TMAP[a.type].color;
-    return `<button class="skill" ${ok?'':'disabled'} onclick="useSkill(${i})">
-      <div class="sname">${a.name_cn}<span class="scost">EN ${a.cost}</span></div>
-      <div class="sdesc">${a.description}</div>
-      <div class="stag" style="color:${c}">${TMAP[a.type].name_cn} · ${a.category} · PWR ${a.power||'—'}</div>
-    </button>`;
-  }).join('');
+function renderHUD(){
+  [['P',G.p],['E',G.e]].forEach(([k,f])=>{
+    const pct=clamp(f.hp/1000*100,0,100);
+    document.getElementById('hpBar'+k).style.width=pct+'%';
+    document.getElementById('hpLag'+k).style.left=pct+'%';
+    document.getElementById('hpLag'+k).style.width=(100-pct)+'%';
+    document.getElementById('hpNum'+k).textContent=Math.max(0,Math.round(f.hp));
+    const mb=document.getElementById('meterBar'+k);
+    mb.style.width=f.meter+'%';
+    document.getElementById('meterBox'+k).classList.toggle('ready',f.meter>=100);
+  });
+  document.getElementById('timer').textContent=String(Math.ceil(G.timeLeft)).padStart(2,'0');
+  document.getElementById('timer').classList.toggle('urgent',G.timeLeft<=10);
+  document.getElementById('roundLabel').textContent='ROUND '+String(G.round).padStart(2,'0');
+  const pips=(w,cls)=>Array.from({length:R.rounds_to_win},(_,i)=>`<div class="pip ${i<w?cls:''}"></div>`).join('');
+  document.getElementById('pipsP').innerHTML=pips(G.winsP,'win');
+  document.getElementById('pipsE').innerHTML=pips(G.winsE,'lose');
+  const comb=(n,t)=>{const el=document.getElementById('combo');
+    if(t>0&&n>1){el.querySelector('b').textContent=n;el.classList.add('show');}else el.classList.remove('show');};
+  comb(G.comboP,G.comboTimerP);
+  document.getElementById('slowVal').textContent=G.slow;
+  // 状态标签
+  [['fighterP',G.p],['fighterE',G.e]].forEach(([id,f])=>{
+    const host=document.getElementById(id);
+    host.querySelector('.state-tag.hitstun').classList.toggle('show',f.hitstun>0);
+    host.querySelector('.state-tag.blockstun').classList.toggle('show',f.blockstun>0);
+    host.querySelector('.state-tag.parry').classList.toggle('show',f.parryFlash>0);
+    host.querySelector('.state-tag.armor').classList.toggle('show',f.move&&f.move.armor>0&&f.state==='ATTACK');
+  });
 }
-function damage(atk,def,ability){
-  const mul = eff(ability.type, def.element);
-  const raw = ability.power * (atk.atk/Math.max(1,def.dfn)) * mul;
-  return Math.max(1, Math.floor(raw * (0.95+Math.random()*0.1)));
+function renderFrameMonitor(f){
+  const el=document.getElementById('frames');
+  const st=document.getElementById('frameStatus'), note=document.getElementById('frameNote');
+  const mk=document.getElementById('frameMarker');
+  if(!f.move||f.state!=='ATTACK'){
+    el.innerHTML=`<div class="seg su" style="width:33%">STARTUP</div>
+      <div class="seg ac" style="width:33%">ACTIVE</div><div class="seg rc" style="width:34%">RECOVERY</div>`;
+    mk.style.left='0'; st.innerHTML='STATE: <b>'+f.state+'</b>';
+    note.textContent= f.state==='IDLE'?'待机中 — 出招后显示实时帧进度':
+      f.state==='HITSTUN'?'受击僵直中，无法操作':f.state==='BLOCKSTUN'?'防御僵直中':f.state==='GUARD'?'防御中（按住 S）— 松开后的前 4 帧为弹反窗口':'—';
+    return;
+  }
+  const m=f.move, su=m.startup, ac=m.active, rc=m.recovery, total=su+ac+rc;
+  const pw=m.parry_window;
+  el.innerHTML=`
+    ${pw?`<div class="seg pw" style="width:${pw/total*100}%">PARRY ${pw}F</div>`:''}
+    <div class="seg su" style="width:${(su-pw)/total*100}%">S ${su}</div>
+    <div class="seg ac" style="width:${ac/total*100}%">A ${ac}</div>
+    <div class="seg rc" style="width:${rc/total*100}%">R ${rc}</div>`;
+  mk.style.left=(f.stateFrame/total*100)+'%';
+  const phase = f.stateFrame<su?'STARTUP':f.stateFrame<su+ac?'ACTIVE':'RECOVERY';
+  st.innerHTML=`STATE: <b>${m.name_cn}</b> · ${phase} · F${f.stateFrame}/${total}`;
+  note.textContent=`判定帧 F${su+1}–F${su+ac} · hitstop ${m.hitstop}F · 僵直 ${m.hitstun}F · 霸体 ${m.armor} · 可取消 → ${m.cancel}`;
 }
-function applyEffect(target, ability, dmg, side){
-  if(ability.category==='Heal') return Math.min(target.hp, 45);
-  if(ability.category==='Shield') return 0;
-  return dmg;
-}
-/* ---------- 战斗特效 ---------- */
-function fxFloat(targetId, text, crit, heal){
-  const host=document.getElementById(targetId);
-  if(!host) return;
+
+/* ---------- 打击特效 ---------- */
+function fxFloat(targetId,text,crit,heal){
+  const host=document.getElementById(targetId); if(!host)return;
   const d=document.createElement('div');
   d.className='dmg-float'+(crit?' crit':'')+(heal?' heal':'');
   d.textContent=(heal?'+':'-')+text;
@@ -699,92 +899,266 @@ function fxFlash(color){
   f.style.background=`radial-gradient(circle, ${color||'#00e5ff'}55, transparent 70%)`;
   f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
 }
-function fxShake(el){ if(!el) return; el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
-function useSkill(i){
-  if(S.over) return;
-  const a = S.p.abilities[i];
-  if(S.pen < a.cost) return;
-  S.pen -= a.cost;
-  const mul = eff(a.type, S.e.element);
-  let dmg = 0;
-  if(a.category==='Damage'||a.category==='Dot'||a.category==='Control'){
-    dmg = damage(S.p,S.e,a);
-    S.ehp -= applyEffect(S.e,a,dmg,'e');
-  } else if(a.category==='Heal'){
-    S.php = Math.min(S.p.hp, S.php+45);
-  } else if(a.category==='Buff'){
-    S.pen = Math.min(120,S.pen+10);
-  } else if(a.category==='Shield'){
-    S.php = Math.min(S.p.hp,S.php+20);
+function fxShake(el){if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');}
+
+/* ---------- 招式与判定 ---------- */
+function canAct(f){return !G.over&&f.hitstun<=0&&f.blockstun<=0&&f.state!=='DOWN'&&G.freeze<=0;}
+function startMove(f,cls){
+  if(!canAct(f)) return false;
+  if(f.state==='ATTACK'){
+    if(!f.move || f.stateFrame<f.move.startup+f.move.active || !f.move.cancel.includes(cls)) return false;
   }
-  logMsg(`<b>[${S.p.name_cn}]</b> 释放 ${a.name_cn} → ${TMAP[a.type].name_cn} · ${a.gameplay_tag}`,'');
-  if(dmg>0){
-    logMsg(`&nbsp;&nbsp;造成 <span class="dmg">${dmg}</span> 点伤害 · 克制倍率 <span class="eff">${mul}×</span>`,'');
-    fxFlash(TMAP[a.type].color);
-    fxBanner(a.name_cn, TMAP[a.type].color);
-    setTimeout(()=>fxFloat('fighterE', dmg, mul>=2, false), 60);
-  }
-  else if(a.category==='Heal'){ logMsg('&nbsp;&nbsp;修复装甲 +45',''); fxFloat('fighterP',45,false,true); }
-  else logMsg('&nbsp;&nbsp;状态效果已应用（'+a.category+'）','');
-  if(checkEnd()) return;
-  enemyTurn();
-  renderFighters(); renderSkills();
+  const m=(cls==='PARRY')?sysMoves.SYS_PARRY:byMoveInput(f.def.moves,CLS_TO_INPUT[cls]||cls);
+  if(!m) return false;
+  if(m.meter_cost && f.meter<m.meter_cost) return false;
+  f.meter-=m.meter_cost;
+  f.move=m; f.state='ATTACK'; f.stateFrame=0; f.hitDone=false; f.armorHits=0;
+  return true;
 }
-function enemyTurn(){
-  const usable = S.e.abilities.filter(a=>S.een>=a.cost);
-  const a = (usable.length?usable:S.e.abilities)[Math.floor(Math.random()*(usable.length||S.e.abilities.length))];
-  S.een -= a.cost;
-  let dmg=0;
-  if(a.category==='Damage'||a.category==='Dot'||a.category==='Control'){
-    dmg = damage(S.e,S.p,a);
-    S.php -= applyEffect(S.p,a,dmg,'p');
-  } else if(a.category==='Heal'){ S.ehp=Math.min(S.e.hp,S.ehp+45); }
-  else if(a.category==='Shield'){ S.ehp=Math.min(S.e.hp,S.ehp+20); }
-  else { S.een=Math.min(120,S.een+10); }
-  const mul = eff(a.type,S.p.element);
-  logMsg(`<b>[${S.e.name_cn}]</b> 反击 ${a.name_cn} → 造成 <span class="dmg">${dmg}</span> 伤害 · ${mul}×`,'');
-  if(dmg>0){
-    fxFlash(TMAP[a.type].color);
-    fxBanner('ENEMY · '+a.name_cn, '#ff6b1a');
-    fxShake(document.querySelector('.battle-shell'));
-    setTimeout(()=>fxFloat('fighterP', dmg, mul>=2, false), 60);
-  }
-  if(checkEnd()) return;
-  S.turn++;
-  S.pen = Math.min(120,S.pen + DATA.rules.energy_regen);
-  S.een = Math.min(120,S.een + DATA.rules.energy_regen);
-  logMsg(`&nbsp;&nbsp;回合结束，双方回复 ${DATA.rules.energy_regen} 点能量`,'');
+function inRange(a,b,reach){
+  const dist=Math.abs(a.x-b.x);
+  const facingCorrect=(b.x-a.x)*a.facing>0;
+  return dist<=reach && facingCorrect;
 }
-function checkEnd(){
-  if(S.php<=0||S.ehp<=0){
-    S.over=true;
-    const win = S.ehp<=0 && S.php>0;
-    logMsg(win?'★ 战斗胜利！敌方机甲失去战斗能力。':'✕ 战斗失败！我方机甲失去战斗能力。','');
-    renderFighters(); renderSkills(); return true;
+function resolveHit(atk,def,m){
+  const isParry = def.state==='PARRY' && def.stateFrame<=sysMoves.SYS_PARRY.parry_window;
+  // 弹反成功
+  if(isParry){
+    atk.state='HITSTUN'; atk.hitstun=R.parry_punish_frames; atk.stateFrame=0; atk.move=null;
+    def.meter=clamp(def.meter+R.parry_meter_reward,0,100); def.parryFlash=18;
+    G.freeze=Math.max(G.freeze,8);
+    fxBanner('PARRY!','#ffe08a'); fxFlash('#ffe08a'); fxShake(document.getElementById('stage'));
+    logMsg(`<b>[${def.def.name_cn}]</b> 弹反成功！<span class="eff">${atk.def.name_cn} 陷入 ${R.parry_punish_frames}F 硬直</span>`,'');
+    return;
   }
-  if(S.turn>=DATA.rules.turn_limit){ S.over=true; logMsg('回合上限，按剩余装甲判定。',''); return true; }
-  return false;
+  // 防御
+  if(def.guarding && def.guard>0){
+    def.guard=clamp(def.guard-18,0,100);
+    def.state='BLOCKSTUN'; def.blockstun=m.blockstun; def.stateFrame=0;
+    def.hp=clamp(def.hp-m.damage*0.2,0,1000);
+    G.freeze=Math.max(G.freeze,m.hitstop);
+    fxFloat(def.side==='p'?'fighterP':'fighterE',Math.round(m.damage*0.2),false,false);
+    logMsg(`<b>[${def.def.name_cn}]</b> 防御成功 · 减伤 80% · 防御槽 ${Math.round(def.guard)}`,'');
+    if(def.guard<=0){def.state='HITSTUN';def.hitstun=40;def.stateFrame=0;logMsg('　　<span class="dmg">防御槽清空 → 破防！</span>','');fxBanner('GUARD BREAK','#ff3b5c');}
+    return;
+  }
+  // 霸体：抵消轻击
+  if(def.state==='ATTACK'&&def.move&&def.move.armor>0&&m.cls==='Light'&&def.armorHits<def.move.armor){
+    def.armorHits++;
+    logMsg(`<b>[${def.def.name_cn}]</b> 霸体抵消轻击（${def.armorHits}/${def.move.armor}）`,'');
+    return;
+  }
+  // 命中：连击递减 + Counter Hit
+  const counter = def.stateFrame>0 && (def.state==='ATTACK'&&def.stateFrame>=def.move.startup+def.move.active || def.state==='HITSTUN');
+  const combo = atk.side==='p'?G.comboP:G.comboE;
+  const scale = Math.max(0.5, 1-Math.min(combo,5)*0.1);
+  const mul = eff(m.type,def.def.element);
+  let dmg = Math.round(m.damage*(atk.def.atk/85)*(def.def.dfn>90?0.9:1)*mul*scale*(counter?1.25:1));
+  dmg=Math.max(1,dmg);
+  def.hp=clamp(def.hp-dmg,0,1000);
+  def.state='HITSTUN'; def.hitstun=m.hitstun+(counter?8:0); def.stateFrame=0; def.move=null;
+  atk.meter=clamp(atk.meter+m.meter_gain,0,100);
+  def.meter=clamp(def.meter+4,0,100);
+  G.freeze=Math.max(G.freeze,m.hitstop);
+  if(atk.side==='p'){G.comboP++;G.comboTimerP=90;G.comboE=0;} else {G.comboE++;G.comboTimerE=90;G.comboP=0;}
+  fxFlash(TMAP[m.type].color); fxShake(document.getElementById('stage'));
+  const el=document.getElementById('stage');
+  const sp=document.createElement('div'); sp.className='hitspark go';
+  sp.style.left=((def.x+ (def.side==='p'?50:-50)))+'px'; sp.style.top='120px';
+  sp.innerHTML=`<svg viewBox="0 0 46 46"><path d="M23 2 L28 18 L44 23 L28 28 L23 44 L18 28 L2 23 L18 18 Z" fill="${TMAP[m.type].color}"/></svg>`;
+  el.appendChild(sp); setTimeout(()=>sp.remove(),320);
+  setTimeout(()=>fxFloat(def.side==='p'?'fighterP':'fighterE',dmg,mul>=2||counter,false),30);
+  if(mul>=2) fxBanner('ELEMENTAL BREAK',TMAP[m.type].color);
+  else if(counter) fxBanner('COUNTER HIT','#ff6b1a');
+  logMsg(`<b>[${atk.def.name_cn}]</b> ${m.name_cn} 命中 → <span class="dmg">${dmg}</span> 伤害 · ${mul}× · ${scale<1?Math.round(scale*100)+'% 连击递减':''}${counter?' · COUNTER':''}`,'');
 }
-function startBattle(){
-  S.p = byId(selP.value); S.e = byId(selE.value);
-  S.php=S.p.hp; S.ehp=S.e.hp; S.pen=S.p.energy; S.een=S.e.energy;
-  S.turn=1; S.over=false;
+
+/* ---------- 逻辑帧 ---------- */
+function stepFighter(f,other){
+  if(f.hitstun>0){f.hitstun--;f.state='HITSTUN';if(f.hitstun===0){f.state='IDLE';f.stateFrame=0;}return;}
+  if(f.blockstun>0){f.blockstun--;f.state='BLOCKSTUN';if(f.blockstun===0){f.state='IDLE';f.stateFrame=0;}return;}
+  if(f.state==='ATTACK'){
+    f.stateFrame++;
+    const m=f.move;
+    if(!m){f.state='IDLE';return;}
+    if(!f.hitDone && f.stateFrame>=m.startup && f.stateFrame<=m.startup+m.active && inRange(f,other,m.reach)){
+      f.hitDone=true; resolveHit(f,other,m);
+    }
+    // 前冲
+    if(f.stateFrame<=m.startup+m.active) f.x=clamp(f.x+f.facing*(m.cls==='Special'?3.2:1.6),30,650);
+    if(f.stateFrame>=m.startup+m.active+m.recovery){f.state='IDLE';f.stateFrame=0;f.move=null;}
+    return;
+  }
+  if(f.state==='PARRY'){
+    f.stateFrame++;
+    // 弹反窗口（4F）过后，若仍按住防御键则转为持续防御
+    if(f.stateFrame>sysMoves.SYS_PARRY.parry_window){
+      if(f.side==='p'&&G.keys.s){f.state='GUARD';f.guarding=true;}
+      else if(f.guarding){f.state='GUARD';}
+      else {f.state='IDLE';}
+      f.stateFrame=0;
+    }
+    return;
+  }
+  if(f.state==='JUMP'){
+    f.stateFrame++; f.y=Math.sin(f.stateFrame/26*Math.PI)*62;
+    f.x=clamp(f.x+f.vx,30,650);
+    if(f.stateFrame>=26){f.y=0;f.state='IDLE';f.stateFrame=0;f.vx=0;}
+    return;
+  }
+  if(f.state==='DASH'){f.stateFrame++;f.x=clamp(f.x+f.vx,30,650);if(f.stateFrame>=12){f.state='IDLE';f.stateFrame=0;}return;}
+  f.stateFrame++;
+}
+function handleInput(){
+  const k=G.keys;
+  // 玩家移动 / 防御 / 招式
+  if(canAct(G.p)){
+    // S：按下瞬间进入 PARRY（前4帧窗口），持续按住转为 GUARD
+    if(k.s){
+      if(G.p.state!=='GUARD'&&G.p.state!=='PARRY'&&!G.p._sHeld){
+        G.p.state='PARRY';G.p.stateFrame=0;G.p.move=sysMoves.SYS_PARRY;G.p.guarding=false;
+      }
+      G.p._sHeld=true;
+    }else{
+      G.p._sHeld=false;
+      if(G.p.state==='GUARD'||G.p.state==='PARRY'){G.p.state='IDLE';G.p.stateFrame=0;}
+    }
+    G.p.guarding=(k.s&&G.p.state==='GUARD');
+    if(!G.p.guarding&&(G.p.state==='IDLE'||G.p.state==='WALK')){
+      if(k.left){G.p.x=clamp(G.p.x-3.2,30,650);G.p.state='WALK';}
+      else if(k.right){G.p.x=clamp(G.p.x+3.2,30,650);G.p.state='WALK';}
+      else if(G.p.state==='WALK'){G.p.state='IDLE';}
+    }
+  } else {G.p.guarding=false;G.p._sHeld=k.s;}
+  // 招式输入
+  if(canAct(G.p)|| (G.p.state==='ATTACK'&&G.p.move&&G.p.stateFrame>=G.p.move.startup+G.p.move.active)){
+    const order=['U','L','K','J'];
+    const key=order.find(x=>k[x]);
+    if(key){startMove(G.p,MOVE_BY_KEY[key]);k[key]=false;}
+    if(k.space&&G.p.state==='IDLE'){G.p.state='JUMP';G.p.stateFrame=0;G.p.vx=(k.right?4:k.left?-4:0);k.space=false;}
+    if(k.shift&&G.p.state==='IDLE'){G.p.state='DASH';G.p.stateFrame=0;G.p.vx=G.p.facing*14;k.shift=false;}
+  }
+  // 朝向更新
+  G.p.facing=G.e.x>=G.p.x?1:-1; G.e.facing=G.p.x>=G.e.x?1:-1;
+}
+function aiThink(){
+  const e=G.e,p=G.p, d=Math.abs(e.x-p.x);
+  if(!canAct(e)) return;
+  if(e._aiWait>0){e._aiWait--;return;}
+  if(e.hp<250&&e.meter>=100&&d<130&&Math.random()<0.06){if(startMove(e,'Ultimate')){e._aiWait=40;return;}}
+  if(e.meter>=25&&d<110&&Math.random()<0.07){if(startMove(e,'Special')){e._aiWait=26;return;}}
+  if(d<95){
+    // 侦测玩家攻击前摇 → 概率弹反
+    if(p.state==='ATTACK'&&p.move&&p.stateFrame>=p.move.startup-3&&p.stateFrame<=p.move.startup&&Math.random()<0.35){
+      e.state='PARRY';e.stateFrame=0;e._aiWait=18;return;
+    }
+    if(Math.random()<0.06){e.guarding=true;e._aiWait=18;return;}
+    if(Math.random()<0.38){startMove(e,Math.random()<0.6?'Heavy':'Light');e._aiWait=22;return;}
+  }
+  if(d>190){e.x=clamp(e.x+(e.x<p.x?-3:3),30,650);e.state='WALK';}
+  else if(d<70){e.x=clamp(e.x+(e.x<p.x?2:-2),30,650);}
+  else if(e.guarding){e.guarding=false;e.state='IDLE';}
+  if(e.guarding){e.state='GUARD';}
+}
+function step(){
+  if(!G.running||G.over||G.paused) return;
+  if(G.freeze>0){G.freeze--;return;} // hitstop：冻结双方
+  G.frame++;
+  handleInput();
+  aiThink();
+  stepFighter(G.p,G.e);
+  stepFighter(G.e,G.p);
+  if(G.comboTimerP>0)G.comboTimerP--; if(G.comboTimerE>0)G.comboTimerE--;
+  if(G.p.parryFlash>0)G.p.parryFlash--; if(G.e.parryFlash>0)G.e.parryFlash--;
+  G.timeLeft-=1/60;
+  if(G.timeLeft<=0||G.p.hp<=0||G.e.hp<=0) roundEnd();
+  renderFighters(); renderHUD(); renderFrameMonitor(G.p);
+}
+function loop(ts){
+  if(!G.last)G.last=ts;
+  let dt=ts-G.last; G.last=ts;
+  if(dt>120)dt=120;
+  G.acc+=dt*G.slow;
+  const stepMs=1000/60;
+  let n=0;
+  while(G.acc>=stepMs&&n<8){step();G.acc-=stepMs;n++;}
+  if(G.auto) autoTick(dt);
+  requestAnimationFrame(loop);
+}
+function roundEnd(){
+  G.over=true; G.running=false;
+  const win=G.e.hp<=0||(G.p.hp>G.e.hp&&G.timeLeft<=0);
+  if(win)G.winsP++;else G.winsE++;
+  const matchOver=G.winsP>=R.rounds_to_win||G.winsE>=R.rounds_to_win;
+  logMsg(`<b>ROUND ${G.round}</b> 结束 — ${win?'玩家胜出':'对手胜出'}${matchOver?' · 对局结束':''}`,'');
+  fxBanner(win?'K.O. — WIN':'K.O. — LOSE',win?'#33e08b':'#ff3b5c');
+  renderHUD();
+}
+function fightReset(){
+  G.round=1;G.winsP=0;G.winsE=0;
+  startRound();
+}
+function startRound(){
+  G.p=makeFighter(byId(selP.value),'p'); G.e=makeFighter(byId(selE.value),'e');
+  G.p.x=120;G.e.x=520;G.p.facing=1;G.e.facing=-1;
+  G.frame=0;G.timeLeft=R.round_time_sec;G.over=false;G.running=true;
+  G.freeze=0;G.comboP=0;G.comboE=0;G.comboTimerP=0;G.comboTimerE=0;
+  G.p._aiWait=0;G.e._aiWait=0;
   document.getElementById('log').innerHTML='';
-  logMsg(`战斗开始：<b>${S.p.name_cn}</b> VS <b>${S.e.name_cn}</b>`,'');
-  renderFighters(); renderSkills();
+  document.getElementById('fighterP').dataset.ready='';
+  document.getElementById('fighterE').dataset.ready='';
+  renderFighters(); renderHUD(); renderFrameMonitor(G.p);
+  logMsg(`<b>ROUND ${G.round}</b> · ${G.p.def.name_cn} VS ${G.e.def.name_cn} · FIGHT!`,'');
+  const tick=()=>{fxBanner('FIGHT!','#00e5ff');};
+  setTimeout(tick,120);
 }
-let autoTimer=null;
-function autoPlay(){
-  if(S.over) startBattle();
-  if(autoTimer){clearInterval(autoTimer);autoTimer=null;return;}
-  autoTimer=setInterval(()=>{
-    if(S.over){clearInterval(autoTimer);autoTimer=null;return;}
-    const ok=S.p.abilities.map((a,i)=>S.pen>=a.cost?i:-1).filter(i=>i>=0);
-    if(ok.length) useSkill(ok[Math.floor(Math.random()*ok.length)]);
-    else { S.pen=Math.min(120,S.pen+DATA.rules.energy_regen); renderFighters(); renderSkills(); }
-  },1100);
+function toggleSlow(){G.slow=G.slow===1?0.35:1;}
+function autoFight(){
+  G.auto=!G.auto;
+  if(!G.auto){logMsg('自动演示：关闭','');return;}
+  if(G.over){G.round=G.winsP>=R.rounds_to_win||G.winsE>=R.rounds_to_win?1:G.round+1;startRound();}
+  logMsg('自动演示：开启（接管玩家操作）','');
 }
-startBattle();
+function autoTick(dt){
+  G.autoAcc+=dt; if(G.autoAcc<420||G.over)return; G.autoAcc=0;
+  if(!canAct(G.p))return;
+  const d=Math.abs(G.p.x-G.e.x);
+  if(G.e.state==='ATTACK'&&G.e.move&&Math.random()<0.3){G.keys.s=true;setTimeout(()=>{G.keys.s=false;G.keys._sReleased=true;},90);return;}
+  if(d<105){const choices=G.p.meter>=100?['U','L','K','J']:G.p.meter>=25?['L','K','J']:['K','J'];
+    const ch=choices[Math.floor(Math.random()*choices.length)];startMove(G.p,MOVE_BY_KEY[ch]);}
+  else G.p.x=clamp(G.p.x+3,30,650);
+}
+/* 键盘事件 */
+window.addEventListener('keydown',e=>{
+  const key=KEYMAP[e.key]||KEYMAP[e.code];
+  if(!key)return;
+  e.preventDefault();
+  if(!G.keys.s&&key==='s'){/* press */}
+  if(G.keys.s&&key==='s')return;
+  G.keys[key]=true;
+  const kEl=document.querySelector(`.key-guide .k[data-key="${key}"]`);
+  if(kEl)kEl.classList.add('press');
+  if(!G.running&&['j','k','l','u','s'].includes(key))startRound();
+});
+window.addEventListener('keyup',e=>{
+  const key=KEYMAP[e.key]||KEYMAP[e.code];
+  if(!key)return;e.preventDefault();
+  if(key==='s'&&G.keys.s)G.keys._sReleased=true;
+  G.keys[key]=false;
+  const kEl=document.querySelector(`.key-guide .k[data-key="${key}"]`);
+  if(kEl)kEl.classList.remove('press');
+});
+/* 点击键位也可操作 */
+document.querySelectorAll('.key-guide .k').forEach(el=>{
+  const key=el.dataset.key;
+  el.addEventListener('mousedown',ev=>{ev.preventDefault();G.keys[key]=true;el.classList.add('press');});
+  el.addEventListener('mouseup',()=>{if(key==='s')G.keys._sReleased=true;G.keys[key]=false;el.classList.remove('press');});
+  el.addEventListener('mouseleave',()=>{G.keys[key]=false;el.classList.remove('press');});
+});
+selP.addEventListener('change',()=>{G.round=1;G.winsP=0;G.winsE=0;startRound();});
+selE.addEventListener('change',()=>{G.round=1;G.winsP=0;G.winsE=0;startRound();});
+startRound();
+requestAnimationFrame(loop);
 
 /* ---------- 导航高亮 ---------- */
 document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',()=>{
@@ -799,10 +1173,10 @@ document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',(
     '> Loading <b>Unreal Engine 5</b> runtime ... <span class="ok">OK</span>',
     '> Init <b>GameplayAbilitySystem</b> ..... <span class="ok">OK</span>',
     '> Register 8 Mecha cores ............. <span class="ok">OK</span>',
-    '> Load 32 abilities / 8 elements ..... <span class="ok">OK</span>',
+    '> Load 32 combat moves / 8 elements .. <span class="ok">OK</span>',
     '> Verify element matrix ............. <span class="ok">OK</span>',
-    '> Calibrate battle simulator ........ <span class="warn">READY</span>',
-    '> <b>TACTICAL SYSTEM ONLINE</b>'
+    '> Calibrate 60Hz frame pipeline ..... <span class="warn">READY</span>',
+    '> <b>COMBAT SYSTEM ONLINE</b>'
   ];
   const box=document.getElementById('bootLines'), bar=document.getElementById('bootBar'), pct=document.getElementById('bootPct');
   let i=0;

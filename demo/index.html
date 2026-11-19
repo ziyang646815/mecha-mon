@@ -303,7 +303,86 @@ footer b{color:var(--cyan)}
 .scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.18;pointer-events:none;animation:scan 5s linear infinite}
 @keyframes scan{0%{top:0}100%{top:100%}}
 
-/* --- 特性卡片（高级感收尾） --- */
+/* --- 实时格斗 HUD --- */
+.fight-hud{display:flex;align-items:center;justify-content:center;gap:26px;padding:14px 20px 2px;font-family:Consolas,monospace}
+.fight-hud .round-pips{display:flex;gap:6px}
+.fight-hud .pip{width:12px;height:12px;border:1px solid var(--line);transform:rotate(45deg)}
+.fight-hud .pip.win{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.fight-hud .pip.lose{background:var(--red);border-color:var(--red)}
+.fight-hud .timer{font-size:40px;font-weight:900;color:var(--text);line-height:1;min-width:74px;text-align:center}
+.fight-hud .timer.urgent{color:var(--red);animation:blink .6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.fight-hud .lbl{font-size:10px;color:var(--muted);letter-spacing:2px;text-align:center}
+.hp-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:6px 24px 0}
+.hp-block .row{display:flex;justify-content:space-between;font-size:11px;font-family:Consolas,monospace;color:var(--muted);margin-bottom:4px}
+.hp-block .row b{color:var(--text)}
+.hp-track{height:16px;background:#0a1120;border:1px solid var(--line);position:relative;overflow:hidden;
+  clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.hp-block.right .hp-track{clip-path:polygon(8px 0,100% 0,100% 100%,0 100%)}
+.hp-track i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#16a34a,var(--green));transition:width .12s linear}
+.hp-block.right .hp-track i{background:linear-gradient(90deg,var(--red),#b91c1c)}
+.hp-track .lag{position:absolute;top:0;height:100%;background:rgba(255,255,255,.25);transition:width .5s ease .15s}
+.meter-track{height:7px;background:#0a1120;border:1px solid var(--line);margin-top:5px;position:relative}
+.meter-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan-d),var(--cyan));transition:width .15s}
+.meter-track.ready i{background:linear-gradient(90deg,var(--orange-d),var(--orange));box-shadow:0 0 12px var(--orange)}
+.stage{
+  position:relative;height:262px;margin:10px 24px 0;overflow:hidden;
+  background:linear-gradient(180deg,#0a1528 0%,#0a1426 62%,#101d33 100%);
+  border:1px solid var(--line);
+}
+.stage::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(transparent 94%,rgba(0,229,255,.07) 95%),
+             repeating-linear-gradient(90deg,transparent,transparent 58px,rgba(30,47,77,.4) 59px);
+  opacity:.55}
+.stage .floor{position:absolute;left:0;right:0;bottom:0;height:52px;border-top:2px solid rgba(0,229,255,.25);
+  background:repeating-linear-gradient(90deg,rgba(0,229,255,.05) 0 1px,transparent 1px 40px)}
+.stage .sun{position:absolute;left:50%;top:26px;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,26,.16),transparent 68%);border:1px solid rgba(255,107,26,.12)}
+.fighter2{position:absolute;bottom:38px;width:150px;text-align:center;transition:none;will-change:transform,left}
+.fighter2 svg{width:100%;height:150px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.6))}
+.fighter2 .tag{font-family:Consolas,monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+.fighter2.p2 svg{transform:scaleX(-1)}
+.fighter2 .shadow{position:absolute;bottom:-6px;left:18%;right:18%;height:9px;background:#000;border-radius:50%;filter:blur(3px);opacity:.5}
+.state-tag{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-family:Consolas,monospace;font-size:10px;
+  letter-spacing:1px;padding:2px 7px;border:1px solid;opacity:0;transition:opacity .08s;white-space:nowrap}
+.state-tag.show{opacity:1}
+.state-tag.hitstun{color:var(--red);border-color:var(--red)}
+.state-tag.blockstun{color:var(--cyan);border-color:var(--cyan)}
+.state-tag.parry{color:#ffe08a;border-color:#ffe08a;box-shadow:0 0 14px rgba(255,224,138,.6)}
+.state-tag.armor{color:var(--orange);border-color:var(--orange)}
+.combo{position:absolute;top:12px;left:20px;font-family:Consolas,monospace;opacity:0;transition:opacity .15s}
+.combo.show{opacity:1}
+.combo b{font-size:36px;color:var(--orange);display:block;line-height:1;text-shadow:0 0 18px rgba(255,107,26,.6)}
+.combo small{font-size:10px;color:var(--muted);letter-spacing:2px}
+.flash-box{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:12}
+.flash-box.go{animation:fbox .18s ease-out}
+@keyframes fbox{0%{opacity:.75}100%{opacity:0}}
+.hitspark{position:absolute;width:46px;height:46px;z-index:13;pointer-events:none;transform:translate(-50%,-50%)}
+.hitspark.go{animation:spark .3s ease-out forwards}
+@keyframes spark{0%{opacity:1;transform:translate(-50%,-50%) scale(.4) rotate(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.8) rotate(90deg)}}
+.frame-monitor{padding:12px 24px 6px}
+.frame-monitor .fm-head{display:flex;justify-content:space-between;align-items:center;font-family:Consolas,monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px}
+.frame-monitor .fm-head b{color:var(--cyan)}
+.frames{display:flex;height:22px;border:1px solid var(--line);background:#0a1120;width:100%;position:relative}
+.frames .seg{height:100%;position:relative;display:grid;place-items:center;font-family:Consolas,monospace;font-size:9px;color:#04101c;font-weight:700}
+.frames .su{background:#2b8cff}
+.frames .ac{background:var(--red)}
+.frames .rc{background:#3d4d68;color:#c8d6ec}
+.frames .pw{background:#ffe08a;color:#5a4300}
+.frames .marker{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;box-shadow:0 0 8px #fff;transition:left .05s linear;z-index:3}
+.frames-legend{display:flex;gap:16px;margin-top:7px;font-family:Consolas,monospace;font-size:9px;color:var(--muted);flex-wrap:wrap}
+.frames-legend span::before{content:"";display:inline-block;width:8px;height:8px;margin-right:5px;vertical-align:middle}
+.frames-legend .l-su::before{background:#2b8cff}.frames-legend .l-ac::before{background:var(--red)}
+.frames-legend .l-rc::before{background:#3d4d68}.frames-legend .l-pw::before{background:#ffe08a}
+.key-guide{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px 24px 16px}
+.key-guide .k{background:#0a1120;border:1px solid var(--line);padding:7px 4px;text-align:center;transition:.1s;cursor:pointer;user-select:none}
+.key-guide .k:hover,.key-guide .k.press{border-color:var(--cyan);background:rgba(0,229,255,.12)}
+.key-guide .k b{display:block;font-family:Consolas,monospace;font-size:13px;color:var(--cyan)}
+.key-guide .k small{font-size:9px;color:var(--muted)}
+.fight-actions{display:flex;gap:10px;padding:0 24px 16px;align-items:center;flex-wrap:wrap}
+.fight-actions .btn{padding:9px 18px;font-size:11px}
+.fight-actions .hint{font-size:10px;color:var(--muted);margin-left:auto;letter-spacing:1px}
+@media(max-width:980px){.key-guide{grid-template-columns:repeat(4,1fr)}.fight-hud{gap:12px}}
 .feature-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px}
 .feat{background:linear-gradient(150deg,var(--panel),var(--bg2));border:1px solid var(--line);padding:18px 16px;position:relative;overflow:hidden}
 .feat::before{content:"";position:absolute;right:-16px;top:-16px;width:56px;height:56px;border:1px solid var(--c);transform:rotate(45deg);opacity:.25}
@@ -318,7 +397,7 @@ footer b{color:var(--cyan)}
 <!-- 开机自检序列 -->
 <div id="boot"><div class="boot-box">
   <div class="boot-brand">MECHA·MON</div>
-  <div class="boot-sub">TACTICAL SIMULATION SYSTEM // BOOT SEQUENCE</div>
+  <div class="boot-sub">REAL-TIME COMBAT SYSTEM // BOOT SEQUENCE</div>
   <div class="boot-lines" id="bootLines"></div>
   <div class="boot-bar"><i id="bootBar"></i></div>
   <div class="boot-pct" id="bootPct">INITIALIZING ... 0%</div>
@@ -342,7 +421,7 @@ footer b{color:var(--cyan)}
 
 <header class="hero" id="home"><div class="wrap hero-grid">
   <div>
-    <div class="eyebrow" id="eyebrow">TACTICAL COMBAT SYSTEM</div>
+    <div class="eyebrow" id="eyebrow">REAL-TIME MECHA COMBAT</div>
     <h1><span class="l1 glitch" data-text="MECHA">MECHA</span><span class="l2 glitch" data-text="MON">MON</span></h1>
     <div class="tagline" id="tagline"></div>
     <p class="hero-desc" id="heroDesc"></p>
@@ -362,32 +441,78 @@ footer b{color:var(--cyan)}
 
 <section id="battle"><div class="wrap">
   <div class="sec-head">
-    <div class="sec-num">// 01 — LIVE SIMULATION</div>
-    <h2>对战演示</h2>
-    <p class="sec-sub">选择双方机甲，真实按属性克制、能量消耗与伤害公式结算。点击技能即可出手，敌方由 AI 自动应战。</p>
+    <div class="sec-num">// 01 — COMBAT SIMULATOR</div>
+    <h2>实时对战演示</h2>
+    <p class="sec-sub">60Hz 帧驱动实时格斗。用键盘操控机甲：移动、轻击、重击、必杀，并在对手命中瞬间按下防御触发弹反。所有判定严格遵循 startup / active / recovery 帧窗口与僵直、霸体、取消规则。</p>
   </div>
   <div class="battle-shell">
     <div class="battle-top">
-      <span>MECHA ARENA // SIMULATION BUILD</span>
-      <span class="turn-badge" id="turnLabel">TURN 01</span>
+      <span>MECHA ARENA // 60Hz LOGIC TICK</span>
+      <span class="turn-badge" id="roundLabel">ROUND 01</span>
     </div>
-    <div class="arena">
-      <div class="scanline"></div>
-      <div class="fighter" id="fighterP"></div>
-      <div class="vs"><b>VS</b><small>BATTLE</small></div>
-      <div class="fighter enemy" id="fighterE"></div>
+    <div class="fight-hud">
+      <div class="round-pips" id="pipsP"></div>
+      <div><div class="timer" id="timer">99</div><div class="lbl">COUNTDOWN</div></div>
+      <div class="round-pips" id="pipsE"></div>
+    </div>
+    <div class="hp-wrap">
+      <div class="hp-block">
+        <div class="row"><b id="nameP">PLAYER</b><span id="hpNumP">1000</span></div>
+        <div class="hp-track"><i id="hpBarP"></i><span class="lag" id="hpLagP"></span></div>
+        <div class="meter-track" id="meterBoxP"><i id="meterBarP"></i></div>
+      </div>
+      <div class="hp-block right">
+        <div class="row"><span id="hpNumE">1000</span><b id="nameE">OPPONENT</b></div>
+        <div class="hp-track"><i id="hpBarE"></i><span class="lag" id="hpLagE"></span></div>
+        <div class="meter-track" id="meterBoxE"><i id="meterBarE"></i></div>
+      </div>
+    </div>
+    <div class="stage" id="stage">
+      <div class="sun"></div><div class="floor"></div><div class="scanline"></div>
+      <div class="combo" id="combo"><b>0</b><small>HITS COMBO</small></div>
+      <div class="fighter2 p1" id="fighterP"></div>
+      <div class="fighter2 p2" id="fighterE"></div>
+      <div class="flash-box" id="hitFlash"></div>
     </div>
     <div class="pick-row">
-      <div class="pick-box"><label>我方机甲 / PLAYER</label><select id="selP"></select></div>
-      <div class="pick-box"><label>敌方机甲 / OPPONENT</label><select id="selE"></select></div>
+      <div class="pick-box"><label>我方机甲 / PLAYER (P1)</label><select id="selP"></select></div>
+      <div class="pick-box"><label>敌方机甲 / OPPONENT (CPU)</label><select id="selE"></select></div>
     </div>
-    <div class="battle-actions" id="skills"></div>
+    <div class="frame-monitor">
+      <div class="fm-head"><span>FRAME DATA MONITOR // 帧数据监视器</span><span id="frameStatus">STATE: <b>IDLE</b></span></div>
+      <div class="frames" id="frames">
+        <div class="seg su" style="width:33%">STARTUP</div>
+        <div class="seg ac" style="width:33%">ACTIVE</div>
+        <div class="seg rc" style="width:34%">RECOVERY</div>
+        <div class="marker" id="frameMarker" style="left:0"></div>
+      </div>
+      <div class="frames-legend">
+        <span class="l-su">STARTUP 前摇</span><span class="l-ac">ACTIVE 判定</span>
+        <span class="l-rc">RECOVERY 后摇</span><span class="l-pw">PARRY WINDOW 弹反窗口</span>
+        <span id="frameNote">待机中 — 出招后显示实时帧进度</span>
+      </div>
+    </div>
+    <div class="key-guide" id="keyGuide">
+      <div class="k" data-key="a"><b>A / D</b><small>移动</small></div>
+      <div class="k" data-key="j"><b>J</b><small>轻击</small></div>
+      <div class="k" data-key="k"><b>K</b><small>重击</small></div>
+      <div class="k" data-key="l"><b>L</b><small>必杀</small></div>
+      <div class="k" data-key="u"><b>U</b><small>超必杀</small></div>
+      <div class="k" data-key="s"><b>S</b><small>防御/弹反</small></div>
+      <div class="k" data-key="space"><b>SPACE</b><small>跳跃</small></div>
+      <div class="k" data-key="shift"><b>SHIFT</b><small>冲刺</small></div>
+    </div>
+    <div class="fight-actions">
+      <button class="btn" onclick="fightReset()">↻ 重新对战</button>
+      <button class="btn ghost" onclick="autoFight()">⚡ 自动演示</button>
+      <button class="btn ghost" onclick="toggleSlow()">◷ 慢动作 ×<span id="slowVal">1</span></button>
+      <span class="hint">提示：先按 J 轻击命中 → 立刻按 K 可取消后摇连段；在对手攻击亮红瞬间按 S 触发弹反</span>
+    </div>
     <div class="battle-foot">
       <div class="log" id="log"></div>
       <div class="ctrl">
-        <button class="btn" onclick="startBattle()">↻ 重置对战</button>
-        <button class="btn ghost" onclick="autoPlay()">⚡ 自动演示</button>
         <div class="eff-badge" id="effBadge">属性倍率 —</div>
+        <div class="eff-badge" id="stateBadge">弹反窗口 4F · 弹反硬直 36F · 霸体抵消轻击</div>
       </div>
     </div>
   </div>
@@ -397,7 +522,7 @@ footer b{color:var(--cyan)}
   <div class="sec-head">
     <div class="sec-num">// 02 — MECHA DATABASE</div>
     <h2>机甲图鉴</h2>
-    <p class="sec-sub">首批 8 台机甲，覆盖 8 种属性与 6 种战斗定位。每台机甲 4 个专属技能，共 32 个 GAS 能力。</p>
+    <p class="sec-sub">首批 8 台机甲，覆盖 8 种属性与 6 种战斗定位。每台机甲 4 个专属招式，共 32 个帧数据驱动的 GAS 能力。</p>
   </div>
   <div class="roster" id="rosterGrid"></div>
 </div></section>
@@ -413,10 +538,10 @@ footer b{color:var(--cyan)}
     <div class="legend-list" id="typeLegend"></div>
   </div>
   <div class="feature-strip">
-    <div class="feat" style="--c:#00e5ff"><div class="fi">◈</div><h5>单一数据源</h5><p>机甲/技能/数值全部由 Python 配置驱动，文档、代码、演示三端自动同步。</p></div>
-    <div class="feat" style="--c:#ff6b1a"><div class="fi">⚡</div><h5>真实战斗结算</h5><p>属性克制、能量消耗、暴击波动按公式实时演算，非静态贴图。</p></div>
-    <div class="feat" style="--c:#33e08b"><div class="fi">⬡</div><h5>GAS 原生架构</h5><p>ASC / AttributeSet / Ability / Tag 分层，C++ 骨架可直接导入 UE5。</p></div>
-    <div class="feat" style="--c:#a855f7"><div class="fi">✦</div><h5>电竞化设计</h5><p>3v3 + Ban/Pick + 天梯段位，回合制高可读性，观赛门槛低。</p></div>
+    <div class="feat" style="--c:#00e5ff"><div class="fi">◈</div><h5>单一数据源</h5><p>机甲/招式/帧窗口全部由 Python 配置驱动，文档、代码、演示三端自动同步。</p></div>
+    <div class="feat" style="--c:#ff6b1a"><div class="fi">⚡</div><h5>帧级判定</h5><p>60Hz 逻辑帧驱动，前摇/判定/后摇逐帧结算，hitstop 与僵直真实反馈。</p></div>
+    <div class="feat" style="--c:#33e08b"><div class="fi">⬡</div><h5>GAS 原生架构</h5><p>ASC / AttributeSet / CombatAbility / FrameData 分层，C++ 基座可直接导入 UE5。</p></div>
+    <div class="feat" style="--c:#a855f7"><div class="fi">✦</div><h5>操作深度</h5><p>弹反/霸体/取消/连招构成攻防博弈，高操作上限与电竞观赏性。</p></div>
   </div>
 </div></section>
 
@@ -424,7 +549,7 @@ footer b{color:var(--cyan)}
   <div class="sec-head">
     <div class="sec-num">// 04 — TECHNICAL ARCHITECTURE</div>
     <h2>技术架构 · UE5 GAS</h2>
-    <p class="sec-sub">基于 Unreal Engine 5 的 Gameplay Ability System 构建。技能、属性、状态、表现四层解耦，天然支持竞技网络同步与数据驱动。</p>
+    <p class="sec-sub">基于 Unreal Engine 5 的 Gameplay Ability System 构建。招式、帧数据、判定、表现四层解耦，判定与动画分离，天然支持竞技网络同步与数据驱动。</p>
   </div>
   <div class="arch-grid" id="archGrid"></div>
   <div class="code-block" id="codeBlock"></div>
@@ -445,8 +570,8 @@ footer b{color:var(--cyan)}
 </div></footer>
 
 <script>
-const DATA = {"elements":[{"key":"FIRE","name_cn":"烈焰","name_en":"FIRE","color":"#ff5a2a","accent":"#ffb347","tag":"Mecha.Type.Fire","description":"高温武装，克制机械与冰晶，畏惧涌流。"},{"key":"WATER","name_cn":"涌流","name_en":"WATER","color":"#2b8cff","accent":"#67e8f9","tag":"Mecha.Type.Water","description":"高耐久水装甲，克制烈焰与钢甲。"},{"key":"ELECTRIC","name_cn":"雷霆","name_en":"ELECTRIC","color":"#ffd429","accent":"#fff08a","tag":"Mecha.Type.Electric","description":"极速突袭，克制涌流与钢甲，畏惧森绿。"},{"key":"LEAF","name_cn":"森绿","name_en":"LEAF","color":"#3fbf5f","accent":"#9be28a","tag":"Mecha.Type.Leaf","description":"生态装甲，克制雷霆与暗影。"},{"key":"STEEL","name_cn":"钢甲","name_en":"STEEL","color":"#9aa7bd","accent":"#d7e0ef","tag":"Mecha.Type.Steel","description":"重甲防御，克制冰晶，畏惧烈焰与雷霆。"},{"key":"QUANTUM","name_cn":"星轨","name_en":"QUANTUM","color":"#a855f7","accent":"#d8b4fe","tag":"Mecha.Type.Quantum","description":"空间干涉，克制暗影与森绿。"},{"key":"SHADOW","name_cn":"暗影","name_en":"SHADOW","color":"#6c3fd8","accent":"#b39ddb","tag":"Mecha.Type.Shadow","description":"高爆发刺客，克制星轨，畏惧森绿与星轨。"},{"key":"ICE","name_cn":"冰晶","name_en":"ICE","color":"#4dd0e1","accent":"#b2ebf2","tag":"Mecha.Type.Ice","description":"控制冻阻，克制森绿，畏惧烈焰与钢甲。"}],"type_chart":{"FIRE":{"strong":["LEAF","ICE","STEEL"],"weak":["WATER","FIRE"],"none":[]},"WATER":{"strong":["FIRE","STEEL"],"weak":["LEAF","ELECTRIC","WATER"],"none":[]},"ELECTRIC":{"strong":["WATER","STEEL"],"weak":["LEAF","ELECTRIC"],"none":[]},"LEAF":{"strong":["ELECTRIC","SHADOW","WATER"],"weak":["FIRE","ICE","LEAF","QUANTUM"],"none":[]},"STEEL":{"strong":["ICE"],"weak":["FIRE","WATER","ELECTRIC","STEEL"],"none":[]},"QUANTUM":{"strong":["SHADOW","LEAF"],"weak":["SHADOW","QUANTUM"],"none":[]},"SHADOW":{"strong":["QUANTUM"],"weak":["LEAF","SHADOW"],"none":[]},"ICE":{"strong":["LEAF"],"weak":["FIRE","STEEL","ICE"],"none":[]}},"mechas":[{"id":"BLAZE","name_cn":"炎狱·赤焰","name_en":"Blaze Ignis","codename":"MF-01","element":"FIRE","role":"强攻型","hp":78,"atk":92,"dfn":70,"spd":85,"energy":100,"abilities":[{"id":"BLAZE_01","name_cn":"烈焰冲撞","name_en":"Flame Ram","type":"FIRE","category":"Damage","power":42,"cost":18,"cooldown":0,"gameplay_tag":"Ability.Mecha.FlameRam","description":"高热的肩甲冲撞，命中后附带 1 层灼烧。"},{"id":"BLAZE_02","name_cn":"熔核护盾","name_en":"Magma Shield","type":"FIRE","category":"Shield","power":0,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.MagmaShield","description":"展开熔融护盾，吸收 35 点伤害并反弹 20%。"},{"id":"BLAZE_03","name_cn":"灼烧飞弹","name_en":"Incendiary Pod","type":"FIRE","category":"Dot","power":26,"cost":20,"cooldown":1,"gameplay_tag":"Ability.Mecha.IncendiaryPod","description":"3 回合持续灼烧，每回合 12 点伤害。"},{"id":"BLAZE_04","name_cn":"超频过载","name_en":"Overdrive","type":"FIRE","category":"Buff","power":0,"cost":25,"cooldown":3,"gameplay_tag":"Ability.Mecha.Overdrive","description":"牺牲 10% 生命，提升 40% 攻击持续 3 回合。"}],"lore":"第一代量产型火系机甲，以高输出与灼烧叠加著称，是竞技场最受欢迎的先发机体。","element_name":"烈焰","color":"#ff5a2a","accent":"#ffb347"},{"id":"TIDAL","name_cn":"潮汐·沧澜","name_en":"Tidal Abyss","codename":"MF-02","element":"WATER","role":"耐久型","hp":95,"atk":75,"dfn":90,"spd":60,"energy":110,"abilities":[{"id":"TIDAL_01","name_cn":"深水炮击","name_en":"Hydro Cannon","type":"WATER","category":"Damage","power":45,"cost":20,"cooldown":1,"gameplay_tag":"Ability.Mecha.HydroCannon","description":"压缩水炮，对钢甲额外造成 20% 伤害。"},{"id":"TIDAL_02","name_cn":"潮汐壁垒","name_en":"Tidal Bulwark","type":"WATER","category":"Shield","power":0,"cost":18,"cooldown":2,"gameplay_tag":"Ability.Mecha.TidalBulwark","description":"生成水幕护盾并恢复 15 点生命。"},{"id":"TIDAL_03","name_cn":"漩涡禁锢","name_en":"Vortex Lock","type":"WATER","category":"Control","power":15,"cost":24,"cooldown":2,"gameplay_tag":"Ability.Mecha.VortexLock","description":"降低目标 30% 速度，持续 2 回合。"},{"id":"TIDAL_04","name_cn":"再生装甲","name_en":"Regen Plating","type":"WATER","category":"Heal","power":0,"cost":26,"cooldown":3,"gameplay_tag":"Ability.Mecha.RegenPlating","description":"修复 40 点装甲值。"}],"lore":"深海勘探机甲改造而来，拥有全游戏最高的护盾成长，擅长持久消耗战。","element_name":"涌流","color":"#2b8cff","accent":"#67e8f9"},{"id":"VOLT","name_cn":"雷鸣·疾风","name_en":"Volt Tempest","codename":"MF-03","element":"ELECTRIC","role":"速攻型","hp":65,"atk":88,"dfn":60,"spd":110,"energy":95,"abilities":[{"id":"VOLT_01","name_cn":"雷光突袭","name_en":"Volt Rush","type":"ELECTRIC","category":"Damage","power":40,"cost":16,"cooldown":0,"gameplay_tag":"Ability.Mecha.VoltRush","description":"高速电磁突进，先手概率 +30%。"},{"id":"VOLT_02","name_cn":"电磁脉冲","name_en":"EMP Burst","type":"ELECTRIC","category":"Control","power":20,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.EMPBurst","description":"使敌方下一次技能能量消耗翻倍。"},{"id":"VOLT_03","name_cn":"静电场","name_en":"Static Field","type":"ELECTRIC","category":"Dot","power":18,"cost":20,"cooldown":1,"gameplay_tag":"Ability.Mecha.StaticField","description":"每回合 15 点雷伤，并降低目标 10% 防御。"},{"id":"VOLT_04","name_cn":"电容超载","name_en":"Capacitor Overload","type":"ELECTRIC","category":"Buff","power":0,"cost":24,"cooldown":3,"gameplay_tag":"Ability.Mecha.CapacitorOverload","description":"下次攻击必定暴击。"}],"lore":"磁悬浮竞速机体，速度属性顶尖，先手压制战术的核心。","element_name":"雷霆","color":"#ffd429","accent":"#fff08a"},{"id":"VERDANT","name_cn":"苍翠·森灵","name_en":"Verdant Grove","codename":"MF-04","element":"LEAF","role":"辅助型","hp":88,"atk":70,"dfn":85,"spd":70,"energy":105,"abilities":[{"id":"VERDANT_01","name_cn":"藤蔓束缚","name_en":"Vine Snare","type":"LEAF","category":"Damage","power":32,"cost":16,"cooldown":1,"gameplay_tag":"Ability.Mecha.VineSnare","description":"有机藤蔓抽打并束缚目标 1 回合。"},{"id":"VERDANT_02","name_cn":"光合修复","name_en":"Photosyn Heal","type":"LEAF","category":"Heal","power":0,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.PhotosynHeal","description":"恢复 45 点生命并清除 1 个负面效果。"},{"id":"VERDANT_03","name_cn":"孢子迷雾","name_en":"Spore Fog","type":"LEAF","category":"Control","power":12,"cost":20,"cooldown":2,"gameplay_tag":"Ability.Mecha.SporeFog","description":"降低敌方命中率 25%，持续 3 回合。"},{"id":"VERDANT_04","name_cn":"森罗领域","name_en":"Verdant Field","type":"LEAF","category":"Buff","power":0,"cost":28,"cooldown":3,"gameplay_tag":"Ability.Mecha.VerdantField","description":"全队每回合恢复 12 点生命，持续 4 回合。"}],"lore":"生态修复机甲，搭载光合反应堆，是高端局不可或缺的续航核心。","element_name":"森绿","color":"#3fbf5f","accent":"#9be28a"},{"id":"BASTION","name_cn":"玄铁·壁垒","name_en":"Iron Bastion","codename":"MF-05","element":"STEEL","role":"防御型","hp":100,"atk":80,"dfn":110,"spd":40,"energy":100,"abilities":[{"id":"BASTION_01","name_cn":"攻城铁拳","name_en":"Siege Fist","type":"STEEL","category":"Damage","power":48,"cost":22,"cooldown":1,"gameplay_tag":"Ability.Mecha.SiegeFist","description":"重型液压拳，对防御型目标额外 15% 伤害。"},{"id":"BASTION_02","name_cn":"绝对壁垒","name_en":"Aegis Wall","type":"STEEL","category":"Shield","power":0,"cost":20,"cooldown":2,"gameplay_tag":"Ability.Mecha.AegisWall","description":"吸收 60 点伤害，持续 2 回合。"},{"id":"BASTION_03","name_cn":"反冲装甲","name_en":"Reactive Armor","type":"STEEL","category":"Buff","power":0,"cost":24,"cooldown":3,"gameplay_tag":"Ability.Mecha.ReactiveArmor","description":"反弹 30% 所受伤害，持续 3 回合。"},{"id":"BASTION_04","name_cn":"磁轨重炮","name_en":"Railgun","type":"STEEL","category":"Damage","power":55,"cost":30,"cooldown":3,"gameplay_tag":"Ability.Mecha.Railgun","description":"蓄力一击，无视 50% 防御。"}],"lore":"要塞级重装甲，正面防御无可匹敌，但转向迟缓是其致命弱点。","element_name":"钢甲","color":"#9aa7bd","accent":"#d7e0ef"},{"id":"ASTRO","name_cn":"星轨·幻境","name_en":"Astro Mirage","codename":"MF-06","element":"QUANTUM","role":"特攻型","hp":70,"atk":95,"dfn":65,"spd":95,"energy":100,"abilities":[{"id":"ASTRO_01","name_cn":"星轨射线","name_en":"Astral Ray","type":"QUANTUM","category":"Damage","power":44,"cost":21,"cooldown":1,"gameplay_tag":"Ability.Mecha.AstralRay","description":"空间折叠射线，对暗影系必定 2 倍克制。"},{"id":"ASTRO_02","name_cn":"相位跃迁","name_en":"Phase Shift","type":"QUANTUM","category":"Buff","power":0,"cost":20,"cooldown":2,"gameplay_tag":"Ability.Mecha.PhaseShift","description":"闪避下一次攻击，并提升 20% 速度。"},{"id":"ASTRO_03","name_cn":"引力奇点","name_en":"Gravity Singularity","type":"QUANTUM","category":"Control","power":25,"cost":26,"cooldown":3,"gameplay_tag":"Ability.Mecha.GravitySingularity","description":"封锁目标换人 2 回合。"},{"id":"ASTRO_04","name_cn":"时隙回溯","name_en":"Time Rewind","type":"QUANTUM","category":"Heal","power":0,"cost":30,"cooldown":4,"gameplay_tag":"Ability.Mecha.TimeRewind","description":"回溯至 3 回合前的生命值（不超过上限）。"}],"lore":"轨道空间站实验机体，能够干涉局部时空，操作上限极高。","element_name":"星轨","color":"#a855f7","accent":"#d8b4fe"},{"id":"SHADOW","name_cn":"夜影·幽刃","name_en":"Night Shade","codename":"MF-07","element":"SHADOW","role":"刺客型","hp":68,"atk":100,"dfn":55,"spd":100,"energy":90,"abilities":[{"id":"SHADOW_01","name_cn":"暗刃斩击","name_en":"Shadow Slash","type":"SHADOW","category":"Damage","power":46,"cost":18,"cooldown":0,"gameplay_tag":"Ability.Mecha.ShadowSlash","description":"高速近战，暴击率 +20%。"},{"id":"SHADOW_02","name_cn":"影分身","name_en":"Shadow Clone","type":"SHADOW","category":"Buff","power":0,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.ShadowClone","description":"生成 2 个分身，首次受击必定闪避。"},{"id":"SHADOW_03","name_cn":"蚀魂之触","name_en":"Soul Drain","type":"SHADOW","category":"Dot","power":24,"cost":24,"cooldown":2,"gameplay_tag":"Ability.Mecha.SoulDrain","description":"吸取造成伤害的 40% 转化为自身生命。"},{"id":"SHADOW_04","name_cn":"夜幕降临","name_en":"Nightfall","type":"SHADOW","category":"Control","power":18,"cost":28,"cooldown":3,"gameplay_tag":"Ability.Mecha.Nightfall","description":"全场命中率 -20%，暗影系免疫。"}],"lore":"军用潜入机甲，爆发伤害顶尖，但装甲薄弱，容错率极低。","element_name":"暗影","color":"#6c3fd8","accent":"#b39ddb"},{"id":"FROST","name_cn":"霜寒·极地","name_en":"Frost Permafrost","codename":"MF-08","element":"ICE","role":"控制型","hp":82,"atk":85,"dfn":80,"spd":65,"energy":105,"abilities":[{"id":"FROST_01","name_cn":"冰棱飞射","name_en":"Ice Lance","type":"ICE","category":"Damage","power":38,"cost":17,"cooldown":0,"gameplay_tag":"Ability.Mecha.IceLance","description":"冻结弹头，30% 概率使目标冻结 1 回合。"},{"id":"FROST_02","name_cn":"寒霜装甲","name_en":"Frost Plating","type":"ICE","category":"Shield","power":0,"cost":19,"cooldown":2,"gameplay_tag":"Ability.Mecha.FrostPlating","description":"护盾值 45，接触攻击者速度 -20%。"},{"id":"FROST_03","name_cn":"极寒风暴","name_en":"Blizzard Core","type":"ICE","category":"Dot","power":28,"cost":25,"cooldown":2,"gameplay_tag":"Ability.Mecha.BlizzardCore","description":"每回合 18 点冰伤，持续 3 回合。"},{"id":"FROST_04","name_cn":"绝对零度","name_en":"Absolute Zero","type":"ICE","category":"Control","power":35,"cost":32,"cooldown":4,"gameplay_tag":"Ability.Mecha.AbsoluteZero","description":"必定冻结目标 1 回合，并降低其 25% 防御。"}],"lore":"极地科考机甲，以冻结与减速构筑节奏封锁，是控场体系的核心。","element_name":"冰晶","color":"#4dd0e1","accent":"#b2ebf2"}],"rules":{"team_size":3,"battle_format":"3v3 单败淘汰 / 天梯排位","turn_limit":30,"energy_regen":12,"max_energy":120,"crit_rate_base":0.05,"crit_multiplier":1.5,"switch_cost":8,"ban_phase":"双方各禁用 2 台机甲（BO3 起）","ranking":"青铜 → 白银 → 黄金 → 铂金 → 钻石 → 大师 → 王者"},"phases":[{"id":"P0","name":"核心战斗验证","duration":"4 周","goal":"构建 GAS 回合制战斗核心闭环","deliverables":["UE5 工程基座","ASC + AttributeSet 核心模块","1v1 可战斗版本","属性克制系统"],"status":"进行中"},{"id":"P1","name":"核心战斗","duration":"8 周","goal":"完成 3v3 战斗与全部机甲","deliverables":["8 台机甲 + 32 个技能","换人/能量/状态系统","AI 对手","战斗回放"],"status":"规划中"},{"id":"P2","name":"竞技系统","duration":"6 周","goal":"上线天梯与匹配","deliverables":["匹配服务","段位与排行榜","Ban/Pick","反作弊与战斗校验"],"status":"规划中"},{"id":"P3","name":"内容运营","duration":"持续","goal":"赛季更新与电竞化","deliverables":["新机甲/技能","赛季通行证","观战系统","赛事工具包"],"status":"规划中"}],"gas":[{"name":"AbilitySystemComponent (ASC)","desc":"挂载于每台机甲，统一驱动技能、属性与状态"},{"name":"MechaAttributeSet","desc":"Health / Energy / Attack / Defense / Speed / CritRate"},{"name":"UGameplayAbility","desc":"32 个机甲技能，DataAsset 配置 + 冷却/消耗校验"},{"name":"UGameplayEffect","desc":"伤害、护盾、灼烧、冻结、增益等即时与持续效果"},{"name":"FGameplayTag","desc":"Mecha.Type.* / Ability.* / Status.* 三层标签体系"},{"name":"BattleManager (GameState)","desc":"回合调度、先手计算、换人判定、胜负结算"},{"name":"AbilityTask","desc":"PlayMontageAndWait / WaitForTarget / 动画与镜头表现"},{"name":"GameplayCue","desc":"命中特效、音效、屏幕震动等表现层通知"}]};
-const PROJ = {"codename":"MECHA·MON","name_cn":"机甲兽竞技场","name_en":"MechaMon Arena","tagline":"机甲觉醒 · 策略竞技 · 属性压制","engine":"Unreal Engine 5","framework":"Gameplay Ability System (GAS)","version":"v1.0 · Vertical Slice","genre":"回合制策略竞技 / 机甲收集养成","platform":"PC (首发) / 主机 (后续)","author":"MECHA·MON 开发团队"};
+const DATA = {"elements":[{"key":"FIRE","name_cn":"烈焰","name_en":"FIRE","color":"#ff5a2a","accent":"#ffb347","tag":"Mecha.Type.Fire","description":"高温武装，克制机械与冰晶，畏惧涌流。"},{"key":"WATER","name_cn":"涌流","name_en":"WATER","color":"#2b8cff","accent":"#67e8f9","tag":"Mecha.Type.Water","description":"高耐久水装甲，克制烈焰与钢甲。"},{"key":"ELECTRIC","name_cn":"雷霆","name_en":"ELECTRIC","color":"#ffd429","accent":"#fff08a","tag":"Mecha.Type.Electric","description":"极速突袭，克制涌流与钢甲，畏惧森绿。"},{"key":"LEAF","name_cn":"森绿","name_en":"LEAF","color":"#3fbf5f","accent":"#9be28a","tag":"Mecha.Type.Leaf","description":"生态装甲，克制雷霆与暗影。"},{"key":"STEEL","name_cn":"钢甲","name_en":"STEEL","color":"#9aa7bd","accent":"#d7e0ef","tag":"Mecha.Type.Steel","description":"重甲防御，克制冰晶，畏惧烈焰与雷霆。"},{"key":"QUANTUM","name_cn":"星轨","name_en":"QUANTUM","color":"#a855f7","accent":"#d8b4fe","tag":"Mecha.Type.Quantum","description":"空间干涉，克制暗影与森绿。"},{"key":"SHADOW","name_cn":"暗影","name_en":"SHADOW","color":"#6c3fd8","accent":"#b39ddb","tag":"Mecha.Type.Shadow","description":"高爆发刺客，克制星轨，畏惧森绿与星轨。"},{"key":"ICE","name_cn":"冰晶","name_en":"ICE","color":"#4dd0e1","accent":"#b2ebf2","tag":"Mecha.Type.Ice","description":"控制冻阻，克制森绿，畏惧烈焰与钢甲。"}],"type_chart":{"FIRE":{"strong":["LEAF","ICE","STEEL"],"weak":["WATER","FIRE"],"none":[]},"WATER":{"strong":["FIRE","STEEL"],"weak":["LEAF","ELECTRIC","WATER"],"none":[]},"ELECTRIC":{"strong":["WATER","STEEL"],"weak":["LEAF","ELECTRIC"],"none":[]},"LEAF":{"strong":["ELECTRIC","SHADOW","WATER"],"weak":["FIRE","ICE","LEAF","QUANTUM"],"none":[]},"STEEL":{"strong":["ICE"],"weak":["FIRE","WATER","ELECTRIC","STEEL"],"none":[]},"QUANTUM":{"strong":["SHADOW","LEAF"],"weak":["SHADOW","QUANTUM"],"none":[]},"SHADOW":{"strong":["QUANTUM"],"weak":["LEAF","SHADOW"],"none":[]},"ICE":{"strong":["LEAF"],"weak":["FIRE","STEEL","ICE"],"none":[]}},"mechas":[{"id":"BLAZE","name_cn":"炎狱·赤焰","name_en":"Blaze Ignis","codename":"MF-01","element":"FIRE","role":"强攻型","hp":78,"atk":92,"dfn":70,"spd":85,"energy":100,"moves":[{"id":"BLZ_L","name_cn":"烈焰直拳","name_en":"Flame Jab","type":"FIRE","input":"J","cls":"Light","damage":7,"startup":4,"active":3,"recovery":8,"hitstun":14,"blockstun":8,"hitstop":4,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":62,"knockback":6,"meter_cost":0,"meter_gain":6,"gameplay_tag":"Ability.Mecha.FlameJab","description":"高热直拳，出招快，可取消接重击。"},{"id":"BLZ_H","name_cn":"熔岩重锤","name_en":"Magma Hammer","type":"FIRE","input":"K","cls":"Heavy","damage":15,"startup":9,"active":4,"recovery":16,"hitstun":20,"blockstun":12,"hitstop":7,"parry_window":0,"armor":0,"cancel":"Special / Ultimate","reach":78,"knockback":14,"meter_cost":0,"meter_gain":11,"gameplay_tag":"Ability.Mecha.MagmaHammer","description":"液压重锤，命中造成长时间僵直。"},{"id":"BLZ_S","name_cn":"灼热上勾","name_en":"Blazing Upper","type":"FIRE","input":"L","cls":"Special","damage":23,"startup":12,"active":6,"recovery":22,"hitstun":26,"blockstun":16,"hitstop":9,"parry_window":0,"armor":1,"cancel":"Ultimate","reach":96,"knockback":22,"meter_cost":25,"meter_gain":16,"gameplay_tag":"Ability.Mecha.BlazingUpper","description":"带 1 级霸体的上勾拳，可穿过轻击。"},{"id":"BLZ_U","name_cn":"超新星爆燃","name_en":"Supernova Burst","type":"FIRE","input":"U","cls":"Ultimate","damage":40,"startup":16,"active":10,"recovery":30,"hitstun":34,"blockstun":22,"hitstop":14,"parry_window":0,"armor":2,"cancel":"—","reach":130,"knockback":34,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.Supernova","description":"全身过热爆发，完全霸体，命中即触发大硬直。"}],"lore":"第一代量产型火系机甲，以高输出与灼烧叠加著称，是竞技场最受欢迎的先发机体。","element_name":"烈焰","color":"#ff5a2a","accent":"#ffb347","total_frames":[15,29,40,56]},{"id":"TIDAL","name_cn":"潮汐·沧澜","name_en":"Tidal Abyss","codename":"MF-02","element":"WATER","role":"耐久型","hp":95,"atk":75,"dfn":90,"spd":60,"energy":110,"moves":[{"id":"TDL_L","name_cn":"水刃切","name_en":"Hydro Slice","type":"WATER","input":"J","cls":"Light","damage":6,"startup":5,"active":3,"recovery":9,"hitstun":14,"blockstun":8,"hitstop":4,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":64,"knockback":5,"meter_cost":0,"meter_gain":6,"gameplay_tag":"Ability.Mecha.HydroSlice","description":"高压水刃，射程略远。"},{"id":"TDL_H","name_cn":"潮汐重掌","name_en":"Tidal Palm","type":"WATER","input":"K","cls":"Heavy","damage":16,"startup":10,"active":4,"recovery":17,"hitstun":21,"blockstun":13,"hitstop":7,"parry_window":0,"armor":1,"cancel":"Special / Ultimate","reach":80,"knockback":16,"meter_cost":0,"meter_gain":11,"gameplay_tag":"Ability.Mecha.TidalPalm","description":"带 1 级霸体的重掌，抗轻击压制。"},{"id":"TDL_S","name_cn":"深水牢笼","name_en":"Abyss Trap","type":"WATER","input":"L","cls":"Special","damage":22,"startup":13,"active":6,"recovery":23,"hitstun":28,"blockstun":17,"hitstop":9,"parry_window":0,"armor":1,"cancel":"Ultimate","reach":100,"knockback":20,"meter_cost":25,"meter_gain":16,"gameplay_tag":"Ability.Mecha.AbyssTrap","description":"水流禁锢，命中后僵直极长。"},{"id":"TDL_U","name_cn":"沧海怒涛","name_en":"Ocean Surge","type":"WATER","input":"U","cls":"Ultimate","damage":38,"startup":17,"active":10,"recovery":31,"hitstun":36,"blockstun":23,"hitstop":14,"parry_window":0,"armor":2,"cancel":"—","reach":132,"knockback":30,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.OceanSurge","description":"巨浪冲击，完全霸体并击退。"}],"lore":"深海勘探机甲改造而来，拥有全游戏最高的护盾成长，擅长持久消耗战。","element_name":"涌流","color":"#2b8cff","accent":"#67e8f9","total_frames":[17,31,42,58]},{"id":"VOLT","name_cn":"雷鸣·疾风","name_en":"Volt Tempest","codename":"MF-03","element":"ELECTRIC","role":"速攻型","hp":65,"atk":88,"dfn":60,"spd":110,"energy":95,"moves":[{"id":"VLT_L","name_cn":"雷光刺","name_en":"Volt Jab","type":"ELECTRIC","input":"J","cls":"Light","damage":6,"startup":3,"active":3,"recovery":7,"hitstun":13,"blockstun":7,"hitstop":3,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":60,"knockback":6,"meter_cost":0,"meter_gain":7,"gameplay_tag":"Ability.Mecha.VoltJab","description":"3 帧前摇，全机甲最快起手。"},{"id":"VLT_H","name_cn":"电磁回旋","name_en":"EMP Spin","type":"ELECTRIC","input":"K","cls":"Heavy","damage":13,"startup":8,"active":4,"recovery":14,"hitstun":19,"blockstun":11,"hitstop":6,"parry_window":0,"armor":0,"cancel":"Special / Ultimate","reach":74,"knockback":13,"meter_cost":0,"meter_gain":12,"gameplay_tag":"Ability.Mecha.EMPSpin","description":"回旋踢，收招快，适合连段。"},{"id":"VLT_S","name_cn":"瞬闪突进","name_en":"Flash Step","type":"ELECTRIC","input":"L","cls":"Special","damage":21,"startup":10,"active":5,"recovery":20,"hitstun":24,"blockstun":15,"hitstop":8,"parry_window":0,"armor":0,"cancel":"Ultimate","reach":110,"knockback":26,"meter_cost":25,"meter_gain":18,"gameplay_tag":"Ability.Mecha.FlashStep","description":"瞬移突进，射程远但后摇短。"},{"id":"VLT_U","name_cn":"雷霆万钧","name_en":"Thunderfall","type":"ELECTRIC","input":"U","cls":"Ultimate","damage":36,"startup":14,"active":9,"recovery":27,"hitstun":32,"blockstun":21,"hitstop":13,"parry_window":0,"armor":1,"cancel":"—","reach":140,"knockback":32,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.Thunderfall","description":"高空落雷，1 级霸体，压制力极强。"}],"lore":"磁悬浮竞速机体，速度属性顶尖，先手压制战术的核心。","element_name":"雷霆","color":"#ffd429","accent":"#fff08a","total_frames":[13,26,35,50]},{"id":"VERDANT","name_cn":"苍翠·森灵","name_en":"Verdant Grove","codename":"MF-04","element":"LEAF","role":"辅助型","hp":88,"atk":70,"dfn":85,"spd":70,"energy":105,"moves":[{"id":"VRD_L","name_cn":"藤鞭抽击","name_en":"Vine Whip","type":"LEAF","input":"J","cls":"Light","damage":7,"startup":5,"active":3,"recovery":9,"hitstun":15,"blockstun":8,"hitstop":4,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":70,"knockback":6,"meter_cost":0,"meter_gain":6,"gameplay_tag":"Ability.Mecha.VineWhip","description":"藤蔓抽打，射程优于普通轻击。"},{"id":"VRD_H","name_cn":"森罗重击","name_en":"Verdant Crash","type":"LEAF","input":"K","cls":"Heavy","damage":14,"startup":10,"active":4,"recovery":17,"hitstun":20,"blockstun":12,"hitstop":7,"parry_window":0,"armor":0,"cancel":"Special / Ultimate","reach":80,"knockback":14,"meter_cost":0,"meter_gain":11,"gameplay_tag":"Ability.Mecha.VerdantCrash","description":"重心下沉的重击。"},{"id":"VRD_S","name_cn":"孢子束缚","name_en":"Spore Snare","type":"LEAF","input":"L","cls":"Special","damage":20,"startup":12,"active":6,"recovery":22,"hitstun":30,"blockstun":18,"hitstop":9,"parry_window":0,"armor":0,"cancel":"Ultimate","reach":104,"knockback":18,"meter_cost":25,"meter_gain":17,"gameplay_tag":"Ability.Mecha.SporeSnare","description":"命中后附加强僵直，便于接续。"},{"id":"VRD_U","name_cn":"生命之树","name_en":"World Tree","type":"LEAF","input":"U","cls":"Ultimate","damage":34,"startup":16,"active":10,"recovery":30,"hitstun":38,"blockstun":24,"hitstop":14,"parry_window":0,"armor":2,"cancel":"—","reach":128,"knockback":28,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.WorldTree","description":"根系爆发，完全霸体，长僵直。"}],"lore":"生态修复机甲，搭载光合反应堆，是高端局不可或缺的续航核心。","element_name":"森绿","color":"#3fbf5f","accent":"#9be28a","total_frames":[17,31,40,56]},{"id":"BASTION","name_cn":"玄铁·壁垒","name_en":"Iron Bastion","codename":"MF-05","element":"STEEL","role":"防御型","hp":100,"atk":80,"dfn":110,"spd":40,"energy":100,"moves":[{"id":"BST_L","name_cn":"液压铁拳","name_en":"Iron Jab","type":"STEEL","input":"J","cls":"Light","damage":9,"startup":6,"active":3,"recovery":10,"hitstun":15,"blockstun":9,"hitstop":5,"parry_window":0,"armor":1,"cancel":"Heavy","reach":60,"knockback":8,"meter_cost":0,"meter_gain":5,"gameplay_tag":"Ability.Mecha.IronJab","description":"带 1 级霸体的轻击，硬碰硬不亏。"},{"id":"BST_H","name_cn":"攻城铁锤","name_en":"Siege Hammer","type":"STEEL","input":"K","cls":"Heavy","damage":19,"startup":12,"active":5,"recovery":20,"hitstun":24,"blockstun":15,"hitstop":9,"parry_window":0,"armor":1,"cancel":"Special","reach":80,"knockback":20,"meter_cost":0,"meter_gain":10,"gameplay_tag":"Ability.Mecha.SiegeHammer","description":"全机甲单发伤害最高，后摇也最长。"},{"id":"BST_S","name_cn":"磁轨冲撞","name_en":"Rail Charge","type":"STEEL","input":"L","cls":"Special","damage":26,"startup":15,"active":7,"recovery":26,"hitstun":30,"blockstun":19,"hitstop":11,"parry_window":0,"armor":2,"cancel":"Ultimate","reach":108,"knockback":28,"meter_cost":25,"meter_gain":14,"gameplay_tag":"Ability.Mecha.RailCharge","description":"完全霸体冲撞，正面无解。"},{"id":"BST_U","name_cn":"要塞崩落","name_en":"Fortress Fall","type":"STEEL","input":"U","cls":"Ultimate","damage":44,"startup":20,"active":11,"recovery":34,"hitstun":40,"blockstun":26,"hitstop":16,"parry_window":0,"armor":2,"cancel":"—","reach":124,"knockback":40,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.FortressFall","description":"整机砸落，完全霸体，一击决定胜负。"}],"lore":"要塞级重装甲，正面防御无可匹敌，但转向迟缓是其致命弱点。","element_name":"钢甲","color":"#9aa7bd","accent":"#d7e0ef","total_frames":[19,37,48,65]},{"id":"ASTRO","name_cn":"星轨·幻境","name_en":"Astro Mirage","codename":"MF-06","element":"QUANTUM","role":"特攻型","hp":70,"atk":95,"dfn":65,"spd":95,"energy":100,"moves":[{"id":"AST_L","name_cn":"星轨斩","name_en":"Astral Slash","type":"QUANTUM","input":"J","cls":"Light","damage":7,"startup":4,"active":3,"recovery":8,"hitstun":14,"blockstun":8,"hitstop":4,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":68,"knockback":7,"meter_cost":0,"meter_gain":6,"gameplay_tag":"Ability.Mecha.AstralSlash","description":"空间刃，判定距离远。"},{"id":"AST_H","name_cn":"重力拳","name_en":"Gravity Fist","type":"QUANTUM","input":"K","cls":"Heavy","damage":16,"startup":10,"active":4,"recovery":17,"hitstun":22,"blockstun":13,"hitstop":8,"parry_window":0,"armor":0,"cancel":"Special / Ultimate","reach":82,"knockback":17,"meter_cost":0,"meter_gain":11,"gameplay_tag":"Ability.Mecha.GravityFist","description":"重力压缩拳，击退明显。"},{"id":"AST_S","name_cn":"相位突刺","name_en":"Phase Thrust","type":"QUANTUM","input":"L","cls":"Special","damage":24,"startup":12,"active":6,"recovery":21,"hitstun":27,"blockstun":16,"hitstop":10,"parry_window":0,"armor":1,"cancel":"Ultimate","reach":116,"knockback":24,"meter_cost":25,"meter_gain":16,"gameplay_tag":"Ability.Mecha.PhaseThrust","description":"穿相位突刺，1 级霸体。"},{"id":"AST_U","name_cn":"时空断裂","name_en":"Time Rift","type":"QUANTUM","input":"U","cls":"Ultimate","damage":39,"startup":16,"active":10,"recovery":29,"hitstun":36,"blockstun":23,"hitstop":15,"parry_window":0,"armor":2,"cancel":"—","reach":136,"knockback":33,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.TimeRift","description":"撕裂局部时空，完全霸体。"}],"lore":"轨道空间站实验机体，能够干涉局部时空，操作上限极高。","element_name":"星轨","color":"#a855f7","accent":"#d8b4fe","total_frames":[15,31,39,55]},{"id":"SHADOW","name_cn":"夜影·幽刃","name_en":"Night Shade","codename":"MF-07","element":"SHADOW","role":"刺客型","hp":68,"atk":100,"dfn":55,"spd":100,"energy":90,"moves":[{"id":"SHD_L","name_cn":"影刃","name_en":"Shadow Blade","type":"SHADOW","input":"J","cls":"Light","damage":8,"startup":3,"active":3,"recovery":8,"hitstun":14,"blockstun":8,"hitstop":4,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":64,"knockback":7,"meter_cost":0,"meter_gain":7,"gameplay_tag":"Ability.Mecha.ShadowBlade","description":"极快出刀，压制起手。"},{"id":"SHD_H","name_cn":"断魂斩","name_en":"Soul Cutter","type":"SHADOW","input":"K","cls":"Heavy","damage":17,"startup":8,"active":4,"recovery":15,"hitstun":21,"blockstun":12,"hitstop":7,"parry_window":0,"armor":0,"cancel":"Special / Ultimate","reach":78,"knockback":15,"meter_cost":0,"meter_gain":12,"gameplay_tag":"Ability.Mecha.SoulCutter","description":"收招快，连段核心。"},{"id":"SHD_S","name_cn":"瞬影连刺","name_en":"Phantom Rush","type":"SHADOW","input":"L","cls":"Special","damage":22,"startup":11,"active":7,"recovery":19,"hitstun":25,"blockstun":15,"hitstop":9,"parry_window":0,"armor":0,"cancel":"Ultimate","reach":112,"knockback":20,"meter_cost":25,"meter_gain":18,"gameplay_tag":"Ability.Mecha.PhantomRush","description":"多段突刺，命中能量收益高。"},{"id":"SHD_U","name_cn":"永夜葬送","name_en":"Eternal Night","type":"SHADOW","input":"U","cls":"Ultimate","damage":37,"startup":15,"active":10,"recovery":27,"hitstun":34,"blockstun":21,"hitstop":13,"parry_window":0,"armor":1,"cancel":"—","reach":138,"knockback":30,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.EternalNight","description":"潜入本体消失后突袭，1 级霸体。"}],"lore":"军用潜入机甲，爆发伤害顶尖，但装甲薄弱，容错率极低。","element_name":"暗影","color":"#6c3fd8","accent":"#b39ddb","total_frames":[14,27,37,52]},{"id":"FROST","name_cn":"霜寒·极地","name_en":"Frost Permafrost","codename":"MF-08","element":"ICE","role":"控制型","hp":82,"atk":85,"dfn":80,"spd":65,"energy":105,"moves":[{"id":"FST_L","name_cn":"冰刺","name_en":"Ice Spike","type":"ICE","input":"J","cls":"Light","damage":7,"startup":5,"active":3,"recovery":9,"hitstun":16,"blockstun":9,"hitstop":5,"parry_window":0,"armor":0,"cancel":"Heavy / Special","reach":72,"knockback":7,"meter_cost":0,"meter_gain":6,"gameplay_tag":"Ability.Mecha.IceSpike","description":"冰刺射程远，适合牵制。"},{"id":"FST_H","name_cn":"寒霜重击","name_en":"Frost Crush","type":"ICE","input":"K","cls":"Heavy","damage":15,"startup":11,"active":4,"recovery":18,"hitstun":24,"blockstun":14,"hitstop":8,"parry_window":0,"armor":0,"cancel":"Special / Ultimate","reach":82,"knockback":16,"meter_cost":0,"meter_gain":11,"gameplay_tag":"Ability.Mecha.FrostCrush","description":"命中附带冻阻僵直。"},{"id":"FST_S","name_cn":"冰封锁","name_en":"Ice Lock","type":"ICE","input":"L","cls":"Special","damage":21,"startup":13,"active":6,"recovery":23,"hitstun":32,"blockstun":19,"hitstop":10,"parry_window":0,"armor":1,"cancel":"Ultimate","reach":106,"knockback":20,"meter_cost":25,"meter_gain":16,"gameplay_tag":"Ability.Mecha.IceLock","description":"冻结锁定，僵直时间极长。"},{"id":"FST_U","name_cn":"绝对零度","name_en":"Absolute Zero","type":"ICE","input":"U","cls":"Ultimate","damage":35,"startup":17,"active":11,"recovery":31,"hitstun":42,"blockstun":25,"hitstop":15,"parry_window":0,"armor":2,"cancel":"—","reach":130,"knockback":30,"meter_cost":100,"meter_gain":0,"gameplay_tag":"Ability.Mecha.AbsoluteZero","description":"全场冻结，完全霸体，最长僵直。"}],"lore":"极地科考机甲，以冻结与减速构筑节奏封锁，是控场体系的核心。","element_name":"冰晶","color":"#4dd0e1","accent":"#b2ebf2","total_frames":[17,33,42,59]}],"system_moves":[{"id":"SYS_GUARD","name_cn":"防御","name_en":"Guard","type":"SYSTEM","input":"S(按住)","cls":"System","damage":0,"startup":1,"active":0,"recovery":0,"hitstun":0,"blockstun":0,"hitstop":0,"parry_window":0,"armor":0,"cancel":"—","reach":0,"knockback":0,"meter_cost":0,"meter_gain":0,"gameplay_tag":"Ability.System.Guard","description":"按住减伤 80%，消耗防御槽，防御槽清空则破防。"},{"id":"SYS_PARRY","name_cn":"弹反","name_en":"Parry","type":"SYSTEM","input":"S(瞬间)","cls":"System","damage":0,"startup":1,"active":0,"recovery":20,"hitstun":0,"blockstun":0,"hitstop":0,"parry_window":4,"armor":0,"cancel":"—","reach":0,"knockback":0,"meter_cost":0,"meter_gain":30,"gameplay_tag":"Ability.System.Parry","description":"按下 S 的前 4 帧为弹反窗口，成功使对手陷入 36 帧硬直。"},{"id":"SYS_JUMP","name_cn":"推进跳跃","name_en":"Boost Jump","type":"SYSTEM","input":"Space","cls":"System","damage":0,"startup":3,"active":0,"recovery":0,"hitstun":0,"blockstun":0,"hitstop":0,"parry_window":0,"armor":0,"cancel":"—","reach":0,"knockback":0,"meter_cost":0,"meter_gain":0,"gameplay_tag":"Ability.System.BoostJump","description":"推进器跃起，可规避地面判定。"},{"id":"SYS_DASH","name_cn":"瞬时冲刺","name_en":"Boost Dash","type":"SYSTEM","input":"Shift","cls":"System","damage":0,"startup":2,"active":0,"recovery":0,"hitstun":0,"blockstun":0,"hitstop":0,"parry_window":0,"armor":0,"cancel":"—","reach":0,"knockback":0,"meter_cost":0,"meter_gain":0,"gameplay_tag":"Ability.System.BoostDash","description":"快速拉近或拉开距离。"}],"rules":{"logic_tick_hz":60,"render_mode":"固定 60Hz 逻辑帧 + 渲染插值，判定与表现解耦","round_time_sec":99,"rounds_to_win":2,"battle_format":"1v1 单挑 · BO3（三局两胜）","team_size":1,"health":1000,"meter_max":100,"guard_max":100,"parry_window_frames":4,"parry_punish_frames":36,"parry_meter_reward":30,"combo_scaling":"100% → 90% → 80% → 70% → 60% → 50%（最低）","input_buffer_frames":6,"cancel_route":"轻击 → 重击 → 必杀 → 超必杀","hitbox_policy":"自定义 hitbox/hurtbox 查询，不依赖物理引擎硬判","counter_hit":"对手后摇/起手阶段被命中，伤害 ×1.25 且僵直增加 8 帧","ranking":"青铜 → 白银 → 黄金 → 铂金 → 钻石 → 大师 → 王者","ban_phase":"双方各禁用 2 台机甲（BO3 起）"},"phases":[{"id":"P0","name":"核心战斗验证","duration":"4 周","goal":"构建实时帧驱动 1v1 格斗核心闭环","deliverables":["UE5 工程基座","帧数据 DataAsset 工具链","弹反/僵直/霸体/取消系统","1v1 可操作版本"],"status":"进行中"},{"id":"P1","name":"完整格斗系统","duration":"8 周","goal":"完成 8 台机甲与全部招式、AI 对手","deliverables":["8 台机甲 + 32 个招式","Control Rig 混合动画管线","自适应 AI 对手","帧步进/回放调试工具"],"status":"规划中"},{"id":"P2","name":"竞技系统","duration":"6 周","goal":"上线匹配、天梯与观战","deliverables":["匹配服务","段位与排行榜","Ban/Pick","服务器权威校验与反作弊"],"status":"规划中"},{"id":"P3","name":"内容运营","duration":"持续","goal":"赛季更新与电竞化","deliverables":["新机甲/招式","赛季通行证","观战系统","赛事工具包"],"status":"规划中"}],"gas":[{"name":"AbilitySystemComponent (ASC)","desc":"挂载于每台机甲，统一驱动招式、属性与状态"},{"name":"MechaAttributeSet","desc":"Health / Meter / Guard / Attack / Defense / Speed / Armor"},{"name":"UCombatAbility","desc":"32 个招式，帧数据驱动 + 能量消耗与取消规则校验"},{"name":"FCombatFrameData (DataAsset)","desc":"startup / active / recovery / parryWindow / armor / cancelWindow / hitstop"},{"name":"UHitboxComponent","desc":"自定义 hitbox/hurtbox 查询，判定与动画表现解耦"},{"name":"UParryComponent","desc":"弹反窗口判定、成功硬直反馈与能量奖励"},{"name":"UHitstopSubsystem","desc":"命中停顿帧调度，统一控制打击节奏"},{"name":"UMechaAnimInstance","desc":"动捕基础姿态 + Control Rig 机甲化 + 程序化二级运动"},{"name":"CombatReplaySubsystem","desc":"帧步进调试、输入回放与战斗日志（Perforce 构建流水线）"},{"name":"GameplayCue","desc":"命中特效、分层音效、镜头震动等表现层通知"}]};
+const PROJ = {"codename":"MECHA·MON","name_cn":"机甲兽竞技场","name_en":"MechaMon Arena","tagline":"机甲觉醒 · 帧级博弈 · 硬核格斗","engine":"Unreal Engine 5","framework":"Gameplay Ability System (GAS)","version":"v1.0 · Vertical Slice","genre":"实时 1v1 机甲格斗 / 操作竞技","platform":"PC (首发) / 主机 (后续)","author":"MECHA·MON 开发团队"};
 const TMAP = Object.fromEntries(DATA.elements.map(e=>[e.key,e]));
 const byId = id => DATA.mechas.find(m=>m.id===id);
 
@@ -575,11 +700,11 @@ document.getElementById('footVersion').textContent = PROJ.version;
 })();
 document.getElementById('tagline').textContent = PROJ.tagline;
 document.getElementById('heroDesc').textContent =
-  PROJ.name_cn + " 是一款以机甲收集与回合制策略对战为核心的竞技游戏。组建 3 台机甲的作战小队，通过属性克制、技能组合与能量管理击败对手。本演示由统一数据源驱动，完整呈现 UE5 GAS 战斗系统设计。";
+  PROJ.name_cn + " 是一款实时 1v1 机甲格斗竞技游戏。以 60Hz 逻辑帧驱动，招式严格遵循前摇、判定、后摇的帧窗口规则；玩家通过弹反、防御、霸体与取消构筑攻防博弈。本演示由统一数据源驱动，完整呈现 UE5 GAS 战斗系统设计。";
 document.getElementById('heroStats').innerHTML = `
   <div><b>${DATA.mechas.length}</b><small>机甲 MECHAS</small></div>
   <div><b>${DATA.elements.length}</b><small>属性 ELEMENTS</small></div>
-  <div><b>32</b><small>技能 ABILITIES</small></div>
+  <div><b>32</b><small>招式 MOVES</small></div>
   <div><b>UE5</b><small>ENGINE</small></div>`;
 document.getElementById('heroMech').innerHTML = mechaSVG(byId('BLAZE'),'hero');
 
@@ -601,21 +726,32 @@ document.getElementById('archGrid').innerHTML = DATA.gas.map((g,i)=>`
     <p>${g.desc}</p>
   </div>`).join('');
 
-document.getElementById('codeBlock').innerHTML = `<span class="c">// 技能释放 → 伤害结算管线（GAS）</span>
-<span class="k">bool</span> UMechaAbilityBase::CanActivateAbility(...)
+document.getElementById('codeBlock').innerHTML = `<span class="c">// 帧驱动招式判定管线（60Hz / GAS）</span>
+<span class="k">void</span> UCombatAbility::TickFrameData(<span class="k">int32</span> Frame)
 {
-    <span class="k">if</span> (!Super::CanActivateAbility(...)) <span class="k">return false</span>;
-    <span class="c">// 校验 Status.Frozen / Status.Stunned 标签</span>
-    <span class="k">return true</span>;
+    <span class="k">const</span> FCombatFrameData&amp; F = MoveData->Frames;   <span class="c">// DataAsset 帧配置</span>
+    <span class="k">if</span> (Frame &lt; F.StartupFrames) <span class="k">return</span>;        <span class="c">// 前摇：无判定</span>
+
+    <span class="k">if</span> (Frame &lt;= F.StartupFrames + F.ActiveFrames) {          <span class="c">// 判定帧</span>
+        TArray&lt;FHitResult&gt; Hits = Hitbox->QueryHurtbox();          <span class="c">// 自定义 box 查询</span>
+        <span class="k">for</span> (<span class="k">auto</span>&amp; Hit : Hits) ResolveHit(Hit, F);
+    }
+    <span class="k">if</span> (Frame >= F.StartupFrames + F.ActiveFrames + F.RecoveryFrames)
+        EndAbility();                                       <span class="c">// 后摇结束</span>
 }
 
-<span class="k">void</span> UMechaAbilityBase::ActivateAbility(...)
+<span class="k">void</span> UCombatAbility::ResolveHit(<span class="k">const</span> FHitResult&amp; Hit, <span class="k">const</span> FCombatFrameData&amp; F)
 {
-    CommitAbility(Handle, ActorInfo, ActivationInfo);        <span class="c">// 扣能量 / 进冷却</span>
-    FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(HitEffectClass, 1, Ctx);
-    Spec.Data->SetSetByCallerMagnitude(Data_Power, BasePower);
-    ApplyGameplayEffectToTarget(...);                        <span class="c">// 属性克制在 AttributeSet 中结算</span>
-    EndAbility(...);
+    <span class="k">if</span> (Victim->Parry->IsInWindow(F.ParryWindow)) {            <span class="c">// 弹反 4F 窗口</span>
+        Victim->Parry->Punish(36); GrantMeter(30); <span class="k">return</span>;
+    }
+    <span class="k">if</span> (Victim->IsBlocking()) { ApplyBlockstun(F.Blockstun); <span class="k">return</span>; }
+    <span class="k">if</span> (Victim->Armor->Absorbs(F)) { <span class="k">return</span>; }   <span class="c">// 霸体抵消</span>
+
+    ApplyDamage(F.Damage, TypeChart);                       <span class="c">// 属性倍率结算</span>
+    Hitstop->Freeze(F.HitstopFrames);                       <span class="c">// 命中停顿</span>
+    Victim->ApplyHitstun(F.Hitstun);                        <span class="c">// 僵直</span>
+    BroadcastEvent(Event_Hit);
 }`;
 
 document.getElementById('timeline').innerHTML = DATA.phases.map((p,i)=>`
@@ -628,60 +764,124 @@ document.getElementById('timeline').innerHTML = DATA.phases.map((p,i)=>`
     <div class="status">${p.status}</div>
   </div>`).join('');
 
-/* ---------- 战斗模拟 ---------- */
-let S = {p:null,e:null,php:0,ehp:0,pen:0,een:0,turn:1,over:false};
-const selP = document.getElementById('selP'), selE = document.getElementById('selE');
-selP.innerHTML = DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
-selE.innerHTML = DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
-selE.value = 'TIDAL';
+/* ================= 实时格斗引擎（60Hz 逻辑帧） =================
+   状态机：IDLE / WALK / ATTACK / GUARD / PARRY / HITSTUN / BLOCKSTUN / JUMP / DASH / DOWN
+   判定严格按帧：startup → active(hitbox) → recovery；命中触发 hitstop + 僵直；
+   防御窗口内触发弹反；霸体抵消；取消路线支持连段；伤害随连击数递减。        */
+const R = DATA.rules;
+const sysMoves = Object.fromEntries(DATA.system_moves.map(m=>[m.id,m]));
+const byMoveInput = (moves, key) => moves.find(m=>m.input===key);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-function fighterHTML(m,hp,maxHp,en,side){
-  const t = TMAP[m.element];
-  const pct = Math.max(0,hp/maxHp*100);
-  return `${mechaSVG(m,side)}
-    <div class="fname">${m.name_cn}</div>
-    <div class="fmeta">${t.name_cn} · ${m.role} · ${m.codename}</div>
-    <div class="bars">
-      <div class="bar-row"><span>ARMOR / 装甲</span><span>${Math.max(0,Math.round(hp))} / ${maxHp}</span></div>
-      <div class="bar hp ${pct<30?'low':''}"><i style="width:${pct}%"></i></div>
-      <div class="bar-row" style="margin-top:8px"><span>ENERGY / 能量</span><span>${Math.round(en)} / 120</span></div>
-      <div class="bar en"><i style="width:${en/120*100}%"></i></div>
-    </div>`;
+const G = {
+  p:null, e:null, running:false, over:false, paused:false,
+  frame:0, timeLeft:R.round_time_sec, round:1, winsP:0, winsE:0,
+  timerAcc:0, slow:1, auto:false, autoAcc:0, last:0, acc:0,
+  comboP:0, comboE:0, comboTimerP:0, comboTimerE:0,
+  freeze:0, keys:{}, moveList:[],
+};
+const KEYMAP = {a:'left',d:'right',ArrowLeft:'left',ArrowRight:'right',
+  j:'J',k:'K',l:'L',u:'U',s:'S',' ':'SPACE',Spacebar:'SPACE',
+  Shift:'SHIFT',ShiftLeft:'SHIFT',ShiftRight:'SHIFT'};
+const MOVE_BY_KEY = {J:'Light',K:'Heavy',L:'Special',U:'Ultimate'};
+const CLS_TO_INPUT = {Light:'J',Heavy:'K',Special:'L',Ultimate:'U'};
+
+const selP=document.getElementById('selP'), selE=document.getElementById('selE');
+selP.innerHTML=DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
+selE.innerHTML=DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
+selE.value='TIDAL';
+
+function makeFighter(m,side){
+  return {
+    def:m, side, x: side==='p'?120:520, y:0, vx:0, vy:0, facing: side==='p'?1:-1,
+    hp:1000, meter:0, guard:100,
+    state:'IDLE', stateFrame:0, move:null, hitDone:false,
+    hitstun:0, blockstun:0, guarding:false, parryFlash:0, armorHits:0,
+    comboCount:0, lastHitFrame:-999, flash:0,
+  };
 }
-function logMsg(html,cls){ const d=document.createElement('div'); d.innerHTML=html; if(cls)d.className=cls; document.getElementById('log').appendChild(d); document.getElementById('log').scrollTop=99999; }
+function logMsg(html,cls){const d=document.createElement('div');d.innerHTML=html;if(cls)d.className=cls;
+  const box=document.getElementById('log');box.appendChild(d);box.scrollTop=99999;
+  while(box.children.length>60) box.removeChild(box.firstChild);}
+
+function fighterEl(f){return document.getElementById(f.side==='p'?'fighterP':'fighterE');}
 function renderFighters(){
-  document.getElementById('fighterP').innerHTML = fighterHTML(S.p,S.php,S.p.hp,S.pen,'p');
-  document.getElementById('fighterE').innerHTML = fighterHTML(S.e,S.ehp,S.e.hp,S.een,'e');
-  document.getElementById('turnLabel').textContent = 'TURN ' + String(S.turn).padStart(2,'0');
-  const v = eff(S.p.element,S.e.element);
-  document.getElementById('effBadge').innerHTML = `${TMAP[S.p.element].name_cn} → ${TMAP[S.e.element].name_cn} : ${effLabel(v)}`;
+  [G.p,G.e].forEach(f=>{
+    const el=fighterEl(f);
+    if(!el.dataset.ready){
+      el.innerHTML=`${mechaSVG(f.def,'fg_'+f.side)}<div class="tag">${f.def.codename}</div>
+        <div class="state-tag hitstun">HITSTUN</div><div class="state-tag blockstun">BLOCKSTUN</div>
+        <div class="state-tag parry">PARRY!</div><div class="state-tag armor">ARMOR</div>`;
+      el.dataset.ready='1';
+    }
+    const yoff = f.y>0?`translateY(${-f.y}px)`:'';
+    el.style.left=(f.x-75)+'px';
+    el.style.transform=yoff;
+    el.style.zIndex = f.side==='p'?5:4;
+  });
+  document.getElementById('nameP').textContent=G.p.def.name_cn;
+  document.getElementById('nameE').textContent=G.e.def.name_cn;
+  const v=eff(G.p.def.element,G.e.def.element);
+  document.getElementById('effBadge').innerHTML=`${TMAP[G.p.def.element].name_cn} → ${TMAP[G.e.def.element].name_cn} : ${effLabel(v)}`;
 }
-function renderSkills(){
-  const box = document.getElementById('skills');
-  box.innerHTML = S.p.abilities.map((a,i)=>{
-    const ok = S.pen >= a.cost && !S.over;
-    const c = TMAP[a.type].color;
-    return `<button class="skill" ${ok?'':'disabled'} onclick="useSkill(${i})">
-      <div class="sname">${a.name_cn}<span class="scost">EN ${a.cost}</span></div>
-      <div class="sdesc">${a.description}</div>
-      <div class="stag" style="color:${c}">${TMAP[a.type].name_cn} · ${a.category} · PWR ${a.power||'—'}</div>
-    </button>`;
-  }).join('');
+function renderHUD(){
+  [['P',G.p],['E',G.e]].forEach(([k,f])=>{
+    const pct=clamp(f.hp/1000*100,0,100);
+    document.getElementById('hpBar'+k).style.width=pct+'%';
+    document.getElementById('hpLag'+k).style.left=pct+'%';
+    document.getElementById('hpLag'+k).style.width=(100-pct)+'%';
+    document.getElementById('hpNum'+k).textContent=Math.max(0,Math.round(f.hp));
+    const mb=document.getElementById('meterBar'+k);
+    mb.style.width=f.meter+'%';
+    document.getElementById('meterBox'+k).classList.toggle('ready',f.meter>=100);
+  });
+  document.getElementById('timer').textContent=String(Math.ceil(G.timeLeft)).padStart(2,'0');
+  document.getElementById('timer').classList.toggle('urgent',G.timeLeft<=10);
+  document.getElementById('roundLabel').textContent='ROUND '+String(G.round).padStart(2,'0');
+  const pips=(w,cls)=>Array.from({length:R.rounds_to_win},(_,i)=>`<div class="pip ${i<w?cls:''}"></div>`).join('');
+  document.getElementById('pipsP').innerHTML=pips(G.winsP,'win');
+  document.getElementById('pipsE').innerHTML=pips(G.winsE,'lose');
+  const comb=(n,t)=>{const el=document.getElementById('combo');
+    if(t>0&&n>1){el.querySelector('b').textContent=n;el.classList.add('show');}else el.classList.remove('show');};
+  comb(G.comboP,G.comboTimerP);
+  document.getElementById('slowVal').textContent=G.slow;
+  // 状态标签
+  [['fighterP',G.p],['fighterE',G.e]].forEach(([id,f])=>{
+    const host=document.getElementById(id);
+    host.querySelector('.state-tag.hitstun').classList.toggle('show',f.hitstun>0);
+    host.querySelector('.state-tag.blockstun').classList.toggle('show',f.blockstun>0);
+    host.querySelector('.state-tag.parry').classList.toggle('show',f.parryFlash>0);
+    host.querySelector('.state-tag.armor').classList.toggle('show',f.move&&f.move.armor>0&&f.state==='ATTACK');
+  });
 }
-function damage(atk,def,ability){
-  const mul = eff(ability.type, def.element);
-  const raw = ability.power * (atk.atk/Math.max(1,def.dfn)) * mul;
-  return Math.max(1, Math.floor(raw * (0.95+Math.random()*0.1)));
+function renderFrameMonitor(f){
+  const el=document.getElementById('frames');
+  const st=document.getElementById('frameStatus'), note=document.getElementById('frameNote');
+  const mk=document.getElementById('frameMarker');
+  if(!f.move||f.state!=='ATTACK'){
+    el.innerHTML=`<div class="seg su" style="width:33%">STARTUP</div>
+      <div class="seg ac" style="width:33%">ACTIVE</div><div class="seg rc" style="width:34%">RECOVERY</div>`;
+    mk.style.left='0'; st.innerHTML='STATE: <b>'+f.state+'</b>';
+    note.textContent= f.state==='IDLE'?'待机中 — 出招后显示实时帧进度':
+      f.state==='HITSTUN'?'受击僵直中，无法操作':f.state==='BLOCKSTUN'?'防御僵直中':f.state==='GUARD'?'防御中（按住 S）— 松开后的前 4 帧为弹反窗口':'—';
+    return;
+  }
+  const m=f.move, su=m.startup, ac=m.active, rc=m.recovery, total=su+ac+rc;
+  const pw=m.parry_window;
+  el.innerHTML=`
+    ${pw?`<div class="seg pw" style="width:${pw/total*100}%">PARRY ${pw}F</div>`:''}
+    <div class="seg su" style="width:${(su-pw)/total*100}%">S ${su}</div>
+    <div class="seg ac" style="width:${ac/total*100}%">A ${ac}</div>
+    <div class="seg rc" style="width:${rc/total*100}%">R ${rc}</div>`;
+  mk.style.left=(f.stateFrame/total*100)+'%';
+  const phase = f.stateFrame<su?'STARTUP':f.stateFrame<su+ac?'ACTIVE':'RECOVERY';
+  st.innerHTML=`STATE: <b>${m.name_cn}</b> · ${phase} · F${f.stateFrame}/${total}`;
+  note.textContent=`判定帧 F${su+1}–F${su+ac} · hitstop ${m.hitstop}F · 僵直 ${m.hitstun}F · 霸体 ${m.armor} · 可取消 → ${m.cancel}`;
 }
-function applyEffect(target, ability, dmg, side){
-  if(ability.category==='Heal') return Math.min(target.hp, 45);
-  if(ability.category==='Shield') return 0;
-  return dmg;
-}
-/* ---------- 战斗特效 ---------- */
-function fxFloat(targetId, text, crit, heal){
-  const host=document.getElementById(targetId);
-  if(!host) return;
+
+/* ---------- 打击特效 ---------- */
+function fxFloat(targetId,text,crit,heal){
+  const host=document.getElementById(targetId); if(!host)return;
   const d=document.createElement('div');
   d.className='dmg-float'+(crit?' crit':'')+(heal?' heal':'');
   d.textContent=(heal?'+':'-')+text;
@@ -699,92 +899,266 @@ function fxFlash(color){
   f.style.background=`radial-gradient(circle, ${color||'#00e5ff'}55, transparent 70%)`;
   f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
 }
-function fxShake(el){ if(!el) return; el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
-function useSkill(i){
-  if(S.over) return;
-  const a = S.p.abilities[i];
-  if(S.pen < a.cost) return;
-  S.pen -= a.cost;
-  const mul = eff(a.type, S.e.element);
-  let dmg = 0;
-  if(a.category==='Damage'||a.category==='Dot'||a.category==='Control'){
-    dmg = damage(S.p,S.e,a);
-    S.ehp -= applyEffect(S.e,a,dmg,'e');
-  } else if(a.category==='Heal'){
-    S.php = Math.min(S.p.hp, S.php+45);
-  } else if(a.category==='Buff'){
-    S.pen = Math.min(120,S.pen+10);
-  } else if(a.category==='Shield'){
-    S.php = Math.min(S.p.hp,S.php+20);
+function fxShake(el){if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');}
+
+/* ---------- 招式与判定 ---------- */
+function canAct(f){return !G.over&&f.hitstun<=0&&f.blockstun<=0&&f.state!=='DOWN'&&G.freeze<=0;}
+function startMove(f,cls){
+  if(!canAct(f)) return false;
+  if(f.state==='ATTACK'){
+    if(!f.move || f.stateFrame<f.move.startup+f.move.active || !f.move.cancel.includes(cls)) return false;
   }
-  logMsg(`<b>[${S.p.name_cn}]</b> 释放 ${a.name_cn} → ${TMAP[a.type].name_cn} · ${a.gameplay_tag}`,'');
-  if(dmg>0){
-    logMsg(`&nbsp;&nbsp;造成 <span class="dmg">${dmg}</span> 点伤害 · 克制倍率 <span class="eff">${mul}×</span>`,'');
-    fxFlash(TMAP[a.type].color);
-    fxBanner(a.name_cn, TMAP[a.type].color);
-    setTimeout(()=>fxFloat('fighterE', dmg, mul>=2, false), 60);
-  }
-  else if(a.category==='Heal'){ logMsg('&nbsp;&nbsp;修复装甲 +45',''); fxFloat('fighterP',45,false,true); }
-  else logMsg('&nbsp;&nbsp;状态效果已应用（'+a.category+'）','');
-  if(checkEnd()) return;
-  enemyTurn();
-  renderFighters(); renderSkills();
+  const m=(cls==='PARRY')?sysMoves.SYS_PARRY:byMoveInput(f.def.moves,CLS_TO_INPUT[cls]||cls);
+  if(!m) return false;
+  if(m.meter_cost && f.meter<m.meter_cost) return false;
+  f.meter-=m.meter_cost;
+  f.move=m; f.state='ATTACK'; f.stateFrame=0; f.hitDone=false; f.armorHits=0;
+  return true;
 }
-function enemyTurn(){
-  const usable = S.e.abilities.filter(a=>S.een>=a.cost);
-  const a = (usable.length?usable:S.e.abilities)[Math.floor(Math.random()*(usable.length||S.e.abilities.length))];
-  S.een -= a.cost;
-  let dmg=0;
-  if(a.category==='Damage'||a.category==='Dot'||a.category==='Control'){
-    dmg = damage(S.e,S.p,a);
-    S.php -= applyEffect(S.p,a,dmg,'p');
-  } else if(a.category==='Heal'){ S.ehp=Math.min(S.e.hp,S.ehp+45); }
-  else if(a.category==='Shield'){ S.ehp=Math.min(S.e.hp,S.ehp+20); }
-  else { S.een=Math.min(120,S.een+10); }
-  const mul = eff(a.type,S.p.element);
-  logMsg(`<b>[${S.e.name_cn}]</b> 反击 ${a.name_cn} → 造成 <span class="dmg">${dmg}</span> 伤害 · ${mul}×`,'');
-  if(dmg>0){
-    fxFlash(TMAP[a.type].color);
-    fxBanner('ENEMY · '+a.name_cn, '#ff6b1a');
-    fxShake(document.querySelector('.battle-shell'));
-    setTimeout(()=>fxFloat('fighterP', dmg, mul>=2, false), 60);
-  }
-  if(checkEnd()) return;
-  S.turn++;
-  S.pen = Math.min(120,S.pen + DATA.rules.energy_regen);
-  S.een = Math.min(120,S.een + DATA.rules.energy_regen);
-  logMsg(`&nbsp;&nbsp;回合结束，双方回复 ${DATA.rules.energy_regen} 点能量`,'');
+function inRange(a,b,reach){
+  const dist=Math.abs(a.x-b.x);
+  const facingCorrect=(b.x-a.x)*a.facing>0;
+  return dist<=reach && facingCorrect;
 }
-function checkEnd(){
-  if(S.php<=0||S.ehp<=0){
-    S.over=true;
-    const win = S.ehp<=0 && S.php>0;
-    logMsg(win?'★ 战斗胜利！敌方机甲失去战斗能力。':'✕ 战斗失败！我方机甲失去战斗能力。','');
-    renderFighters(); renderSkills(); return true;
+function resolveHit(atk,def,m){
+  const isParry = def.state==='PARRY' && def.stateFrame<=sysMoves.SYS_PARRY.parry_window;
+  // 弹反成功
+  if(isParry){
+    atk.state='HITSTUN'; atk.hitstun=R.parry_punish_frames; atk.stateFrame=0; atk.move=null;
+    def.meter=clamp(def.meter+R.parry_meter_reward,0,100); def.parryFlash=18;
+    G.freeze=Math.max(G.freeze,8);
+    fxBanner('PARRY!','#ffe08a'); fxFlash('#ffe08a'); fxShake(document.getElementById('stage'));
+    logMsg(`<b>[${def.def.name_cn}]</b> 弹反成功！<span class="eff">${atk.def.name_cn} 陷入 ${R.parry_punish_frames}F 硬直</span>`,'');
+    return;
   }
-  if(S.turn>=DATA.rules.turn_limit){ S.over=true; logMsg('回合上限，按剩余装甲判定。',''); return true; }
-  return false;
+  // 防御
+  if(def.guarding && def.guard>0){
+    def.guard=clamp(def.guard-18,0,100);
+    def.state='BLOCKSTUN'; def.blockstun=m.blockstun; def.stateFrame=0;
+    def.hp=clamp(def.hp-m.damage*0.2,0,1000);
+    G.freeze=Math.max(G.freeze,m.hitstop);
+    fxFloat(def.side==='p'?'fighterP':'fighterE',Math.round(m.damage*0.2),false,false);
+    logMsg(`<b>[${def.def.name_cn}]</b> 防御成功 · 减伤 80% · 防御槽 ${Math.round(def.guard)}`,'');
+    if(def.guard<=0){def.state='HITSTUN';def.hitstun=40;def.stateFrame=0;logMsg('　　<span class="dmg">防御槽清空 → 破防！</span>','');fxBanner('GUARD BREAK','#ff3b5c');}
+    return;
+  }
+  // 霸体：抵消轻击
+  if(def.state==='ATTACK'&&def.move&&def.move.armor>0&&m.cls==='Light'&&def.armorHits<def.move.armor){
+    def.armorHits++;
+    logMsg(`<b>[${def.def.name_cn}]</b> 霸体抵消轻击（${def.armorHits}/${def.move.armor}）`,'');
+    return;
+  }
+  // 命中：连击递减 + Counter Hit
+  const counter = def.stateFrame>0 && (def.state==='ATTACK'&&def.stateFrame>=def.move.startup+def.move.active || def.state==='HITSTUN');
+  const combo = atk.side==='p'?G.comboP:G.comboE;
+  const scale = Math.max(0.5, 1-Math.min(combo,5)*0.1);
+  const mul = eff(m.type,def.def.element);
+  let dmg = Math.round(m.damage*(atk.def.atk/85)*(def.def.dfn>90?0.9:1)*mul*scale*(counter?1.25:1));
+  dmg=Math.max(1,dmg);
+  def.hp=clamp(def.hp-dmg,0,1000);
+  def.state='HITSTUN'; def.hitstun=m.hitstun+(counter?8:0); def.stateFrame=0; def.move=null;
+  atk.meter=clamp(atk.meter+m.meter_gain,0,100);
+  def.meter=clamp(def.meter+4,0,100);
+  G.freeze=Math.max(G.freeze,m.hitstop);
+  if(atk.side==='p'){G.comboP++;G.comboTimerP=90;G.comboE=0;} else {G.comboE++;G.comboTimerE=90;G.comboP=0;}
+  fxFlash(TMAP[m.type].color); fxShake(document.getElementById('stage'));
+  const el=document.getElementById('stage');
+  const sp=document.createElement('div'); sp.className='hitspark go';
+  sp.style.left=((def.x+ (def.side==='p'?50:-50)))+'px'; sp.style.top='120px';
+  sp.innerHTML=`<svg viewBox="0 0 46 46"><path d="M23 2 L28 18 L44 23 L28 28 L23 44 L18 28 L2 23 L18 18 Z" fill="${TMAP[m.type].color}"/></svg>`;
+  el.appendChild(sp); setTimeout(()=>sp.remove(),320);
+  setTimeout(()=>fxFloat(def.side==='p'?'fighterP':'fighterE',dmg,mul>=2||counter,false),30);
+  if(mul>=2) fxBanner('ELEMENTAL BREAK',TMAP[m.type].color);
+  else if(counter) fxBanner('COUNTER HIT','#ff6b1a');
+  logMsg(`<b>[${atk.def.name_cn}]</b> ${m.name_cn} 命中 → <span class="dmg">${dmg}</span> 伤害 · ${mul}× · ${scale<1?Math.round(scale*100)+'% 连击递减':''}${counter?' · COUNTER':''}`,'');
 }
-function startBattle(){
-  S.p = byId(selP.value); S.e = byId(selE.value);
-  S.php=S.p.hp; S.ehp=S.e.hp; S.pen=S.p.energy; S.een=S.e.energy;
-  S.turn=1; S.over=false;
+
+/* ---------- 逻辑帧 ---------- */
+function stepFighter(f,other){
+  if(f.hitstun>0){f.hitstun--;f.state='HITSTUN';if(f.hitstun===0){f.state='IDLE';f.stateFrame=0;}return;}
+  if(f.blockstun>0){f.blockstun--;f.state='BLOCKSTUN';if(f.blockstun===0){f.state='IDLE';f.stateFrame=0;}return;}
+  if(f.state==='ATTACK'){
+    f.stateFrame++;
+    const m=f.move;
+    if(!m){f.state='IDLE';return;}
+    if(!f.hitDone && f.stateFrame>=m.startup && f.stateFrame<=m.startup+m.active && inRange(f,other,m.reach)){
+      f.hitDone=true; resolveHit(f,other,m);
+    }
+    // 前冲
+    if(f.stateFrame<=m.startup+m.active) f.x=clamp(f.x+f.facing*(m.cls==='Special'?3.2:1.6),30,650);
+    if(f.stateFrame>=m.startup+m.active+m.recovery){f.state='IDLE';f.stateFrame=0;f.move=null;}
+    return;
+  }
+  if(f.state==='PARRY'){
+    f.stateFrame++;
+    // 弹反窗口（4F）过后，若仍按住防御键则转为持续防御
+    if(f.stateFrame>sysMoves.SYS_PARRY.parry_window){
+      if(f.side==='p'&&G.keys.s){f.state='GUARD';f.guarding=true;}
+      else if(f.guarding){f.state='GUARD';}
+      else {f.state='IDLE';}
+      f.stateFrame=0;
+    }
+    return;
+  }
+  if(f.state==='JUMP'){
+    f.stateFrame++; f.y=Math.sin(f.stateFrame/26*Math.PI)*62;
+    f.x=clamp(f.x+f.vx,30,650);
+    if(f.stateFrame>=26){f.y=0;f.state='IDLE';f.stateFrame=0;f.vx=0;}
+    return;
+  }
+  if(f.state==='DASH'){f.stateFrame++;f.x=clamp(f.x+f.vx,30,650);if(f.stateFrame>=12){f.state='IDLE';f.stateFrame=0;}return;}
+  f.stateFrame++;
+}
+function handleInput(){
+  const k=G.keys;
+  // 玩家移动 / 防御 / 招式
+  if(canAct(G.p)){
+    // S：按下瞬间进入 PARRY（前4帧窗口），持续按住转为 GUARD
+    if(k.s){
+      if(G.p.state!=='GUARD'&&G.p.state!=='PARRY'&&!G.p._sHeld){
+        G.p.state='PARRY';G.p.stateFrame=0;G.p.move=sysMoves.SYS_PARRY;G.p.guarding=false;
+      }
+      G.p._sHeld=true;
+    }else{
+      G.p._sHeld=false;
+      if(G.p.state==='GUARD'||G.p.state==='PARRY'){G.p.state='IDLE';G.p.stateFrame=0;}
+    }
+    G.p.guarding=(k.s&&G.p.state==='GUARD');
+    if(!G.p.guarding&&(G.p.state==='IDLE'||G.p.state==='WALK')){
+      if(k.left){G.p.x=clamp(G.p.x-3.2,30,650);G.p.state='WALK';}
+      else if(k.right){G.p.x=clamp(G.p.x+3.2,30,650);G.p.state='WALK';}
+      else if(G.p.state==='WALK'){G.p.state='IDLE';}
+    }
+  } else {G.p.guarding=false;G.p._sHeld=k.s;}
+  // 招式输入
+  if(canAct(G.p)|| (G.p.state==='ATTACK'&&G.p.move&&G.p.stateFrame>=G.p.move.startup+G.p.move.active)){
+    const order=['U','L','K','J'];
+    const key=order.find(x=>k[x]);
+    if(key){startMove(G.p,MOVE_BY_KEY[key]);k[key]=false;}
+    if(k.space&&G.p.state==='IDLE'){G.p.state='JUMP';G.p.stateFrame=0;G.p.vx=(k.right?4:k.left?-4:0);k.space=false;}
+    if(k.shift&&G.p.state==='IDLE'){G.p.state='DASH';G.p.stateFrame=0;G.p.vx=G.p.facing*14;k.shift=false;}
+  }
+  // 朝向更新
+  G.p.facing=G.e.x>=G.p.x?1:-1; G.e.facing=G.p.x>=G.e.x?1:-1;
+}
+function aiThink(){
+  const e=G.e,p=G.p, d=Math.abs(e.x-p.x);
+  if(!canAct(e)) return;
+  if(e._aiWait>0){e._aiWait--;return;}
+  if(e.hp<250&&e.meter>=100&&d<130&&Math.random()<0.06){if(startMove(e,'Ultimate')){e._aiWait=40;return;}}
+  if(e.meter>=25&&d<110&&Math.random()<0.07){if(startMove(e,'Special')){e._aiWait=26;return;}}
+  if(d<95){
+    // 侦测玩家攻击前摇 → 概率弹反
+    if(p.state==='ATTACK'&&p.move&&p.stateFrame>=p.move.startup-3&&p.stateFrame<=p.move.startup&&Math.random()<0.35){
+      e.state='PARRY';e.stateFrame=0;e._aiWait=18;return;
+    }
+    if(Math.random()<0.06){e.guarding=true;e._aiWait=18;return;}
+    if(Math.random()<0.38){startMove(e,Math.random()<0.6?'Heavy':'Light');e._aiWait=22;return;}
+  }
+  if(d>190){e.x=clamp(e.x+(e.x<p.x?-3:3),30,650);e.state='WALK';}
+  else if(d<70){e.x=clamp(e.x+(e.x<p.x?2:-2),30,650);}
+  else if(e.guarding){e.guarding=false;e.state='IDLE';}
+  if(e.guarding){e.state='GUARD';}
+}
+function step(){
+  if(!G.running||G.over||G.paused) return;
+  if(G.freeze>0){G.freeze--;return;} // hitstop：冻结双方
+  G.frame++;
+  handleInput();
+  aiThink();
+  stepFighter(G.p,G.e);
+  stepFighter(G.e,G.p);
+  if(G.comboTimerP>0)G.comboTimerP--; if(G.comboTimerE>0)G.comboTimerE--;
+  if(G.p.parryFlash>0)G.p.parryFlash--; if(G.e.parryFlash>0)G.e.parryFlash--;
+  G.timeLeft-=1/60;
+  if(G.timeLeft<=0||G.p.hp<=0||G.e.hp<=0) roundEnd();
+  renderFighters(); renderHUD(); renderFrameMonitor(G.p);
+}
+function loop(ts){
+  if(!G.last)G.last=ts;
+  let dt=ts-G.last; G.last=ts;
+  if(dt>120)dt=120;
+  G.acc+=dt*G.slow;
+  const stepMs=1000/60;
+  let n=0;
+  while(G.acc>=stepMs&&n<8){step();G.acc-=stepMs;n++;}
+  if(G.auto) autoTick(dt);
+  requestAnimationFrame(loop);
+}
+function roundEnd(){
+  G.over=true; G.running=false;
+  const win=G.e.hp<=0||(G.p.hp>G.e.hp&&G.timeLeft<=0);
+  if(win)G.winsP++;else G.winsE++;
+  const matchOver=G.winsP>=R.rounds_to_win||G.winsE>=R.rounds_to_win;
+  logMsg(`<b>ROUND ${G.round}</b> 结束 — ${win?'玩家胜出':'对手胜出'}${matchOver?' · 对局结束':''}`,'');
+  fxBanner(win?'K.O. — WIN':'K.O. — LOSE',win?'#33e08b':'#ff3b5c');
+  renderHUD();
+}
+function fightReset(){
+  G.round=1;G.winsP=0;G.winsE=0;
+  startRound();
+}
+function startRound(){
+  G.p=makeFighter(byId(selP.value),'p'); G.e=makeFighter(byId(selE.value),'e');
+  G.p.x=120;G.e.x=520;G.p.facing=1;G.e.facing=-1;
+  G.frame=0;G.timeLeft=R.round_time_sec;G.over=false;G.running=true;
+  G.freeze=0;G.comboP=0;G.comboE=0;G.comboTimerP=0;G.comboTimerE=0;
+  G.p._aiWait=0;G.e._aiWait=0;
   document.getElementById('log').innerHTML='';
-  logMsg(`战斗开始：<b>${S.p.name_cn}</b> VS <b>${S.e.name_cn}</b>`,'');
-  renderFighters(); renderSkills();
+  document.getElementById('fighterP').dataset.ready='';
+  document.getElementById('fighterE').dataset.ready='';
+  renderFighters(); renderHUD(); renderFrameMonitor(G.p);
+  logMsg(`<b>ROUND ${G.round}</b> · ${G.p.def.name_cn} VS ${G.e.def.name_cn} · FIGHT!`,'');
+  const tick=()=>{fxBanner('FIGHT!','#00e5ff');};
+  setTimeout(tick,120);
 }
-let autoTimer=null;
-function autoPlay(){
-  if(S.over) startBattle();
-  if(autoTimer){clearInterval(autoTimer);autoTimer=null;return;}
-  autoTimer=setInterval(()=>{
-    if(S.over){clearInterval(autoTimer);autoTimer=null;return;}
-    const ok=S.p.abilities.map((a,i)=>S.pen>=a.cost?i:-1).filter(i=>i>=0);
-    if(ok.length) useSkill(ok[Math.floor(Math.random()*ok.length)]);
-    else { S.pen=Math.min(120,S.pen+DATA.rules.energy_regen); renderFighters(); renderSkills(); }
-  },1100);
+function toggleSlow(){G.slow=G.slow===1?0.35:1;}
+function autoFight(){
+  G.auto=!G.auto;
+  if(!G.auto){logMsg('自动演示：关闭','');return;}
+  if(G.over){G.round=G.winsP>=R.rounds_to_win||G.winsE>=R.rounds_to_win?1:G.round+1;startRound();}
+  logMsg('自动演示：开启（接管玩家操作）','');
 }
-startBattle();
+function autoTick(dt){
+  G.autoAcc+=dt; if(G.autoAcc<420||G.over)return; G.autoAcc=0;
+  if(!canAct(G.p))return;
+  const d=Math.abs(G.p.x-G.e.x);
+  if(G.e.state==='ATTACK'&&G.e.move&&Math.random()<0.3){G.keys.s=true;setTimeout(()=>{G.keys.s=false;G.keys._sReleased=true;},90);return;}
+  if(d<105){const choices=G.p.meter>=100?['U','L','K','J']:G.p.meter>=25?['L','K','J']:['K','J'];
+    const ch=choices[Math.floor(Math.random()*choices.length)];startMove(G.p,MOVE_BY_KEY[ch]);}
+  else G.p.x=clamp(G.p.x+3,30,650);
+}
+/* 键盘事件 */
+window.addEventListener('keydown',e=>{
+  const key=KEYMAP[e.key]||KEYMAP[e.code];
+  if(!key)return;
+  e.preventDefault();
+  if(!G.keys.s&&key==='s'){/* press */}
+  if(G.keys.s&&key==='s')return;
+  G.keys[key]=true;
+  const kEl=document.querySelector(`.key-guide .k[data-key="${key}"]`);
+  if(kEl)kEl.classList.add('press');
+  if(!G.running&&['j','k','l','u','s'].includes(key))startRound();
+});
+window.addEventListener('keyup',e=>{
+  const key=KEYMAP[e.key]||KEYMAP[e.code];
+  if(!key)return;e.preventDefault();
+  if(key==='s'&&G.keys.s)G.keys._sReleased=true;
+  G.keys[key]=false;
+  const kEl=document.querySelector(`.key-guide .k[data-key="${key}"]`);
+  if(kEl)kEl.classList.remove('press');
+});
+/* 点击键位也可操作 */
+document.querySelectorAll('.key-guide .k').forEach(el=>{
+  const key=el.dataset.key;
+  el.addEventListener('mousedown',ev=>{ev.preventDefault();G.keys[key]=true;el.classList.add('press');});
+  el.addEventListener('mouseup',()=>{if(key==='s')G.keys._sReleased=true;G.keys[key]=false;el.classList.remove('press');});
+  el.addEventListener('mouseleave',()=>{G.keys[key]=false;el.classList.remove('press');});
+});
+selP.addEventListener('change',()=>{G.round=1;G.winsP=0;G.winsE=0;startRound();});
+selE.addEventListener('change',()=>{G.round=1;G.winsP=0;G.winsE=0;startRound();});
+startRound();
+requestAnimationFrame(loop);
 
 /* ---------- 导航高亮 ---------- */
 document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',()=>{
@@ -799,10 +1173,10 @@ document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',(
     '> Loading <b>Unreal Engine 5</b> runtime ... <span class="ok">OK</span>',
     '> Init <b>GameplayAbilitySystem</b> ..... <span class="ok">OK</span>',
     '> Register 8 Mecha cores ............. <span class="ok">OK</span>',
-    '> Load 32 abilities / 8 elements ..... <span class="ok">OK</span>',
+    '> Load 32 combat moves / 8 elements .. <span class="ok">OK</span>',
     '> Verify element matrix ............. <span class="ok">OK</span>',
-    '> Calibrate battle simulator ........ <span class="warn">READY</span>',
-    '> <b>TACTICAL SYSTEM ONLINE</b>'
+    '> Calibrate 60Hz frame pipeline ..... <span class="warn">READY</span>',
+    '> <b>COMBAT SYSTEM ONLINE</b>'
   ];
   const box=document.getElementById('bootLines'), bar=document.getElementById('bootBar'), pct=document.getElementById('bootPct');
   let i=0;

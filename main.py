@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from config.game_data import MECHAS, ELEMENTS, TYPE_CHART, all_abilities_flat
+from config.game_data import MECHAS, ELEMENTS, TYPE_CHART, all_moves_flat
 from config.project_config import (
     PROJECT, DOCS_DIR, DEMO_DIR, UE5_DIR,
 )
@@ -55,14 +55,19 @@ def cmd_check():
     # 数据完整性
     assert len(MECHAS) == 8, "机甲数量不是 8"
     assert len(ELEMENTS) == 8, "属性数量不是 8"
-    abilities = all_abilities_flat()
-    if len(abilities) != 32:
-        errors.append(f"技能数量 {len(abilities)} != 32")
+    moves = all_moves_flat()
+    if len(moves) != 32:
+        errors.append(f"招式数量 {len(moves)} != 32")
     for m in MECHAS:
-        if len(m.abilities) != 4:
-            errors.append(f"{m.name_cn} 技能数 {len(m.abilities)} != 4")
+        if len(m.moves) != 4:
+            errors.append(f"{m.name_cn} 招式数 {len(m.moves)} != 4")
         if m.element not in TYPE_CHART:
             errors.append(f"{m.name_cn} 属性 {m.element} 未在克制表中")
+        for mv in m.moves:
+            if mv.startup <= 0 or mv.active <= 0 or mv.recovery <= 0:
+                errors.append(f"{m.name_cn}/{mv.name_cn} 帧数据非法")
+            if mv.hitstun <= 0 or mv.hitstop <= 0:
+                errors.append(f"{m.name_cn}/{mv.name_cn} 僵直/hitstop 非法")
     # 产物完整性
     for d, label in [(DOCS_DIR, "文档"), (DEMO_DIR, "演示")]:
         if not d.exists() or not any(d.iterdir()):
@@ -70,7 +75,7 @@ def cmd_check():
     if not (UE5_DIR / "Public" / "MechaCharacter.h").exists():
         errors.append("UE5 骨架缺失 MechaCharacter.h")
 
-    print(f"[校验] 机甲 {len(MECHAS)} 台 | 属性 {len(ELEMENTS)} 种 | 技能 {len(abilities)} 个")
+    print(f"[校验] 机甲 {len(MECHAS)} 台 | 属性 {len(ELEMENTS)} 种 | 招式 {len(moves)} 个 | 帧数据 ✓")
     if errors:
         print("[校验] 发现问题：")
         for e in errors:

@@ -1,5 +1,5 @@
 // ============================================================================
-// MECHA·MON - UE5 GAS Framework Skeleton
+// MECHA·MON - UE5 Real-time Combat System (GAS)
 // 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #pragma once
@@ -35,20 +35,20 @@ struct MECHAMON_API FMechaGameplayTags
     FGameplayTag Type_ICE;
 
     // ---- 状态 ----
-    FGameplayTag Status_Burning;
-    FGameplayTag Status_Frozen;
-    FGameplayTag Status_Shielded;
-    FGameplayTag Status_Stunned;
-    FGameplayTag Status_Overdrive;
-    FGameplayTag Status_Slowed;
+    FGameplayTag Status_HitStun;
+    FGameplayTag Status_BlockStun;
+    FGameplayTag Status_Armor;
+    FGameplayTag Status_GuardBreak;
 
     // ---- 事件 ----
+    FGameplayTag Event_Parry;
+    FGameplayTag Event_CounterHit;
     FGameplayTag Event_Hit;
-    FGameplayTag Event_Switch;
     FGameplayTag Event_Knockout;
 
     // ---- 数值 SetByCaller ----
-    FGameplayTag Data_Power;
+    FGameplayTag Data_Damage;
+    FGameplayTag Data_MeterCost;
 
 private:
     static FMechaGameplayTags Instance;

@@ -6,11 +6,11 @@ PROJECT = {
     "codename": "MECHA·MON",
     "name_cn": "机甲兽竞技场",
     "name_en": "MechaMon Arena",
-    "tagline": "机甲觉醒 · 策略竞技 · 属性压制",
+    "tagline": "机甲觉醒 · 帧级博弈 · 硬核格斗",
     "engine": "Unreal Engine 5",
     "framework": "Gameplay Ability System (GAS)",
     "version": "v1.0 · Vertical Slice",
-    "genre": "回合制策略竞技 / 机甲收集养成",
+    "genre": "实时 1v1 机甲格斗 / 操作竞技",
     "platform": "PC (首发) / 主机 (后续)",
     "author": "MECHA·MON 开发团队",
 }

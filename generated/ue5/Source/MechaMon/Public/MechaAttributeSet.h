@@ -1,5 +1,5 @@
 // ============================================================================
-// MECHA·MON - UE5 GAS Framework Skeleton
+// MECHA·MON - UE5 Real-time Combat System (GAS)
 // 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #pragma once
@@ -15,7 +15,7 @@
     GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
     GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-/** 机甲属性集：所有可修改数值集中在此，便于平衡调整与网络复制 */
+/** 机甲属性集：生命/能量/防御槽与战斗数值集中管理，便于平衡调整与网络复制 */
 UCLASS()
 class MECHAMON_API UMechaAttributeSet : public UAttributeSet
 {
@@ -36,14 +36,23 @@ public:
     FGameplayAttributeData MaxHealth;
     ATTRIBUTE_ACCESSORS(UMechaAttributeSet, MaxHealth)
 
-    // ---- 能量（技能消耗资源） ----
-    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Energy", ReplicatedUsing = OnRep_Energy)
-    FGameplayAttributeData Energy;
-    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, Energy)
+    // ---- 能量（必杀/超必杀消耗资源） ----
+    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Meter", ReplicatedUsing = OnRep_Meter)
+    FGameplayAttributeData Meter;
+    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, Meter)
 
-    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Energy")
-    FGameplayAttributeData MaxEnergy;
-    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, MaxEnergy)
+    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Meter")
+    FGameplayAttributeData MaxMeter;
+    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, MaxMeter)
+
+    // ---- 防御槽（清空即破防） ----
+    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Guard", ReplicatedUsing = OnRep_Guard)
+    FGameplayAttributeData Guard;
+    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, Guard)
+
+    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Guard")
+    FGameplayAttributeData MaxGuard;
+    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, MaxGuard)
 
     // ---- 战斗属性 ----
     UPROPERTY(BlueprintReadOnly, Category = "Mecha|Combat")
@@ -58,14 +67,10 @@ public:
     FGameplayAttributeData Speed;
     ATTRIBUTE_ACCESSORS(UMechaAttributeSet, Speed)
 
+    /** 霸体等级：0 无 / 1 抗轻击 / 2 完全霸体 */
     UPROPERTY(BlueprintReadOnly, Category = "Mecha|Combat")
-    FGameplayAttributeData CritRate;
-    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, CritRate)
-
-    // ---- 临时护盾 ----
-    UPROPERTY(BlueprintReadOnly, Category = "Mecha|Combat")
-    FGameplayAttributeData Shield;
-    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, Shield)
+    FGameplayAttributeData Armor;
+    ATTRIBUTE_ACCESSORS(UMechaAttributeSet, Armor)
 
 protected:
     UFUNCTION()
@@ -73,5 +78,7 @@ protected:
     UFUNCTION()
     void OnRep_MaxHealth(const FGameplayAttributeData& OldValue);
     UFUNCTION()
-    void OnRep_Energy(const FGameplayAttributeData& OldValue);
+    void OnRep_Meter(const FGameplayAttributeData& OldValue);
+    UFUNCTION()
+    void OnRep_Guard(const FGameplayAttributeData& OldValue);
 };

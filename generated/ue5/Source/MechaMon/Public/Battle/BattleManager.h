@@ -1,5 +1,5 @@
 // ============================================================================
-// MECHA·MON - UE5 GAS Framework Skeleton
+// MECHA·MON - UE5 Real-time Combat System (GAS)
 // 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #pragma once
@@ -10,7 +10,7 @@
 
 class AMechaCharacter;
 
-/** 回合调度器：负责先手计算、行动顺序、换人与胜负判定 */
+/** 对局管理器：负责 1v1 BO3 回合流程、计时、胜负结算与服务器权威校验 */
 UCLASS()
 class MECHAMON_API ABattleManager : public AGameStateBase
 {
@@ -20,31 +20,33 @@ public:
     ABattleManager();
 
     UFUNCTION(BlueprintCallable, Category = "Battle")
-    void StartBattle(const TArray<AMechaCharacter*>& PlayerTeam, const TArray<AMechaCharacter*>& EnemyTeam);
+    void StartMatch(AMechaCharacter* InPlayerOne, AMechaCharacter* InPlayerTwo);
 
     UFUNCTION(BlueprintCallable, Category = "Battle")
-    void EndTurn();
+    void TickRound(float DeltaSeconds);
+
+    /** 单局结束时由服务器调用 */
+    UFUNCTION(BlueprintCallable, Category = "Battle")
+    void NotifyRoundFinished(AMechaCharacter* Winner);
 
     UFUNCTION(BlueprintPure, Category = "Battle")
-    int32 GetCurrentTurn() const { return CurrentTurn; }
+    int32 GetRoundTimeRemaining() const { return FMath::CeilToInt(RoundTimeRemaining); }
 
-    /** 服务器使用可复现种子保证战斗回放可校验 */
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Battle")
-    int32 RandomSeed;
+    int32 PlayerRoundsWon = 0;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Battle")
+    int32 OpponentRoundsWon = 0;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Battle")
+    int32 CurrentRound = 1;
 
 private:
-    UPROPERTY()
-    TArray<TObjectPtr<AMechaCharacter>> PlayerTeam;
+    float RoundTimeRemaining = 99.f;
+    static constexpr int32 RoundsToWin = 2;
+    TObjectPtr<AMechaCharacter> PlayerOne;
+    TObjectPtr<AMechaCharacter> PlayerTwo;
 
-    UPROPERTY()
-    TArray<TObjectPtr<AMechaCharacter>> EnemyTeam;
-
-    UPROPERTY()
-    TArray<TObjectPtr<AMechaCharacter>> TurnOrder;
-
-    int32 CurrentTurn = 0;
-    int32 CurrentActorIndex = 0;
-
-    void ComputeTurnOrder();
-    void CheckBattleEnd();
+    void CheckMatchEnd();
+    void ResetRound();
 };

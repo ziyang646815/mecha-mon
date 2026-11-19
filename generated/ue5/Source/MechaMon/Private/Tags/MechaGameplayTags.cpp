@@ -1,8 +1,8 @@
 // ============================================================================
-// MECHA·MON - UE5 GAS Framework Skeleton
+// MECHA·MON - UE5 Real-time Combat System (GAS)
 // 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
-#include "MechaGameplayTags.h"
+#include "Tags/MechaGameplayTags.h"
 
 FMechaGameplayTags FMechaGameplayTags::Instance;
 
@@ -17,16 +17,16 @@ FMechaGameplayTags::FMechaGameplayTags()
     Type_SHADOW = FGameplayTag::RequestGameplayTag(FName("Mecha.Type.Shadow"));
     Type_ICE = FGameplayTag::RequestGameplayTag(FName("Mecha.Type.Ice"));
 
-    Status_Burning   = FGameplayTag::RequestGameplayTag(FName("Status.Burning"));
-    Status_Frozen    = FGameplayTag::RequestGameplayTag(FName("Status.Frozen"));
-    Status_Shielded  = FGameplayTag::RequestGameplayTag(FName("Status.Shielded"));
-    Status_Stunned   = FGameplayTag::RequestGameplayTag(FName("Status.Stunned"));
-    Status_Overdrive = FGameplayTag::RequestGameplayTag(FName("Status.Overdrive"));
-    Status_Slowed    = FGameplayTag::RequestGameplayTag(FName("Status.Slowed"));
+    Status_HitStun    = FGameplayTag::RequestGameplayTag(FName("Status.HitStun"));
+    Status_BlockStun  = FGameplayTag::RequestGameplayTag(FName("Status.BlockStun"));
+    Status_Armor      = FGameplayTag::RequestGameplayTag(FName("Status.Armor"));
+    Status_GuardBreak = FGameplayTag::RequestGameplayTag(FName("Status.GuardBreak"));
 
-    Event_Hit      = FGameplayTag::RequestGameplayTag(FName("Event.Hit"));
-    Event_Switch   = FGameplayTag::RequestGameplayTag(FName("Event.Switch"));
-    Event_Knockout = FGameplayTag::RequestGameplayTag(FName("Event.Knockout"));
+    Event_Parry      = FGameplayTag::RequestGameplayTag(FName("Event.Parry"));
+    Event_CounterHit = FGameplayTag::RequestGameplayTag(FName("Event.CounterHit"));
+    Event_Hit        = FGameplayTag::RequestGameplayTag(FName("Event.Hit"));
+    Event_Knockout   = FGameplayTag::RequestGameplayTag(FName("Event.Knockout"));
 
-    Data_Power = FGameplayTag::RequestGameplayTag(FName("Data.Power"));
+    Data_Damage    = FGameplayTag::RequestGameplayTag(FName("Data.Damage"));
+    Data_MeterCost = FGameplayTag::RequestGameplayTag(FName("Data.MeterCost"));
 }
