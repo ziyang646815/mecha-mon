@@ -338,11 +338,19 @@ footer b{color:var(--cyan)}
   background:repeating-linear-gradient(90deg,rgba(0,229,255,.05) 0 1px,transparent 1px 40px)}
 .stage .sun{position:absolute;left:50%;top:26px;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,107,26,.16),transparent 68%);border:1px solid rgba(255,107,26,.12)}
-.fighter2{position:absolute;bottom:38px;width:150px;text-align:center;transition:none;will-change:transform,left}
-.fighter2 svg{width:100%;height:150px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.6))}
-.fighter2 .tag{font-family:Consolas,monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:2px}
-.fighter2.p2 svg{transform:scaleX(-1)}
-.fighter2 .shadow{position:absolute;bottom:-6px;left:18%;right:18%;height:9px;background:#000;border-radius:50%;filter:blur(3px);opacity:.5}
+.mecha-art{display:block;width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.55))}
+.fighter2{position:absolute;bottom:30px;width:150px;text-align:center;transition:none;will-change:transform,left}
+.fighter2 .mecha-art{height:182px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.6));animation:idleFloat 2.6s ease-in-out infinite;transform-origin:center bottom}
+@keyframes idleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.fighter2.p2 .mecha-art{animation:idleFloat2 2.9s ease-in-out infinite;transform:scaleX(-1)}
+@keyframes idleFloat2{0%,100%{transform:scaleX(-1) translateY(0)}50%{transform:scaleX(-1) translateY(-5px)}}
+.fighter2.atk .mecha-art{animation:none;filter:drop-shadow(0 0 20px var(--fc,var(--cyan))) brightness(1.4)}
+.fighter2.p2.atk .mecha-art{transform:scaleX(-1)}
+.fighter2.hurt .mecha-art{animation:none;filter:drop-shadow(0 0 16px var(--red)) brightness(.65) saturate(2)}
+.fighter2.hurt{animation:hurtJolt .18s ease-out}
+@keyframes hurtJolt{0%{margin-left:0}25%{margin-left:-7px}75%{margin-left:6px}100%{margin-left:0}}
+.fighter2.guard .mecha-art{filter:drop-shadow(0 0 14px var(--cyan)) brightness(1.12)}
+.fighter2 .shadow{position:absolute;bottom:-4px;left:18%;right:18%;height:9px;background:#000;border-radius:50%;filter:blur(3px);opacity:.5}
 .state-tag{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-family:Consolas,monospace;font-size:10px;
   letter-spacing:1px;padding:2px 7px;border:1px solid;opacity:0;transition:opacity .08s;white-space:nowrap}
 .state-tag.show{opacity:1}
@@ -575,33 +583,11 @@ const PROJ = {"codename":"MECHA·MON","name_cn":"机甲兽竞技场","name_en":"
 const TMAP = Object.fromEntries(DATA.elements.map(e=>[e.key,e]));
 const byId = id => DATA.mechas.find(m=>m.id===id);
 
-/* ---------- 机甲 SVG ---------- */
-function mechaSVG(m, uid){
-  const c = m.color, a = m.accent, id = 'g'+uid;
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="#0a1020"/>
-    </linearGradient>
-    <filter id="${id}f"><feGaussianBlur stdDeviation="3.5" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <path d="M14 165 L46 122 L72 138 L72 186 L20 186 Z" fill="url(#${id})" opacity=".92"/>
-  <path d="M186 165 L154 122 L128 138 L128 186 L180 186 Z" fill="url(#${id})" opacity=".92"/>
-  <path d="M55 44 Q100 12 145 44 L152 84 L130 120 L70 120 L48 84 Z" fill="#101a30" stroke="${c}" stroke-width="2.5"/>
-  <path d="M62 70 L138 70 L126 92 L74 92 Z" fill="${a}" filter="url(#${id}f)" opacity=".95"/>
-  <path d="M100 12 L110 40 L90 40 Z" fill="${c}"/>
-  <line x1="100" y1="8" x2="100" y2="24" stroke="${c}" stroke-width="3"/>
-  <circle cx="100" cy="8" r="3" fill="${a}" filter="url(#${id}f)"/>
-  <path d="M78 100 L122 100 L112 124 L88 124 Z" fill="#1b2742" stroke="${c}" stroke-width="1.5"/>
-  <path d="M86 112 L114 112" stroke="${a}" stroke-width="2" opacity=".8"/>
-  <path d="M48 84 L34 96 L44 112 L60 100 Z" fill="${c}" opacity=".7"/>
-  <path d="M152 84 L166 96 L156 112 L140 100 Z" fill="${c}" opacity=".7"/>
-  <text x="100" y="180" text-anchor="middle" fill="${a}" font-size="10" font-family="monospace" opacity=".8">${m.codename}</text>
-  </svg>`;
+/* ---------- 机甲渲染：AI 概念立绘（透明底） ---------- */
+function mechaIMG(m){
+  return `<img class="mecha-art" src="assets/${m.id}.webp" alt="${m.name_cn}">`;
 }
 
-/* ---------- 雷达图 ---------- */
 function radarSVG(m, uid){
   const cx=60, cy=56, R=40, labels=['HP','ATK','DEF','SPD','EN'];
   const vals=[m.hp, m.atk, m.dfn, m.spd, m.energy], MAX=120;
@@ -706,16 +692,17 @@ document.getElementById('heroStats').innerHTML = `
   <div><b>${DATA.elements.length}</b><small>属性 ELEMENTS</small></div>
   <div><b>32</b><small>招式 MOVES</small></div>
   <div><b>UE5</b><small>ENGINE</small></div>`;
-document.getElementById('heroMech').innerHTML = mechaSVG(byId('BLAZE'),'hero');
+document.getElementById('heroMech').innerHTML = mechaIMG(byId('BLAZE'));
 
 document.getElementById('rosterGrid').innerHTML = DATA.mechas.map((m,i)=>`
   <div class="card" style="--c:${m.color}">
     <div class="cid">${m.codename} / ${m.role}</div>
-    ${radarSVG(m,'r'+i)}
+    ${mechaIMG(m)}
     <div class="cname">${m.name_cn}</div>
     <div class="cen">${m.name_en.toUpperCase()}</div>
     <div class="type-pill">${TMAP[m.element].name_cn} · ${m.element}</div>
-    <div class="skill-count">${m.abilities.map(a=>a.name_cn).join(' · ')}</div>
+    <div class="mini-radar">${radarSVG(m,'r'+i)}</div>
+    <div class="skill-count">${m.moves.map(a=>a.name_cn).join(' · ')}</div>
   </div>`).join('');
 renderTypeGraph();
 
@@ -809,7 +796,7 @@ function renderFighters(){
   [G.p,G.e].forEach(f=>{
     const el=fighterEl(f);
     if(!el.dataset.ready){
-      el.innerHTML=`${mechaSVG(f.def,'fg_'+f.side)}<div class="tag">${f.def.codename}</div>
+      el.innerHTML=`${mechaIMG(f.def)}<div class="tag">${f.def.codename}</div>
         <div class="state-tag hitstun">HITSTUN</div><div class="state-tag blockstun">BLOCKSTUN</div>
         <div class="state-tag parry">PARRY!</div><div class="state-tag armor">ARMOR</div>`;
       el.dataset.ready='1';
@@ -845,13 +832,17 @@ function renderHUD(){
     if(t>0&&n>1){el.querySelector('b').textContent=n;el.classList.add('show');}else el.classList.remove('show');};
   comb(G.comboP,G.comboTimerP);
   document.getElementById('slowVal').textContent=G.slow;
-  // 状态标签
+  // 状态标签 + 机甲立绘打击反馈
   [['fighterP',G.p],['fighterE',G.e]].forEach(([id,f])=>{
     const host=document.getElementById(id);
     host.querySelector('.state-tag.hitstun').classList.toggle('show',f.hitstun>0);
     host.querySelector('.state-tag.blockstun').classList.toggle('show',f.blockstun>0);
     host.querySelector('.state-tag.parry').classList.toggle('show',f.parryFlash>0);
     host.querySelector('.state-tag.armor').classList.toggle('show',f.move&&f.move.armor>0&&f.state==='ATTACK');
+    host.classList.toggle('atk',f.state==='ATTACK'&&f.move&&f.stateFrame<=f.move.startup+f.move.active);
+    host.classList.toggle('hurt',f.hitstun>0);
+    host.classList.toggle('guard',f.state==='GUARD'||(f.state==='PARRY'&&f.stateFrame<=4));
+    host.style.setProperty('--fc', f.def.color);
   });
 }
 function renderFrameMonitor(f){
