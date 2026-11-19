@@ -17,6 +17,7 @@ python main.py
 | 技术架构 | `docs/02_技术架构_UE5_GAS.md` | GAS 分层、标签、伤害管线、网络架构 |
 | 项目规划 | `docs/03_项目规划_路线图.md` | 4 阶段里程碑、团队配置、风险 |
 | 竞技规则 | `docs/04_竞技规则与数值.md` | 伤害公式、状态表、平衡约束 |
+| 技术愿景（评审版） | `docs/05_技术愿景与开发规划_评审版.md` | 完整形态的技术栈、动画管线、预算与交付标准 |
 | UE5 代码骨架 | `generated/ue5/Source/MechaMon/` | ASC / AttributeSet / Ability / Tags / BattleManager |
 | HTML 演示原型 | `demo/index.html` | 对战模拟 + 图鉴 + 架构 + 路线图，双击即开 |
 
