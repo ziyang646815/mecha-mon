@@ -1,6 +1,6 @@
 # MECHA·MON 技术架构设计（UE5 + GAS）
 
-> 引擎：Unreal Engine 5 · 框架：Gameplay Ability System (GAS) · 版本 0.1.0-Prototype
+> 引擎：Unreal Engine 5 · 框架：Gameplay Ability System (GAS) · 版本 v1.0 · Vertical Slice
 
 ## 1. 为什么选择 GAS
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """MECHA·MON 核心游戏数据。
 
-单一数据源（Single Source of Truth）：文档生成器、UE5 骨架生成器、
-HTML 演示原型全部从本文件读取数据，避免"文档和演示对不上"。
+单一数据源（Single Source of Truth）：文档生成器、UE5 代码基座生成器、
+官方交互演示全部从本文件读取数据，确保策划、工程与展示三者完全一致。
 """
 from __future__ import annotations
 
@@ -228,9 +228,9 @@ BATTLE_RULES = {
 }
 
 PHASES = [
-    {"id": "P0", "name": "概念验证", "duration": "4 周", "goal": "跑通 GAS 回合制战斗闭环",
-     "deliverables": ["UE5 工程模板", "ASC + AttributeSet 原型", "1v1 可战斗 Demo", "属性克制表"],
-     "status": "当前阶段"},
+    {"id": "P0", "name": "核心战斗验证", "duration": "4 周", "goal": "构建 GAS 回合制战斗核心闭环",
+     "deliverables": ["UE5 工程基座", "ASC + AttributeSet 核心模块", "1v1 可战斗版本", "属性克制系统"],
+     "status": "进行中"},
     {"id": "P1", "name": "核心战斗", "duration": "8 周", "goal": "完成 3v3 战斗与全部机甲",
      "deliverables": ["8 台机甲 + 32 个技能", "换人/能量/状态系统", "AI 对手", "战斗回放"],
      "status": "规划中"},
@@ -259,7 +259,7 @@ def all_abilities_flat() -> List[Ability]:
 
 
 def demo_data() -> dict:
-    """导出给 HTML 原型使用的数据（JSON 可序列化）。"""
+    """导出给官方交互演示使用的数据（JSON 可序列化）。"""
     return {
         "elements": [asdict(e) for e in ELEMENTS],
         "type_chart": TYPE_CHART,

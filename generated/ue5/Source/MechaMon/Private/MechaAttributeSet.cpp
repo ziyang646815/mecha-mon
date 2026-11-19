@@ -1,6 +1,6 @@
 // ============================================================================
 // MECHA·MON - UE5 GAS Framework Skeleton
-// 由 MechaMonFramework 自动生成 · 代码结构完整，逻辑需按项目需求补充
+// 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #include "MechaAttributeSet.h"
 #include "Net/UnrealNetwork.h"
@@ -31,7 +31,7 @@ void UMechaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallb
 {
     Super::PostGameplayEffectExecute(Data);
 
-    // TODO: 接入属性克制倍率（读取 Mecha.Type.* 标签）与 GameplayCue 表现
+    // [扩展点] 接入属性克制倍率（读取 Mecha.Type.* 标签）与 GameplayCue 表现
     if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));

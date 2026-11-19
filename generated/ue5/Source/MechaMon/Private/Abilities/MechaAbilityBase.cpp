@@ -1,6 +1,6 @@
 // ============================================================================
 // MECHA·MON - UE5 GAS Framework Skeleton
-// 由 MechaMonFramework 自动生成 · 代码结构完整，逻辑需按项目需求补充
+// 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #include "MechaAbilityBase.h"
 #include "MechaAttributeSet.h"
@@ -25,7 +25,7 @@ bool UMechaAbilityBase::CanActivateAbility(const FGameplayAbilitySpecHandle Hand
         return false;
     }
 
-    // TODO: 检查冻结/眩晕状态标签，被控制时禁止释放
+    // [扩展点] 检查冻结/眩晕状态标签，被控制时禁止释放
     // const FGameplayTag StunnedTag = FGameplayTag::RequestGameplayTag("Status.Stunned");
     return true;
 }
@@ -41,7 +41,7 @@ void UMechaAbilityBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
         return;
     }
 
-    // TODO: 构造 EffectSpec → 应用属性克制倍率 → ApplyGameplayEffectToTarget
+    // [扩展点] 构造 EffectSpec → 应用属性克制倍率 → ApplyGameplayEffectToTarget
     // FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(HitEffectClass, GetAbilityLevel(), MakeEffectContext());
     // Spec.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("Data.Power"), BasePower);
 

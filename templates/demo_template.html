@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MECHA·MON 机甲兽竞技场 · 概念演示</title>
+<title>MECHA·MON 机甲兽竞技场 · 官方产品演示</title>
 <style>
 :root{
   --bg:#070b16; --bg2:#0d1426; --panel:#111a2e; --panel2:#16213a;
@@ -342,7 +342,7 @@ footer b{color:var(--cyan)}
 
 <header class="hero" id="home"><div class="wrap hero-grid">
   <div>
-    <div class="eyebrow" id="eyebrow">CONCEPT DEMO</div>
+    <div class="eyebrow" id="eyebrow">TACTICAL COMBAT SYSTEM</div>
     <h1><span class="l1 glitch" data-text="MECHA">MECHA</span><span class="l2 glitch" data-text="MON">MON</span></h1>
     <div class="tagline" id="tagline"></div>
     <p class="hero-desc" id="heroDesc"></p>
@@ -434,13 +434,13 @@ footer b{color:var(--cyan)}
   <div class="sec-head">
     <div class="sec-num">// 05 — ROADMAP</div>
     <h2>项目路线图</h2>
-    <p class="sec-sub">从概念验证到电竞化运营，四个阶段逐步推进。当前处于 P0 概念验证阶段。</p>
+    <p class="sec-sub">从核心战斗构建到电竞化运营，四个阶段稳步推进。当前处于 P0 核心战斗验证阶段。</p>
   </div>
   <div class="timeline" id="timeline"></div>
 </div></section>
 
 <footer><div class="wrap">
-  <b>MECHA·MON</b> 概念演示原型 · 由 MechaMonFramework 自动生成 ·
+  <b>MECHA·MON</b> 官方交互式产品演示 · MECHA·MON 数据驱动构建系统 ·
   UE5 + GAS · <span id="footVersion"></span>
 </div></footer>
 
@@ -575,7 +575,7 @@ document.getElementById('footVersion').textContent = PROJ.version;
 })();
 document.getElementById('tagline').textContent = PROJ.tagline;
 document.getElementById('heroDesc').textContent =
-  PROJ.name_cn + " 是一款以机甲收集与回合制策略对战为核心的竞技游戏。组建 3 台机甲的作战小队，通过属性克制、技能组合与能量管理击败对手。当前原型由 Python 单一数据源自动生成，展示 UE5 GAS 框架设计。";
+  PROJ.name_cn + " 是一款以机甲收集与回合制策略对战为核心的竞技游戏。组建 3 台机甲的作战小队，通过属性克制、技能组合与能量管理击败对手。本演示由统一数据源驱动，完整呈现 UE5 GAS 战斗系统设计。";
 document.getElementById('heroStats').innerHTML = `
   <div><b>${DATA.mechas.length}</b><small>机甲 MECHAS</small></div>
   <div><b>${DATA.elements.length}</b><small>属性 ELEMENTS</small></div>

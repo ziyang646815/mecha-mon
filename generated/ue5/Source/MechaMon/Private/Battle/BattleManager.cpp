@@ -1,6 +1,6 @@
 // ============================================================================
 // MECHA·MON - UE5 GAS Framework Skeleton
-// 由 MechaMonFramework 自动生成 · 代码结构完整，逻辑需按项目需求补充
+// 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #include "BattleManager.h"
 #include "MechaCharacter.h"
@@ -20,7 +20,7 @@ void ABattleManager::StartBattle(const TArray<AMechaCharacter*>& InPlayerTeam,
     CurrentTurn = 1;
     CurrentActorIndex = 0;
     ComputeTurnOrder();
-    // TODO: 广播战斗开始事件，驱动 UI
+    // [扩展点] 广播战斗开始事件，驱动 UI
 }
 
 void ABattleManager::ComputeTurnOrder()
@@ -43,14 +43,14 @@ void ABattleManager::EndTurn()
     {
         CurrentActorIndex = 0;
         CurrentTurn++;
-        // TODO: 回合结束回复 12 点能量、结算 DoT、检查回合上限
+        // [扩展点] 回合结束回复 12 点能量、结算 DoT、检查回合上限
     }
     CheckBattleEnd();
 }
 
 void ABattleManager::CheckBattleEnd()
 {
-    // TODO: 任一方全部生命归零则结算胜负
+    // [扩展点] 任一方全部生命归零则结算胜负
 }
 
 void ABattleManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

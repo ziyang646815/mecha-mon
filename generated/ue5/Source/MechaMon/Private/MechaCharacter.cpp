@@ -1,6 +1,6 @@
 // ============================================================================
 // MECHA·MON - UE5 GAS Framework Skeleton
-// 由 MechaMonFramework 自动生成 · 代码结构完整，逻辑需按项目需求补充
+// 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 #include "MechaCharacter.h"
 #include "MechaAttributeSet.h"

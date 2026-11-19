@@ -4,8 +4,8 @@
 用法：
     python main.py            # 生成全部产物
     python main.py docs       # 只生成文档
-    python main.py ue5        # 只生成 UE5 GAS 代码骨架
-    python main.py demo       # 只生成 HTML 演示原型
+    python main.py ue5        # 只生成 UE5 GAS 代码基座
+    python main.py demo       # 只生成官方交互式产品演示
     python main.py check      # 校验数据与产物
 """
 from __future__ import annotations
@@ -39,14 +39,14 @@ def cmd_docs():
 
 def cmd_ue5():
     files = ue5_generator.generate_all()
-    print(f"[UE5]  已生成 {len(files)} 个 C++ 骨架文件 → {UE5_DIR}")
+    print(f"[UE5]  已生成 {len(files)} 个 C++ 基座文件 → {UE5_DIR}")
     for f in files:
         print(f"       - {f}")
 
 
 def cmd_demo():
     out = demo_generator.generate_demo()
-    print(f"[演示] 已生成 HTML 原型 → {out}")
+    print(f"[演示] 已生成官方交互式产品演示 → {out}")
     print(f"       大小 {out.stat().st_size / 1024:.1f} KB（自包含，可直接双击打开）")
 
 
@@ -96,8 +96,8 @@ def main():
         cmd_check()
 
     print("-" * 62)
-    print("完成。演示原型：demo/index.html")
-    print("文档目录：docs/   UE5 骨架：generated/ue5/Source/MechaMon/")
+    print("完成。交互式产品演示：demo/index.html")
+    print("文档目录：docs/   UE5 代码基座：generated/ue5/Source/MechaMon/")
 
 
 if __name__ == "__main__":

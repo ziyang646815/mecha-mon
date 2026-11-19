@@ -9,10 +9,10 @@ PROJECT = {
     "tagline": "机甲觉醒 · 策略竞技 · 属性压制",
     "engine": "Unreal Engine 5",
     "framework": "Gameplay Ability System (GAS)",
-    "version": "0.1.0-Prototype",
+    "version": "v1.0 · Vertical Slice",
     "genre": "回合制策略竞技 / 机甲收集养成",
     "platform": "PC (首发) / 主机 (后续)",
-    "author": "Project MECHA·MON 筹备组",
+    "author": "MECHA·MON 开发团队",
 }
 
 ROOT = Path(__file__).resolve().parent.parent

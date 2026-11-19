@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""HTML 演示原型生成器：把游戏数据注入自包含模板。"""
+"""官方交互式产品演示生成器：把游戏数据注入自包含模板。"""
 from __future__ import annotations
 
 import json

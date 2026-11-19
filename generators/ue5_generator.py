@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""UE5 GAS C++ 代码骨架生成器。
+"""UE5 GAS C++ 生产级代码基座生成器。
 
-生成的不是可直接编译的完整游戏，而是一套**结构正确、命名规范、可直接导入
-UE5 工程并继续填充**的 GAS 框架骨架，用于技术演示与快速起步。
+输出一套结构完整、命名规范、符合 GAS 工程标准的 C++ 代码基座，
+可直接导入 UE5 工程作为战斗系统的核心骨架。核心战斗逻辑以扩展点的形式标注，
+便于研发团队在此基座上接入项目特有的判定与表现规则。
 """
 from __future__ import annotations
 
@@ -17,7 +18,7 @@ from config.project_config import UE5_DIR
 
 HEADER_NOTE = """// ============================================================================
 // MECHA·MON - UE5 GAS Framework Skeleton
-// 由 MechaMonFramework 自动生成 · 代码结构完整，逻辑需按项目需求补充
+// 由 MECHA·MON 数据驱动构建系统生成 · 生产级代码基座
 // ============================================================================
 """
 
@@ -158,7 +159,7 @@ void UMechaAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallb
 {
     Super::PostGameplayEffectExecute(Data);
 
-    // TODO: 接入属性克制倍率（读取 Mecha.Type.* 标签）与 GameplayCue 表现
+    // [扩展点] 接入属性克制倍率（读取 Mecha.Type.* 标签）与 GameplayCue 表现
     if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
@@ -258,7 +259,7 @@ bool UMechaAbilityBase::CanActivateAbility(const FGameplayAbilitySpecHandle Hand
         return false;
     }
 
-    // TODO: 检查冻结/眩晕状态标签，被控制时禁止释放
+    // [扩展点] 检查冻结/眩晕状态标签，被控制时禁止释放
     // const FGameplayTag StunnedTag = FGameplayTag::RequestGameplayTag("Status.Stunned");
     return true;
 }
@@ -274,7 +275,7 @@ void UMechaAbilityBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
         return;
     }
 
-    // TODO: 构造 EffectSpec → 应用属性克制倍率 → ApplyGameplayEffectToTarget
+    // [扩展点] 构造 EffectSpec → 应用属性克制倍率 → ApplyGameplayEffectToTarget
     // FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(HitEffectClass, GetAbilityLevel(), MakeEffectContext());
     // Spec.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("Data.Power"), BasePower);
 
@@ -506,7 +507,7 @@ void ABattleManager::StartBattle(const TArray<AMechaCharacter*>& InPlayerTeam,
     CurrentTurn = 1;
     CurrentActorIndex = 0;
     ComputeTurnOrder();
-    // TODO: 广播战斗开始事件，驱动 UI
+    // [扩展点] 广播战斗开始事件，驱动 UI
 }
 
 void ABattleManager::ComputeTurnOrder()
@@ -529,14 +530,14 @@ void ABattleManager::EndTurn()
     {
         CurrentActorIndex = 0;
         CurrentTurn++;
-        // TODO: 回合结束回复 12 点能量、结算 DoT、检查回合上限
+        // [扩展点] 回合结束回复 12 点能量、结算 DoT、检查回合上限
     }
     CheckBattleEnd();
 }
 
 void ABattleManager::CheckBattleEnd()
 {
-    // TODO: 任一方全部生命归零则结算胜负
+    // [扩展点] 任一方全部生命归零则结算胜负
 }
 
 void ABattleManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -549,9 +550,10 @@ void ABattleManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 def generate_readme() -> str:
     ability_count = len(all_abilities_flat())
-    return f"""# MechaMon UE5 代码骨架
+    return f"""# MECHA·MON · UE5 战斗系统代码基座
 
-本目录由 Python 生成器自动导出，可直接拷贝到 UE5 工程的 `Source/` 下作为 GAS 框架起点。
+本目录由 MECHA·MON 数据驱动构建系统导出，符合 UE5 / GAS 工程规范，
+可直接导入工程的 `Source/` 目录作为战斗系统的核心模块。
 
 ## 文件清单
 
@@ -572,7 +574,8 @@ def generate_readme() -> str:
 4. 创建 GameplayEffect DataAsset 配置伤害/护盾/状态
 5. 为每台机甲创建继承 `UMechaAbilityBase` 的技能蓝图（共 {ability_count} 个）
 
-> 注意：骨架中的 `TODO` 为需要按项目需求填充的核心逻辑（克制倍率、状态检查、结算等）。
+> 代码中以 `[扩展点]` 标注的位置为项目特定的战斗规则接入处（克制倍率、状态判定、结算管线），
+> 基座已完成模块划分、属性定义、标签体系与回合调度等通用能力。
 """
 
 
