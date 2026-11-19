@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# UE5 生成物（源码骨架保留，构建产物忽略）
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+*.uasset
+*.umap
+
+# 本地临时
+*.log
+.tmp/

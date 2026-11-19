@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MECHA·MON 机甲兽竞技场 · 概念演示</title>
+<style>
+:root{
+  --bg:#070b16; --bg2:#0d1426; --panel:#111a2e; --panel2:#16213a;
+  --cyan:#00e5ff; --cyan-d:#007a99; --orange:#ff6b1a; --orange-d:#a63c00;
+  --text:#e6f1ff; --muted:#8296b5; --line:#1e2f4d;
+  --red:#ff3b5c; --green:#33e08b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Segoe UI","Microsoft YaHei",-apple-system,sans-serif;
+  background:var(--bg); color:var(--text); overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse at 15% 0%,rgba(0,229,255,.10),transparent 45%),
+    radial-gradient(ellipse at 85% 20%,rgba(255,107,26,.08),transparent 45%),
+    linear-gradient(rgba(30,47,77,.25) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(30,47,77,.25) 1px,transparent 1px);
+  background-size:auto,auto,48px 48px,48px 48px;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.10) 4px);
+  opacity:.35;
+}
+.mono{font-family:"Cascadia Code","Consolas",monospace}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+
+/* ---------- NAV ---------- */
+nav{
+  position:sticky;top:0;z-index:100;height:66px;
+  background:rgba(7,11,22,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:19px;letter-spacing:1px}
+.logo-mark{
+  width:34px;height:34px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--cyan),var(--orange));
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  color:#04101c;font-size:16px;
+}
+.logo span{color:var(--cyan)}
+.navlinks{display:flex;gap:6px}
+.navlinks a{
+  color:var(--muted);text-decoration:none;font-size:13px;padding:9px 14px;
+  border:1px solid transparent;transition:.2s;
+}
+.navlinks a:hover,.navlinks a.active{color:var(--cyan);border-color:var(--cyan-d);background:rgba(0,229,255,.06)}
+.nav-tag{font-size:11px;color:var(--orange);border:1px solid var(--orange-d);padding:5px 10px;letter-spacing:1px}
+
+/* ---------- HERO ---------- */
+.hero{min-height:640px;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;width:100%;padding:70px 0}
+.eyebrow{color:var(--cyan);font-size:12px;letter-spacing:4px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--cyan)}
+h1{font-size:clamp(46px,6vw,82px);line-height:1.02;font-weight:900;letter-spacing:-2px}
+h1 .l1{display:block;color:var(--text)}
+h1 .l2{display:block;background:linear-gradient(90deg,var(--cyan),#7ff0ff 45%,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:19px;color:var(--muted);margin:22px 0 10px;letter-spacing:2px}
+.hero-desc{font-size:14px;color:var(--muted);line-height:1.9;max-width:480px;margin-bottom:30px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  padding:13px 26px;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;
+  border:1px solid var(--cyan);color:#04101c;background:var(--cyan);transition:.2s;
+  clip-path:polygon(0 0,100% 0,100% 70%,calc(100% - 12px) 100%,0 100%);
+}
+.btn:hover{background:#7ff0ff;box-shadow:0 0 24px rgba(0,229,255,.45)}
+.btn.ghost{background:transparent;color:var(--cyan);border-color:var(--cyan-d)}
+.btn.ghost:hover{background:rgba(0,229,255,.08);box-shadow:none}
+.hero-stats{display:flex;gap:34px;margin-top:42px}
+.hero-stats div b{display:block;font-size:28px;color:var(--orange);font-family:Consolas,monospace}
+.hero-stats div small{font-size:11px;color:var(--muted);letter-spacing:2px}
+.hero-art{position:relative;display:flex;justify-content:center;align-items:center}
+.hero-art svg{width:100%;max-width:460px;filter:drop-shadow(0 0 40px rgba(0,229,255,.25))}
+.ring{position:absolute;width:400px;height:400px;border:1px solid rgba(0,229,255,.16);border-radius:50%;animation:spin 24s linear infinite}
+.ring2{width:520px;height:520px;border-style:dashed;border-color:rgba(255,107,26,.14);animation:spin 40s linear infinite reverse}
+.ring3{width:320px;height:320px;border-color:rgba(0,229,255,.1);animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.float-tag{position:absolute;font-size:10px;color:var(--cyan);border:1px solid var(--cyan-d);padding:4px 8px;background:rgba(7,11,22,.8);letter-spacing:1px}
+.ft1{top:12%;left:4%}.ft2{bottom:18%;right:2%;color:var(--orange);border-color:var(--orange-d)}
+
+/* ---------- SECTION ---------- */
+section{padding:80px 0;border-top:1px solid var(--line)}
+.sec-head{margin-bottom:38px}
+.sec-num{font-family:Consolas,monospace;color:var(--orange);font-size:12px;letter-spacing:3px}
+h2{font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:8px}
+.sec-sub{color:var(--muted);font-size:14px;margin-top:10px;max-width:640px;line-height:1.8}
+
+/* ---------- BATTLE ---------- */
+.battle-shell{
+  background:linear-gradient(180deg,var(--panel),var(--bg2));
+  border:1px solid var(--line);position:relative;
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+}
+.battle-top{
+  display:flex;justify-content:space-between;align-items:center;padding:14px 20px;
+  border-bottom:1px solid var(--line);background:rgba(0,229,255,.03);
+}
+.battle-top span{font-size:11px;color:var(--muted);letter-spacing:2px}
+.turn-badge{color:var(--orange);font-family:Consolas,monospace;font-size:14px;letter-spacing:1px}
+.arena{
+  display:grid;grid-template-columns:1fr 120px 1fr;gap:10px;align-items:center;
+  padding:26px 24px 10px;min-height:300px;
+}
+.fighter{text-align:center}
+.fighter svg{width:190px;height:190px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.5))}
+.fighter.enemy svg{transform:scaleX(-1)}
+.fighter .fname{font-size:19px;font-weight:800;margin-top:4px}
+.fighter .fmeta{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px}
+.vs{text-align:center}
+.vs b{font-size:34px;color:var(--line);font-family:Consolas,monospace;display:block}
+.vs small{font-size:10px;color:var(--muted);letter-spacing:2px}
+.bars{max-width:300px;margin:12px auto 0}
+.bar-row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:4px}
+.bar{height:9px;background:#0a1120;border:1px solid var(--line);position:relative;overflow:hidden}
+.bar i{display:block;height:100%;transition:width .5s ease}
+.bar.hp i{background:linear-gradient(90deg,#16a34a,var(--green))}
+.bar.hp.low i{background:linear-gradient(90deg,#b91c1c,var(--red))}
+.bar.en i{background:linear-gradient(90deg,#0369a1,var(--cyan))}
+.pick-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 24px 16px}
+.pick-box{background:rgba(0,0,0,.25);border:1px solid var(--line);padding:12px}
+.pick-box label{font-size:10px;color:var(--muted);letter-spacing:2px;display:block;margin-bottom:8px}
+.pick-box select{
+  width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--cyan-d);
+  padding:9px;font-size:13px;outline:none;
+}
+.battle-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 24px 20px}
+.skill{
+  background:var(--panel2);border:1px solid var(--line);padding:12px 10px;cursor:pointer;
+  text-align:left;transition:.18s;position:relative;overflow:hidden;color:var(--text);
+}
+.skill:hover:not(:disabled){border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,229,255,.12)}
+.skill:disabled{opacity:.35;cursor:not-allowed}
+.skill .sname{font-size:13px;font-weight:700;display:flex;justify-content:space-between;gap:4px}
+.skill .scost{color:var(--cyan);font-family:Consolas,monospace;font-size:11px}
+.skill .sdesc{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5;height:30px;overflow:hidden}
+.skill .stag{font-size:9px;margin-top:6px;letter-spacing:1px}
+.battle-foot{display:grid;grid-template-columns:1fr 320px;border-top:1px solid var(--line)}
+.log{padding:14px 20px;height:132px;overflow-y:auto;font-family:Consolas,monospace;font-size:11px;line-height:1.9}
+.log div{color:var(--muted)}
+.log b{color:var(--cyan)}
+.log .dmg{color:var(--red)}
+.log .eff{color:var(--orange)}
+.ctrl{padding:14px 20px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:8px;justify-content:center}
+.ctrl .btn{padding:9px 14px;text-align:center;font-size:11px}
+.eff-badge{font-size:11px;text-align:center;color:var(--muted)}
+
+/* ---------- ROSTER ---------- */
+.roster{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{
+  background:linear-gradient(160deg,var(--panel),var(--bg2));border:1px solid var(--line);
+  padding:16px;position:relative;transition:.2s;overflow:hidden;cursor:default;
+}
+.card:hover{transform:translateY(-4px);border-color:var(--c,var(--cyan))}
+.card::after{content:"";position:absolute;top:0;right:0;width:40px;height:40px;background:var(--c);opacity:.08;clip-path:polygon(100% 0,100% 100%,0 0)}
+.card .cid{font-family:Consolas,monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+.card svg{width:100%;height:120px;display:block;margin:2px 0}
+.card .cname{font-size:16px;font-weight:800}
+.card .cen{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+.type-pill{display:inline-block;font-size:10px;padding:3px 9px;border:1px solid var(--c);color:var(--c);margin-top:9px;letter-spacing:1px}
+.stats{margin-top:12px;display:grid;gap:5px}
+.stat{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted)}
+.stat span{width:26px}
+.stat .track{flex:1;height:4px;background:#0a1120}
+.stat .track i{display:block;height:100%;background:var(--c)}
+.skill-count{font-size:10px;color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+
+/* ---------- ARCH ---------- */
+.arch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.arch-card{
+  background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--cyan);
+  padding:16px;position:relative;
+}
+.arch-card:nth-child(3n){border-left-color:var(--orange)}
+.arch-card .an{font-family:Consolas,monospace;font-size:10px;color:var(--orange);letter-spacing:1px}
+.arch-card h4{font-size:14px;margin:8px 0;color:var(--text)}
+.arch-card p{font-size:11px;color:var(--muted);line-height:1.7}
+.code-block{
+  margin-top:24px;background:#050912;border:1px solid var(--line);padding:20px;
+  font-family:Consolas,monospace;font-size:11.5px;line-height:1.9;color:#9fb4d4;overflow-x:auto;
+}
+.code-block .k{color:var(--orange)}.code-block .t{color:var(--cyan)}.code-block .c{color:#4a5f80}
+
+/* ---------- ROADMAP ---------- */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:20px}
+.timeline::before{content:"";position:absolute;top:16px;left:0;right:0;height:2px;background:var(--line)}
+.phase{position:relative;padding:0 14px}
+.dot{width:34px;height:34px;background:var(--panel);border:2px solid var(--line);display:grid;place-items:center;margin:0 0 20px;font-family:Consolas,monospace;font-size:11px;color:var(--muted);position:relative;z-index:1;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.phase.active .dot{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 20px rgba(0,229,255,.3)}
+.phase h4{font-size:16px;margin-bottom:4px}
+.phase .dur{font-size:11px;color:var(--orange);font-family:Consolas,monospace;margin-bottom:10px}
+.phase .goal{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.phase ul{list-style:none;font-size:11px;color:var(--muted);line-height:2}
+.phase ul li::before{content:"▸ ";color:var(--cyan)}
+.phase .status{display:inline-block;font-size:10px;padding:3px 8px;border:1px solid var(--line);color:var(--muted);margin-top:10px}
+.phase.active .status{border-color:var(--cyan);color:var(--cyan)}
+
+/* ---------- FOOTER ---------- */
+footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;color:var(--muted);font-size:11px;letter-spacing:1px}
+footer b{color:var(--cyan)}
+
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr}.hero-art{display:none}
+  .roster,.arch-grid,.timeline{grid-template-columns:repeat(2,1fr)}
+  .timeline::before{display:none}
+  .arena{grid-template-columns:1fr 60px 1fr}
+  .fighter svg{width:130px;height:130px}
+  .battle-foot{grid-template-columns:1fr}
+  .ctrl{border-left:0;border-top:1px solid var(--line)}
+  .battle-actions{grid-template-columns:repeat(2,1fr)}
+  .navlinks{display:none}
+  .typegraph-wrap{grid-template-columns:1fr}
+}
+
+/* ================= PREMIUM LAYER ================= */
+/* --- 开机自检序列 --- */
+#boot{position:fixed;inset:0;z-index:2000;background:#03060e;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s}
+#boot.done{opacity:0;visibility:hidden;pointer-events:none}
+.boot-box{width:min(560px,88vw);font-family:Consolas,"Cascadia Code",monospace}
+.boot-brand{font-size:26px;font-weight:800;letter-spacing:6px;color:var(--cyan);margin-bottom:4px}
+.boot-sub{font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:22px}
+.boot-lines{font-size:12px;line-height:2;color:#7fa8c9;min-height:170px}
+.boot-lines .ok{color:var(--green)}
+.boot-lines .warn{color:var(--orange)}
+.boot-lines b{color:var(--cyan)}
+.boot-bar{height:4px;background:#0d1829;margin-top:14px;border:1px solid var(--line)}
+.boot-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--orange));transition:width .15s linear}
+.boot-pct{font-size:11px;color:var(--cyan);text-align:right;margin-top:6px;letter-spacing:2px}
+
+/* --- 故障标题 --- */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden;pointer-events:none}
+.glitch::before{color:var(--cyan);clip-path:inset(0 0 62% 0);animation:gl1 2.6s infinite linear alternate-reverse}
+.glitch::after{color:var(--orange);clip-path:inset(58% 0 0 0);animation:gl2 3.4s infinite linear alternate-reverse}
+@keyframes gl1{0%{transform:translate(0,0)}20%{transform:translate(-3px,1px)}40%{transform:translate(3px,-1px)}60%{transform:translate(-2px,0)}80%{transform:translate(2px,1px)}100%{transform:translate(0,0)}}
+@keyframes gl2{0%{transform:translate(0,0)}25%{transform:translate(3px,-1px)}50%{transform:translate(-3px,1px)}75%{transform:translate(2px,0)}100%{transform:translate(0,0)}}
+
+/* --- 实时时钟 / HUD --- */
+.sysclock{font-family:Consolas,monospace;font-size:10px;color:var(--cyan);letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.sysclock .blip{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blip 1.4s infinite}
+@keyframes blip{50%{opacity:.25}}
+.hero::after{content:"";position:absolute;inset:16px;border:1px solid rgba(0,229,255,.07);pointer-events:none;
+  background:linear-gradient(var(--cyan),var(--cyan)) left top/18px 1px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) left top/1px 18px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) right top/18px 1px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) right top/1px 18px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) left bottom/18px 1px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) left bottom/1px 18px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) right bottom/18px 1px no-repeat,
+             linear-gradient(var(--cyan),var(--cyan)) right bottom/1px 18px no-repeat;}
+
+/* --- 雷达图（机甲卡片） --- */
+.radar{width:100%;height:104px;display:block;margin:2px 0}
+.radar .grid{fill:none;stroke:#243958;stroke-width:.7}
+.radar .shape{fill:var(--c);fill-opacity:.18;stroke:var(--c);stroke-width:1.6}
+.radar .pt{fill:var(--c)}
+.radar .lbl{fill:#6d84a4;font-size:7px;font-family:Consolas,monospace}
+
+/* --- 属性克制环形拓扑 --- */
+.typegraph-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center}
+.typegraph{width:100%;max-width:520px;margin:0 auto;display:block}
+.typegraph .link{stroke-width:1.3;opacity:.5;transition:opacity .2s,stroke-width .2s}
+.typegraph .link.dim{opacity:.07}
+.typegraph .link.hot{opacity:1;stroke-width:2.6}
+.typegraph .node circle{stroke-width:2;cursor:pointer;transition:.2s}
+.typegraph .node:hover circle{filter:brightness(1.5)}
+.typegraph .node text{font-size:11px;font-weight:700;fill:#e6f1ff;text-anchor:middle;pointer-events:none;font-family:"Microsoft YaHei",sans-serif}
+.typegraph .hub{font-family:Consolas,monospace;font-size:9px;fill:var(--cyan);letter-spacing:2px;text-anchor:middle}
+.legend-list{display:grid;gap:9px}
+.legend-item{display:flex;align-items:center;gap:12px;padding:9px 12px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--c);cursor:pointer;transition:.18s}
+.legend-item:hover{background:var(--panel2);transform:translateX(4px)}
+.legend-item .dotc{width:10px;height:10px;background:var(--c);box-shadow:0 0 10px var(--c)}
+.legend-item .nm{font-size:13px;font-weight:700;width:44px}
+.legend-item .rel{font-size:11px;color:var(--muted);flex:1}
+.legend-item .rel em{color:var(--red);font-style:normal}
+.legend-item .rel i{color:#4dd0e1;font-style:normal}
+
+/* --- 战斗特效层 --- */
+.arena{position:relative}
+.fighter{position:relative}
+.fx-flash{position:fixed;inset:0;z-index:900;pointer-events:none;opacity:0}
+.fx-flash.go{animation:fxflash .5s ease-out}
+@keyframes fxflash{0%{opacity:.9}100%{opacity:0}}
+.fx-banner{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);z-index:910;pointer-events:none;
+  font-size:clamp(30px,6vw,66px);font-weight:900;letter-spacing:4px;opacity:0;white-space:nowrap;
+  text-shadow:0 0 26px currentColor;color:var(--cyan)}
+.fx-banner.go{animation:fxbanner 1.15s cubic-bezier(.2,.9,.2,1)}
+@keyframes fxbanner{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) skewX(-12deg)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08) skewX(0)}72%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}}
+.dmg-float{position:absolute;left:50%;top:34%;transform:translateX(-50%);z-index:20;pointer-events:none;
+  font-family:Consolas,monospace;font-size:30px;font-weight:900;color:var(--red);text-shadow:0 0 14px currentColor;opacity:0}
+.dmg-float.go{animation:dmgfloat 1.2s ease-out forwards}
+@keyframes dmgfloat{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}20%{opacity:1;transform:translate(-50%,-10px) scale(1.25)}100%{opacity:0;transform:translate(-50%,-72px) scale(1)}}
+.dmg-float.crit{color:var(--orange);font-size:40px}
+.dmg-float.heal{color:var(--green)}
+.shake{animation:shake .42s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+.scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.18;pointer-events:none;animation:scan 5s linear infinite}
+@keyframes scan{0%{top:0}100%{top:100%}}
+
+/* --- 特性卡片（高级感收尾） --- */
+.feature-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px}
+.feat{background:linear-gradient(150deg,var(--panel),var(--bg2));border:1px solid var(--line);padding:18px 16px;position:relative;overflow:hidden}
+.feat::before{content:"";position:absolute;right:-16px;top:-16px;width:56px;height:56px;border:1px solid var(--c);transform:rotate(45deg);opacity:.25}
+.feat .fi{font-family:Consolas,monospace;font-size:20px;color:var(--c);margin-bottom:10px}
+.feat h5{font-size:13px;margin-bottom:6px}
+.feat p{font-size:10.5px;color:var(--muted);line-height:1.7}
+@media(max-width:980px){.feature-strip{grid-template-columns:repeat(2,1fr)}.typegraph-wrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- 开机自检序列 -->
+<div id="boot"><div class="boot-box">
+  <div class="boot-brand">MECHA·MON</div>
+  <div class="boot-sub">TACTICAL SIMULATION SYSTEM // BOOT SEQUENCE</div>
+  <div class="boot-lines" id="bootLines"></div>
+  <div class="boot-bar"><i id="bootBar"></i></div>
+  <div class="boot-pct" id="bootPct">INITIALIZING ... 0%</div>
+</div></div>
+
+<div class="fx-flash" id="fxFlash"></div>
+<div class="fx-banner" id="fxBanner"></div>
+
+<nav><div class="wrap">
+  <div class="logo"><div class="logo-mark">M</div>MECHA<span>·</span>MON</div>
+  <div class="navlinks">
+    <a href="#home" class="active">首页</a>
+    <a href="#battle">对战演示</a>
+    <a href="#roster">机甲图鉴</a>
+    <a href="#matrix">属性拓扑</a>
+    <a href="#arch">技术架构</a>
+    <a href="#roadmap">路线图</a>
+  </div>
+  <div class="sysclock"><span class="blip"></span><span id="clock">--:--:--</span></div>
+</div></nav>
+
+<header class="hero" id="home"><div class="wrap hero-grid">
+  <div>
+    <div class="eyebrow" id="eyebrow">CONCEPT DEMO</div>
+    <h1><span class="l1 glitch" data-text="MECHA">MECHA</span><span class="l2 glitch" data-text="MON">MON</span></h1>
+    <div class="tagline" id="tagline"></div>
+    <p class="hero-desc" id="heroDesc"></p>
+    <div class="hero-btns">
+      <a href="#battle" class="btn">▶ 进入对战演示</a>
+      <a href="#arch" class="btn ghost">查看技术方案</a>
+    </div>
+    <div class="hero-stats" id="heroStats"></div>
+  </div>
+  <div class="hero-art">
+    <div class="ring ring3"></div><div class="ring"></div><div class="ring ring2"></div>
+    <div id="heroMech"></div>
+    <div class="float-tag ft1">SYS / ONLINE</div>
+    <div class="float-tag ft2">GAS / READY</div>
+  </div>
+</div></header>
+
+<section id="battle"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-num">// 01 — LIVE SIMULATION</div>
+    <h2>对战演示</h2>
+    <p class="sec-sub">选择双方机甲，真实按属性克制、能量消耗与伤害公式结算。点击技能即可出手，敌方由 AI 自动应战。</p>
+  </div>
+  <div class="battle-shell">
+    <div class="battle-top">
+      <span>MECHA ARENA // SIMULATION BUILD</span>
+      <span class="turn-badge" id="turnLabel">TURN 01</span>
+    </div>
+    <div class="arena">
+      <div class="scanline"></div>
+      <div class="fighter" id="fighterP"></div>
+      <div class="vs"><b>VS</b><small>BATTLE</small></div>
+      <div class="fighter enemy" id="fighterE"></div>
+    </div>
+    <div class="pick-row">
+      <div class="pick-box"><label>我方机甲 / PLAYER</label><select id="selP"></select></div>
+      <div class="pick-box"><label>敌方机甲 / OPPONENT</label><select id="selE"></select></div>
+    </div>
+    <div class="battle-actions" id="skills"></div>
+    <div class="battle-foot">
+      <div class="log" id="log"></div>
+      <div class="ctrl">
+        <button class="btn" onclick="startBattle()">↻ 重置对战</button>
+        <button class="btn ghost" onclick="autoPlay()">⚡ 自动演示</button>
+        <div class="eff-badge" id="effBadge">属性倍率 —</div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="roster"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-num">// 02 — MECHA DATABASE</div>
+    <h2>机甲图鉴</h2>
+    <p class="sec-sub">首批 8 台机甲，覆盖 8 种属性与 6 种战斗定位。每台机甲 4 个专属技能，共 32 个 GAS 能力。</p>
+  </div>
+  <div class="roster" id="rosterGrid"></div>
+</div></section>
+
+<section id="matrix"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-num">// 03 — ELEMENT MATRIX</div>
+    <h2>属性克制拓扑</h2>
+    <p class="sec-sub">8 种属性构成动态克制网络。箭头由攻击方指向被克制方（2× 伤害）。悬停任一属性，高亮其克制关系。</p>
+  </div>
+  <div class="typegraph-wrap">
+    <svg class="typegraph" id="typeGraph" viewBox="0 0 520 520"></svg>
+    <div class="legend-list" id="typeLegend"></div>
+  </div>
+  <div class="feature-strip">
+    <div class="feat" style="--c:#00e5ff"><div class="fi">◈</div><h5>单一数据源</h5><p>机甲/技能/数值全部由 Python 配置驱动，文档、代码、演示三端自动同步。</p></div>
+    <div class="feat" style="--c:#ff6b1a"><div class="fi">⚡</div><h5>真实战斗结算</h5><p>属性克制、能量消耗、暴击波动按公式实时演算，非静态贴图。</p></div>
+    <div class="feat" style="--c:#33e08b"><div class="fi">⬡</div><h5>GAS 原生架构</h5><p>ASC / AttributeSet / Ability / Tag 分层，C++ 骨架可直接导入 UE5。</p></div>
+    <div class="feat" style="--c:#a855f7"><div class="fi">✦</div><h5>电竞化设计</h5><p>3v3 + Ban/Pick + 天梯段位，回合制高可读性，观赛门槛低。</p></div>
+  </div>
+</div></section>
+
+<section id="arch"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-num">// 04 — TECHNICAL ARCHITECTURE</div>
+    <h2>技术架构 · UE5 GAS</h2>
+    <p class="sec-sub">基于 Unreal Engine 5 的 Gameplay Ability System 构建。技能、属性、状态、表现四层解耦，天然支持竞技网络同步与数据驱动。</p>
+  </div>
+  <div class="arch-grid" id="archGrid"></div>
+  <div class="code-block" id="codeBlock"></div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-num">// 05 — ROADMAP</div>
+    <h2>项目路线图</h2>
+    <p class="sec-sub">从概念验证到电竞化运营，四个阶段逐步推进。当前处于 P0 概念验证阶段。</p>
+  </div>
+  <div class="timeline" id="timeline"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <b>MECHA·MON</b> 概念演示原型 · 由 MechaMonFramework 自动生成 ·
+  UE5 + GAS · <span id="footVersion"></span>
+</div></footer>
+
+<script>
+const DATA = {"elements":[{"key":"FIRE","name_cn":"烈焰","name_en":"FIRE","color":"#ff5a2a","accent":"#ffb347","tag":"Mecha.Type.Fire","description":"高温武装，克制机械与冰晶，畏惧涌流。"},{"key":"WATER","name_cn":"涌流","name_en":"WATER","color":"#2b8cff","accent":"#67e8f9","tag":"Mecha.Type.Water","description":"高耐久水装甲，克制烈焰与钢甲。"},{"key":"ELECTRIC","name_cn":"雷霆","name_en":"ELECTRIC","color":"#ffd429","accent":"#fff08a","tag":"Mecha.Type.Electric","description":"极速突袭，克制涌流与钢甲，畏惧森绿。"},{"key":"LEAF","name_cn":"森绿","name_en":"LEAF","color":"#3fbf5f","accent":"#9be28a","tag":"Mecha.Type.Leaf","description":"生态装甲，克制雷霆与暗影。"},{"key":"STEEL","name_cn":"钢甲","name_en":"STEEL","color":"#9aa7bd","accent":"#d7e0ef","tag":"Mecha.Type.Steel","description":"重甲防御，克制冰晶，畏惧烈焰与雷霆。"},{"key":"QUANTUM","name_cn":"星轨","name_en":"QUANTUM","color":"#a855f7","accent":"#d8b4fe","tag":"Mecha.Type.Quantum","description":"空间干涉，克制暗影与森绿。"},{"key":"SHADOW","name_cn":"暗影","name_en":"SHADOW","color":"#6c3fd8","accent":"#b39ddb","tag":"Mecha.Type.Shadow","description":"高爆发刺客，克制星轨，畏惧森绿与星轨。"},{"key":"ICE","name_cn":"冰晶","name_en":"ICE","color":"#4dd0e1","accent":"#b2ebf2","tag":"Mecha.Type.Ice","description":"控制冻阻，克制森绿，畏惧烈焰与钢甲。"}],"type_chart":{"FIRE":{"strong":["LEAF","ICE","STEEL"],"weak":["WATER","FIRE"],"none":[]},"WATER":{"strong":["FIRE","STEEL"],"weak":["LEAF","ELECTRIC","WATER"],"none":[]},"ELECTRIC":{"strong":["WATER","STEEL"],"weak":["LEAF","ELECTRIC"],"none":[]},"LEAF":{"strong":["ELECTRIC","SHADOW","WATER"],"weak":["FIRE","ICE","LEAF","QUANTUM"],"none":[]},"STEEL":{"strong":["ICE"],"weak":["FIRE","WATER","ELECTRIC","STEEL"],"none":[]},"QUANTUM":{"strong":["SHADOW","LEAF"],"weak":["SHADOW","QUANTUM"],"none":[]},"SHADOW":{"strong":["QUANTUM"],"weak":["LEAF","SHADOW"],"none":[]},"ICE":{"strong":["LEAF"],"weak":["FIRE","STEEL","ICE"],"none":[]}},"mechas":[{"id":"BLAZE","name_cn":"炎狱·赤焰","name_en":"Blaze Ignis","codename":"MF-01","element":"FIRE","role":"强攻型","hp":78,"atk":92,"dfn":70,"spd":85,"energy":100,"abilities":[{"id":"BLAZE_01","name_cn":"烈焰冲撞","name_en":"Flame Ram","type":"FIRE","category":"Damage","power":42,"cost":18,"cooldown":0,"gameplay_tag":"Ability.Mecha.FlameRam","description":"高热的肩甲冲撞，命中后附带 1 层灼烧。"},{"id":"BLAZE_02","name_cn":"熔核护盾","name_en":"Magma Shield","type":"FIRE","category":"Shield","power":0,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.MagmaShield","description":"展开熔融护盾，吸收 35 点伤害并反弹 20%。"},{"id":"BLAZE_03","name_cn":"灼烧飞弹","name_en":"Incendiary Pod","type":"FIRE","category":"Dot","power":26,"cost":20,"cooldown":1,"gameplay_tag":"Ability.Mecha.IncendiaryPod","description":"3 回合持续灼烧，每回合 12 点伤害。"},{"id":"BLAZE_04","name_cn":"超频过载","name_en":"Overdrive","type":"FIRE","category":"Buff","power":0,"cost":25,"cooldown":3,"gameplay_tag":"Ability.Mecha.Overdrive","description":"牺牲 10% 生命，提升 40% 攻击持续 3 回合。"}],"lore":"第一代量产型火系机甲，以高输出与灼烧叠加著称，是竞技场最受欢迎的先发机体。","element_name":"烈焰","color":"#ff5a2a","accent":"#ffb347"},{"id":"TIDAL","name_cn":"潮汐·沧澜","name_en":"Tidal Abyss","codename":"MF-02","element":"WATER","role":"耐久型","hp":95,"atk":75,"dfn":90,"spd":60,"energy":110,"abilities":[{"id":"TIDAL_01","name_cn":"深水炮击","name_en":"Hydro Cannon","type":"WATER","category":"Damage","power":45,"cost":20,"cooldown":1,"gameplay_tag":"Ability.Mecha.HydroCannon","description":"压缩水炮，对钢甲额外造成 20% 伤害。"},{"id":"TIDAL_02","name_cn":"潮汐壁垒","name_en":"Tidal Bulwark","type":"WATER","category":"Shield","power":0,"cost":18,"cooldown":2,"gameplay_tag":"Ability.Mecha.TidalBulwark","description":"生成水幕护盾并恢复 15 点生命。"},{"id":"TIDAL_03","name_cn":"漩涡禁锢","name_en":"Vortex Lock","type":"WATER","category":"Control","power":15,"cost":24,"cooldown":2,"gameplay_tag":"Ability.Mecha.VortexLock","description":"降低目标 30% 速度，持续 2 回合。"},{"id":"TIDAL_04","name_cn":"再生装甲","name_en":"Regen Plating","type":"WATER","category":"Heal","power":0,"cost":26,"cooldown":3,"gameplay_tag":"Ability.Mecha.RegenPlating","description":"修复 40 点装甲值。"}],"lore":"深海勘探机甲改造而来，拥有全游戏最高的护盾成长，擅长持久消耗战。","element_name":"涌流","color":"#2b8cff","accent":"#67e8f9"},{"id":"VOLT","name_cn":"雷鸣·疾风","name_en":"Volt Tempest","codename":"MF-03","element":"ELECTRIC","role":"速攻型","hp":65,"atk":88,"dfn":60,"spd":110,"energy":95,"abilities":[{"id":"VOLT_01","name_cn":"雷光突袭","name_en":"Volt Rush","type":"ELECTRIC","category":"Damage","power":40,"cost":16,"cooldown":0,"gameplay_tag":"Ability.Mecha.VoltRush","description":"高速电磁突进，先手概率 +30%。"},{"id":"VOLT_02","name_cn":"电磁脉冲","name_en":"EMP Burst","type":"ELECTRIC","category":"Control","power":20,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.EMPBurst","description":"使敌方下一次技能能量消耗翻倍。"},{"id":"VOLT_03","name_cn":"静电场","name_en":"Static Field","type":"ELECTRIC","category":"Dot","power":18,"cost":20,"cooldown":1,"gameplay_tag":"Ability.Mecha.StaticField","description":"每回合 15 点雷伤，并降低目标 10% 防御。"},{"id":"VOLT_04","name_cn":"电容超载","name_en":"Capacitor Overload","type":"ELECTRIC","category":"Buff","power":0,"cost":24,"cooldown":3,"gameplay_tag":"Ability.Mecha.CapacitorOverload","description":"下次攻击必定暴击。"}],"lore":"磁悬浮竞速机体，速度属性顶尖，先手压制战术的核心。","element_name":"雷霆","color":"#ffd429","accent":"#fff08a"},{"id":"VERDANT","name_cn":"苍翠·森灵","name_en":"Verdant Grove","codename":"MF-04","element":"LEAF","role":"辅助型","hp":88,"atk":70,"dfn":85,"spd":70,"energy":105,"abilities":[{"id":"VERDANT_01","name_cn":"藤蔓束缚","name_en":"Vine Snare","type":"LEAF","category":"Damage","power":32,"cost":16,"cooldown":1,"gameplay_tag":"Ability.Mecha.VineSnare","description":"有机藤蔓抽打并束缚目标 1 回合。"},{"id":"VERDANT_02","name_cn":"光合修复","name_en":"Photosyn Heal","type":"LEAF","category":"Heal","power":0,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.PhotosynHeal","description":"恢复 45 点生命并清除 1 个负面效果。"},{"id":"VERDANT_03","name_cn":"孢子迷雾","name_en":"Spore Fog","type":"LEAF","category":"Control","power":12,"cost":20,"cooldown":2,"gameplay_tag":"Ability.Mecha.SporeFog","description":"降低敌方命中率 25%，持续 3 回合。"},{"id":"VERDANT_04","name_cn":"森罗领域","name_en":"Verdant Field","type":"LEAF","category":"Buff","power":0,"cost":28,"cooldown":3,"gameplay_tag":"Ability.Mecha.VerdantField","description":"全队每回合恢复 12 点生命，持续 4 回合。"}],"lore":"生态修复机甲，搭载光合反应堆，是高端局不可或缺的续航核心。","element_name":"森绿","color":"#3fbf5f","accent":"#9be28a"},{"id":"BASTION","name_cn":"玄铁·壁垒","name_en":"Iron Bastion","codename":"MF-05","element":"STEEL","role":"防御型","hp":100,"atk":80,"dfn":110,"spd":40,"energy":100,"abilities":[{"id":"BASTION_01","name_cn":"攻城铁拳","name_en":"Siege Fist","type":"STEEL","category":"Damage","power":48,"cost":22,"cooldown":1,"gameplay_tag":"Ability.Mecha.SiegeFist","description":"重型液压拳，对防御型目标额外 15% 伤害。"},{"id":"BASTION_02","name_cn":"绝对壁垒","name_en":"Aegis Wall","type":"STEEL","category":"Shield","power":0,"cost":20,"cooldown":2,"gameplay_tag":"Ability.Mecha.AegisWall","description":"吸收 60 点伤害，持续 2 回合。"},{"id":"BASTION_03","name_cn":"反冲装甲","name_en":"Reactive Armor","type":"STEEL","category":"Buff","power":0,"cost":24,"cooldown":3,"gameplay_tag":"Ability.Mecha.ReactiveArmor","description":"反弹 30% 所受伤害，持续 3 回合。"},{"id":"BASTION_04","name_cn":"磁轨重炮","name_en":"Railgun","type":"STEEL","category":"Damage","power":55,"cost":30,"cooldown":3,"gameplay_tag":"Ability.Mecha.Railgun","description":"蓄力一击，无视 50% 防御。"}],"lore":"要塞级重装甲，正面防御无可匹敌，但转向迟缓是其致命弱点。","element_name":"钢甲","color":"#9aa7bd","accent":"#d7e0ef"},{"id":"ASTRO","name_cn":"星轨·幻境","name_en":"Astro Mirage","codename":"MF-06","element":"QUANTUM","role":"特攻型","hp":70,"atk":95,"dfn":65,"spd":95,"energy":100,"abilities":[{"id":"ASTRO_01","name_cn":"星轨射线","name_en":"Astral Ray","type":"QUANTUM","category":"Damage","power":44,"cost":21,"cooldown":1,"gameplay_tag":"Ability.Mecha.AstralRay","description":"空间折叠射线，对暗影系必定 2 倍克制。"},{"id":"ASTRO_02","name_cn":"相位跃迁","name_en":"Phase Shift","type":"QUANTUM","category":"Buff","power":0,"cost":20,"cooldown":2,"gameplay_tag":"Ability.Mecha.PhaseShift","description":"闪避下一次攻击，并提升 20% 速度。"},{"id":"ASTRO_03","name_cn":"引力奇点","name_en":"Gravity Singularity","type":"QUANTUM","category":"Control","power":25,"cost":26,"cooldown":3,"gameplay_tag":"Ability.Mecha.GravitySingularity","description":"封锁目标换人 2 回合。"},{"id":"ASTRO_04","name_cn":"时隙回溯","name_en":"Time Rewind","type":"QUANTUM","category":"Heal","power":0,"cost":30,"cooldown":4,"gameplay_tag":"Ability.Mecha.TimeRewind","description":"回溯至 3 回合前的生命值（不超过上限）。"}],"lore":"轨道空间站实验机体，能够干涉局部时空，操作上限极高。","element_name":"星轨","color":"#a855f7","accent":"#d8b4fe"},{"id":"SHADOW","name_cn":"夜影·幽刃","name_en":"Night Shade","codename":"MF-07","element":"SHADOW","role":"刺客型","hp":68,"atk":100,"dfn":55,"spd":100,"energy":90,"abilities":[{"id":"SHADOW_01","name_cn":"暗刃斩击","name_en":"Shadow Slash","type":"SHADOW","category":"Damage","power":46,"cost":18,"cooldown":0,"gameplay_tag":"Ability.Mecha.ShadowSlash","description":"高速近战，暴击率 +20%。"},{"id":"SHADOW_02","name_cn":"影分身","name_en":"Shadow Clone","type":"SHADOW","category":"Buff","power":0,"cost":22,"cooldown":2,"gameplay_tag":"Ability.Mecha.ShadowClone","description":"生成 2 个分身，首次受击必定闪避。"},{"id":"SHADOW_03","name_cn":"蚀魂之触","name_en":"Soul Drain","type":"SHADOW","category":"Dot","power":24,"cost":24,"cooldown":2,"gameplay_tag":"Ability.Mecha.SoulDrain","description":"吸取造成伤害的 40% 转化为自身生命。"},{"id":"SHADOW_04","name_cn":"夜幕降临","name_en":"Nightfall","type":"SHADOW","category":"Control","power":18,"cost":28,"cooldown":3,"gameplay_tag":"Ability.Mecha.Nightfall","description":"全场命中率 -20%，暗影系免疫。"}],"lore":"军用潜入机甲，爆发伤害顶尖，但装甲薄弱，容错率极低。","element_name":"暗影","color":"#6c3fd8","accent":"#b39ddb"},{"id":"FROST","name_cn":"霜寒·极地","name_en":"Frost Permafrost","codename":"MF-08","element":"ICE","role":"控制型","hp":82,"atk":85,"dfn":80,"spd":65,"energy":105,"abilities":[{"id":"FROST_01","name_cn":"冰棱飞射","name_en":"Ice Lance","type":"ICE","category":"Damage","power":38,"cost":17,"cooldown":0,"gameplay_tag":"Ability.Mecha.IceLance","description":"冻结弹头，30% 概率使目标冻结 1 回合。"},{"id":"FROST_02","name_cn":"寒霜装甲","name_en":"Frost Plating","type":"ICE","category":"Shield","power":0,"cost":19,"cooldown":2,"gameplay_tag":"Ability.Mecha.FrostPlating","description":"护盾值 45，接触攻击者速度 -20%。"},{"id":"FROST_03","name_cn":"极寒风暴","name_en":"Blizzard Core","type":"ICE","category":"Dot","power":28,"cost":25,"cooldown":2,"gameplay_tag":"Ability.Mecha.BlizzardCore","description":"每回合 18 点冰伤，持续 3 回合。"},{"id":"FROST_04","name_cn":"绝对零度","name_en":"Absolute Zero","type":"ICE","category":"Control","power":35,"cost":32,"cooldown":4,"gameplay_tag":"Ability.Mecha.AbsoluteZero","description":"必定冻结目标 1 回合，并降低其 25% 防御。"}],"lore":"极地科考机甲，以冻结与减速构筑节奏封锁，是控场体系的核心。","element_name":"冰晶","color":"#4dd0e1","accent":"#b2ebf2"}],"rules":{"team_size":3,"battle_format":"3v3 单败淘汰 / 天梯排位","turn_limit":30,"energy_regen":12,"max_energy":120,"crit_rate_base":0.05,"crit_multiplier":1.5,"switch_cost":8,"ban_phase":"双方各禁用 2 台机甲（BO3 起）","ranking":"青铜 → 白银 → 黄金 → 铂金 → 钻石 → 大师 → 王者"},"phases":[{"id":"P0","name":"概念验证","duration":"4 周","goal":"跑通 GAS 回合制战斗闭环","deliverables":["UE5 工程模板","ASC + AttributeSet 原型","1v1 可战斗 Demo","属性克制表"],"status":"当前阶段"},{"id":"P1","name":"核心战斗","duration":"8 周","goal":"完成 3v3 战斗与全部机甲","deliverables":["8 台机甲 + 32 个技能","换人/能量/状态系统","AI 对手","战斗回放"],"status":"规划中"},{"id":"P2","name":"竞技系统","duration":"6 周","goal":"上线天梯与匹配","deliverables":["匹配服务","段位与排行榜","Ban/Pick","反作弊与战斗校验"],"status":"规划中"},{"id":"P3","name":"内容运营","duration":"持续","goal":"赛季更新与电竞化","deliverables":["新机甲/技能","赛季通行证","观战系统","赛事工具包"],"status":"规划中"}],"gas":[{"name":"AbilitySystemComponent (ASC)","desc":"挂载于每台机甲，统一驱动技能、属性与状态"},{"name":"MechaAttributeSet","desc":"Health / Energy / Attack / Defense / Speed / CritRate"},{"name":"UGameplayAbility","desc":"32 个机甲技能，DataAsset 配置 + 冷却/消耗校验"},{"name":"UGameplayEffect","desc":"伤害、护盾、灼烧、冻结、增益等即时与持续效果"},{"name":"FGameplayTag","desc":"Mecha.Type.* / Ability.* / Status.* 三层标签体系"},{"name":"BattleManager (GameState)","desc":"回合调度、先手计算、换人判定、胜负结算"},{"name":"AbilityTask","desc":"PlayMontageAndWait / WaitForTarget / 动画与镜头表现"},{"name":"GameplayCue","desc":"命中特效、音效、屏幕震动等表现层通知"}]};
+const PROJ = {"codename":"MECHA·MON","name_cn":"机甲兽竞技场","name_en":"MechaMon Arena","tagline":"机甲觉醒 · 策略竞技 · 属性压制","engine":"Unreal Engine 5","framework":"Gameplay Ability System (GAS)","version":"0.1.0-Prototype","genre":"回合制策略竞技 / 机甲收集养成","platform":"PC (首发) / 主机 (后续)","author":"Project MECHA·MON 筹备组"};
+const TMAP = Object.fromEntries(DATA.elements.map(e=>[e.key,e]));
+const byId = id => DATA.mechas.find(m=>m.id===id);
+
+/* ---------- 机甲 SVG ---------- */
+function mechaSVG(m, uid){
+  const c = m.color, a = m.accent, id = 'g'+uid;
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="#0a1020"/>
+    </linearGradient>
+    <filter id="${id}f"><feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <path d="M14 165 L46 122 L72 138 L72 186 L20 186 Z" fill="url(#${id})" opacity=".92"/>
+  <path d="M186 165 L154 122 L128 138 L128 186 L180 186 Z" fill="url(#${id})" opacity=".92"/>
+  <path d="M55 44 Q100 12 145 44 L152 84 L130 120 L70 120 L48 84 Z" fill="#101a30" stroke="${c}" stroke-width="2.5"/>
+  <path d="M62 70 L138 70 L126 92 L74 92 Z" fill="${a}" filter="url(#${id}f)" opacity=".95"/>
+  <path d="M100 12 L110 40 L90 40 Z" fill="${c}"/>
+  <line x1="100" y1="8" x2="100" y2="24" stroke="${c}" stroke-width="3"/>
+  <circle cx="100" cy="8" r="3" fill="${a}" filter="url(#${id}f)"/>
+  <path d="M78 100 L122 100 L112 124 L88 124 Z" fill="#1b2742" stroke="${c}" stroke-width="1.5"/>
+  <path d="M86 112 L114 112" stroke="${a}" stroke-width="2" opacity=".8"/>
+  <path d="M48 84 L34 96 L44 112 L60 100 Z" fill="${c}" opacity=".7"/>
+  <path d="M152 84 L166 96 L156 112 L140 100 Z" fill="${c}" opacity=".7"/>
+  <text x="100" y="180" text-anchor="middle" fill="${a}" font-size="10" font-family="monospace" opacity=".8">${m.codename}</text>
+  </svg>`;
+}
+
+/* ---------- 雷达图 ---------- */
+function radarSVG(m, uid){
+  const cx=60, cy=56, R=40, labels=['HP','ATK','DEF','SPD','EN'];
+  const vals=[m.hp, m.atk, m.dfn, m.spd, m.energy], MAX=120;
+  const pt=(i,r)=>{const a=-Math.PI/2 + i*2*Math.PI/5; return [cx+Math.cos(a)*r, cy+Math.sin(a)*r];};
+  const ring=r=>labels.map((_,i)=>pt(i,r).join(',')).join(' ');
+  let g='';
+  [1,.66,.33].forEach(f=> g+=`<polygon class="grid" points="${ring(R*f)}"/>`);
+  for(let i=0;i<5;i++){const p=pt(i,R);g+=`<line class="grid" x1="${cx}" y1="${cy}" x2="${p[0]}" y2="${p[1]}"/>`;}
+  const shape=vals.map((v,i)=>pt(i,R*Math.min(1,v/MAX)).join(',')).join(' ');
+  g+=`<polygon class="shape" points="${shape}"/>`;
+  vals.forEach((v,i)=>{const p=pt(i,R*Math.min(1,v/MAX));g+=`<circle class="pt" cx="${p[0]}" cy="${p[1]}" r="1.8"/>`;});
+  labels.forEach((l,i)=>{const p=pt(i,R+9);g+=`<text class="lbl" x="${p[0]}" y="${p[1]}" text-anchor="middle" dominant-baseline="middle">${l}</text>`;});
+  return `<svg class="radar" viewBox="0 0 120 112">${g}</svg>`;
+}
+
+/* ---------- 属性克制拓扑图 ---------- */
+function renderTypeGraph(){
+  const els=DATA.elements, n=els.length, cx=260, cy=260, R=186;
+  const pos={};
+  els.forEach((e,i)=>{const a=-Math.PI/2 + i*2*Math.PI/n; pos[e.key]=[cx+Math.cos(a)*R, cy+Math.sin(a)*R];});
+  let links='';
+  els.forEach(e=>{
+    (DATA.type_chart[e.key].strong||[]).forEach(t=>{
+      if(!pos[t]) return;
+      const [x1,y1]=pos[e.key], [x2,y2]=pos[t];
+      const mx=cx+(x1+x2-2*cx)*.22, my=cy+(y1+y2-2*cy)*.22;
+      links+=`<path class="link" data-a="${e.key}" data-b="${t}" d="M${x1.toFixed(1)} ${y1.toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="${e.color}" marker-end="url(#arw-${e.key})"/>`;
+    });
+  });
+  let defs='';
+  els.forEach(e=>{defs+=`<marker id="arw-${e.key}" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="${e.color}"/></marker>`;});
+  let nodes='';
+  els.forEach(e=>{const [x,y]=pos[e.key];
+    nodes+=`<g class="node" data-k="${e.key}">
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="27" fill="${e.color}22" stroke="${e.color}"/>
+      <text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}">${e.name_cn}</text></g>`;});
+  document.getElementById('typeGraph').innerHTML=
+    `<defs>${defs}</defs><circle cx="${cx}" cy="${cy}" r="150" fill="none" stroke="#1c2c48" stroke-dasharray="3 7"/>
+     <text class="hub" x="${cx}" y="${cy-6}">ELEMENT</text><text class="hub" x="${cx}" y="${cy+10}" style="font-size:13px;fill:var(--orange)">MATRIX</text>
+     ${links}${nodes}`;
+
+  document.getElementById('typeLegend').innerHTML=els.map(e=>{
+    const st=DATA.type_chart[e.key].strong||[];
+    return `<div class="legend-item" data-k="${e.key}" style="--c:${e.color}">
+      <span class="dotc"></span><span class="nm">${e.name_cn}</span>
+      <span class="rel">克制 <em>${st.map(t=>TMAP[t].name_cn).join(' · ')||'—'}</em></span></div>`;
+  }).join('');
+
+  const highlight=k=>{
+    document.querySelectorAll('.typegraph .link').forEach(l=>{
+      l.classList.toggle('hot', l.dataset.a===k);
+      l.classList.toggle('dim', l.dataset.a!==k);
+    });
+    document.querySelectorAll('.typegraph .node circle').forEach(c=>{
+      c.parentElement.classList.contains('node');
+    });
+    document.querySelectorAll('.typegraph .node').forEach(nd=>nd.style.opacity = nd.dataset.k===k?'1':'.35');
+  };
+  const clear=()=>{
+    document.querySelectorAll('.typegraph .link').forEach(l=>l.classList.remove('hot','dim'));
+    document.querySelectorAll('.typegraph .node').forEach(nd=>nd.style.opacity='1');
+  };
+  document.querySelectorAll('.typegraph .node').forEach(nd=>{
+    nd.addEventListener('mouseenter',()=>highlight(nd.dataset.k));
+    nd.addEventListener('mouseleave',clear);
+  });
+  document.querySelectorAll('.legend-item').forEach(it=>{
+    it.addEventListener('mouseenter',()=>highlight(it.dataset.k));
+    it.addEventListener('mouseleave',clear);
+  });
+}
+
+/* ---------- 克制 ---------- */
+function eff(atk, def){
+  const c = DATA.type_chart[atk];
+  if(!c) return 1;
+  if(c.strong.includes(def)) return 2;
+  if(c.weak.includes(def)) return .5;
+  if(c.none.includes(def)) return 0;
+  return 1;
+}
+function effLabel(v){
+  if(v===2) return '<span style="color:#ff3b5c">2× 克制</span>';
+  if(v===.5) return '<span style="color:#4dd0e1">0.5× 抵抗</span>';
+  if(v===0) return '<span style="color:#8296b5">0× 免疫</span>';
+  return '<span style="color:#8296b5">1× 中性</span>';
+}
+
+/* ---------- 静态区块渲染 ---------- */
+document.getElementById('footVersion').textContent = PROJ.version;
+// 实时系统时钟
+(function(){
+  const el=document.getElementById('clock');
+  const tick=()=>{const d=new Date();el.textContent=d.toTimeString().slice(0,8);};
+  tick(); setInterval(tick,1000);
+})();
+document.getElementById('tagline').textContent = PROJ.tagline;
+document.getElementById('heroDesc').textContent =
+  PROJ.name_cn + " 是一款以机甲收集与回合制策略对战为核心的竞技游戏。组建 3 台机甲的作战小队，通过属性克制、技能组合与能量管理击败对手。当前原型由 Python 单一数据源自动生成，展示 UE5 GAS 框架设计。";
+document.getElementById('heroStats').innerHTML = `
+  <div><b>${DATA.mechas.length}</b><small>机甲 MECHAS</small></div>
+  <div><b>${DATA.elements.length}</b><small>属性 ELEMENTS</small></div>
+  <div><b>32</b><small>技能 ABILITIES</small></div>
+  <div><b>UE5</b><small>ENGINE</small></div>`;
+document.getElementById('heroMech').innerHTML = mechaSVG(byId('BLAZE'),'hero');
+
+document.getElementById('rosterGrid').innerHTML = DATA.mechas.map((m,i)=>`
+  <div class="card" style="--c:${m.color}">
+    <div class="cid">${m.codename} / ${m.role}</div>
+    ${radarSVG(m,'r'+i)}
+    <div class="cname">${m.name_cn}</div>
+    <div class="cen">${m.name_en.toUpperCase()}</div>
+    <div class="type-pill">${TMAP[m.element].name_cn} · ${m.element}</div>
+    <div class="skill-count">${m.abilities.map(a=>a.name_cn).join(' · ')}</div>
+  </div>`).join('');
+renderTypeGraph();
+
+document.getElementById('archGrid').innerHTML = DATA.gas.map((g,i)=>`
+  <div class="arch-card">
+    <div class="an">LAYER ${String(i+1).padStart(2,'0')}</div>
+    <h4>${g.name}</h4>
+    <p>${g.desc}</p>
+  </div>`).join('');
+
+document.getElementById('codeBlock').innerHTML = `<span class="c">// 技能释放 → 伤害结算管线（GAS）</span>
+<span class="k">bool</span> UMechaAbilityBase::CanActivateAbility(...)
+{
+    <span class="k">if</span> (!Super::CanActivateAbility(...)) <span class="k">return false</span>;
+    <span class="c">// 校验 Status.Frozen / Status.Stunned 标签</span>
+    <span class="k">return true</span>;
+}
+
+<span class="k">void</span> UMechaAbilityBase::ActivateAbility(...)
+{
+    CommitAbility(Handle, ActorInfo, ActivationInfo);        <span class="c">// 扣能量 / 进冷却</span>
+    FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(HitEffectClass, 1, Ctx);
+    Spec.Data->SetSetByCallerMagnitude(Data_Power, BasePower);
+    ApplyGameplayEffectToTarget(...);                        <span class="c">// 属性克制在 AttributeSet 中结算</span>
+    EndAbility(...);
+}`;
+
+document.getElementById('timeline').innerHTML = DATA.phases.map((p,i)=>`
+  <div class="phase ${i===0?'active':''}">
+    <div class="dot">${p.id}</div>
+    <h4>${p.name}</h4>
+    <div class="dur">${p.duration}</div>
+    <div class="goal">${p.goal}</div>
+    <ul>${p.deliverables.map(d=>`<li>${d}</li>`).join('')}</ul>
+    <div class="status">${p.status}</div>
+  </div>`).join('');
+
+/* ---------- 战斗模拟 ---------- */
+let S = {p:null,e:null,php:0,ehp:0,pen:0,een:0,turn:1,over:false};
+const selP = document.getElementById('selP'), selE = document.getElementById('selE');
+selP.innerHTML = DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
+selE.innerHTML = DATA.mechas.map(m=>`<option value="${m.id}">${m.name_cn} · ${TMAP[m.element].name_cn}</option>`).join('');
+selE.value = 'TIDAL';
+
+function fighterHTML(m,hp,maxHp,en,side){
+  const t = TMAP[m.element];
+  const pct = Math.max(0,hp/maxHp*100);
+  return `${mechaSVG(m,side)}
+    <div class="fname">${m.name_cn}</div>
+    <div class="fmeta">${t.name_cn} · ${m.role} · ${m.codename}</div>
+    <div class="bars">
+      <div class="bar-row"><span>ARMOR / 装甲</span><span>${Math.max(0,Math.round(hp))} / ${maxHp}</span></div>
+      <div class="bar hp ${pct<30?'low':''}"><i style="width:${pct}%"></i></div>
+      <div class="bar-row" style="margin-top:8px"><span>ENERGY / 能量</span><span>${Math.round(en)} / 120</span></div>
+      <div class="bar en"><i style="width:${en/120*100}%"></i></div>
+    </div>`;
+}
+function logMsg(html,cls){ const d=document.createElement('div'); d.innerHTML=html; if(cls)d.className=cls; document.getElementById('log').appendChild(d); document.getElementById('log').scrollTop=99999; }
+function renderFighters(){
+  document.getElementById('fighterP').innerHTML = fighterHTML(S.p,S.php,S.p.hp,S.pen,'p');
+  document.getElementById('fighterE').innerHTML = fighterHTML(S.e,S.ehp,S.e.hp,S.een,'e');
+  document.getElementById('turnLabel').textContent = 'TURN ' + String(S.turn).padStart(2,'0');
+  const v = eff(S.p.element,S.e.element);
+  document.getElementById('effBadge').innerHTML = `${TMAP[S.p.element].name_cn} → ${TMAP[S.e.element].name_cn} : ${effLabel(v)}`;
+}
+function renderSkills(){
+  const box = document.getElementById('skills');
+  box.innerHTML = S.p.abilities.map((a,i)=>{
+    const ok = S.pen >= a.cost && !S.over;
+    const c = TMAP[a.type].color;
+    return `<button class="skill" ${ok?'':'disabled'} onclick="useSkill(${i})">
+      <div class="sname">${a.name_cn}<span class="scost">EN ${a.cost}</span></div>
+      <div class="sdesc">${a.description}</div>
+      <div class="stag" style="color:${c}">${TMAP[a.type].name_cn} · ${a.category} · PWR ${a.power||'—'}</div>
+    </button>`;
+  }).join('');
+}
+function damage(atk,def,ability){
+  const mul = eff(ability.type, def.element);
+  const raw = ability.power * (atk.atk/Math.max(1,def.dfn)) * mul;
+  return Math.max(1, Math.floor(raw * (0.95+Math.random()*0.1)));
+}
+function applyEffect(target, ability, dmg, side){
+  if(ability.category==='Heal') return Math.min(target.hp, 45);
+  if(ability.category==='Shield') return 0;
+  return dmg;
+}
+/* ---------- 战斗特效 ---------- */
+function fxFloat(targetId, text, crit, heal){
+  const host=document.getElementById(targetId);
+  if(!host) return;
+  const d=document.createElement('div');
+  d.className='dmg-float'+(crit?' crit':'')+(heal?' heal':'');
+  d.textContent=(heal?'+':'-')+text;
+  host.appendChild(d);
+  requestAnimationFrame(()=>d.classList.add('go'));
+  setTimeout(()=>d.remove(),1250);
+}
+function fxBanner(text,color){
+  const b=document.getElementById('fxBanner');
+  b.textContent=text; b.style.color=color||'#00e5ff';
+  b.classList.remove('go'); void b.offsetWidth; b.classList.add('go');
+}
+function fxFlash(color){
+  const f=document.getElementById('fxFlash');
+  f.style.background=`radial-gradient(circle, ${color||'#00e5ff'}55, transparent 70%)`;
+  f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+}
+function fxShake(el){ if(!el) return; el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+function useSkill(i){
+  if(S.over) return;
+  const a = S.p.abilities[i];
+  if(S.pen < a.cost) return;
+  S.pen -= a.cost;
+  const mul = eff(a.type, S.e.element);
+  let dmg = 0;
+  if(a.category==='Damage'||a.category==='Dot'||a.category==='Control'){
+    dmg = damage(S.p,S.e,a);
+    S.ehp -= applyEffect(S.e,a,dmg,'e');
+  } else if(a.category==='Heal'){
+    S.php = Math.min(S.p.hp, S.php+45);
+  } else if(a.category==='Buff'){
+    S.pen = Math.min(120,S.pen+10);
+  } else if(a.category==='Shield'){
+    S.php = Math.min(S.p.hp,S.php+20);
+  }
+  logMsg(`<b>[${S.p.name_cn}]</b> 释放 ${a.name_cn} → ${TMAP[a.type].name_cn} · ${a.gameplay_tag}`,'');
+  if(dmg>0){
+    logMsg(`&nbsp;&nbsp;造成 <span class="dmg">${dmg}</span> 点伤害 · 克制倍率 <span class="eff">${mul}×</span>`,'');
+    fxFlash(TMAP[a.type].color);
+    fxBanner(a.name_cn, TMAP[a.type].color);
+    setTimeout(()=>fxFloat('fighterE', dmg, mul>=2, false), 60);
+  }
+  else if(a.category==='Heal'){ logMsg('&nbsp;&nbsp;修复装甲 +45',''); fxFloat('fighterP',45,false,true); }
+  else logMsg('&nbsp;&nbsp;状态效果已应用（'+a.category+'）','');
+  if(checkEnd()) return;
+  enemyTurn();
+  renderFighters(); renderSkills();
+}
+function enemyTurn(){
+  const usable = S.e.abilities.filter(a=>S.een>=a.cost);
+  const a = (usable.length?usable:S.e.abilities)[Math.floor(Math.random()*(usable.length||S.e.abilities.length))];
+  S.een -= a.cost;
+  let dmg=0;
+  if(a.category==='Damage'||a.category==='Dot'||a.category==='Control'){
+    dmg = damage(S.e,S.p,a);
+    S.php -= applyEffect(S.p,a,dmg,'p');
+  } else if(a.category==='Heal'){ S.ehp=Math.min(S.e.hp,S.ehp+45); }
+  else if(a.category==='Shield'){ S.ehp=Math.min(S.e.hp,S.ehp+20); }
+  else { S.een=Math.min(120,S.een+10); }
+  const mul = eff(a.type,S.p.element);
+  logMsg(`<b>[${S.e.name_cn}]</b> 反击 ${a.name_cn} → 造成 <span class="dmg">${dmg}</span> 伤害 · ${mul}×`,'');
+  if(dmg>0){
+    fxFlash(TMAP[a.type].color);
+    fxBanner('ENEMY · '+a.name_cn, '#ff6b1a');
+    fxShake(document.querySelector('.battle-shell'));
+    setTimeout(()=>fxFloat('fighterP', dmg, mul>=2, false), 60);
+  }
+  if(checkEnd()) return;
+  S.turn++;
+  S.pen = Math.min(120,S.pen + DATA.rules.energy_regen);
+  S.een = Math.min(120,S.een + DATA.rules.energy_regen);
+  logMsg(`&nbsp;&nbsp;回合结束，双方回复 ${DATA.rules.energy_regen} 点能量`,'');
+}
+function checkEnd(){
+  if(S.php<=0||S.ehp<=0){
+    S.over=true;
+    const win = S.ehp<=0 && S.php>0;
+    logMsg(win?'★ 战斗胜利！敌方机甲失去战斗能力。':'✕ 战斗失败！我方机甲失去战斗能力。','');
+    renderFighters(); renderSkills(); return true;
+  }
+  if(S.turn>=DATA.rules.turn_limit){ S.over=true; logMsg('回合上限，按剩余装甲判定。',''); return true; }
+  return false;
+}
+function startBattle(){
+  S.p = byId(selP.value); S.e = byId(selE.value);
+  S.php=S.p.hp; S.ehp=S.e.hp; S.pen=S.p.energy; S.een=S.e.energy;
+  S.turn=1; S.over=false;
+  document.getElementById('log').innerHTML='';
+  logMsg(`战斗开始：<b>${S.p.name_cn}</b> VS <b>${S.e.name_cn}</b>`,'');
+  renderFighters(); renderSkills();
+}
+let autoTimer=null;
+function autoPlay(){
+  if(S.over) startBattle();
+  if(autoTimer){clearInterval(autoTimer);autoTimer=null;return;}
+  autoTimer=setInterval(()=>{
+    if(S.over){clearInterval(autoTimer);autoTimer=null;return;}
+    const ok=S.p.abilities.map((a,i)=>S.pen>=a.cost?i:-1).filter(i=>i>=0);
+    if(ok.length) useSkill(ok[Math.floor(Math.random()*ok.length)]);
+    else { S.pen=Math.min(120,S.pen+DATA.rules.energy_regen); renderFighters(); renderSkills(); }
+  },1100);
+}
+startBattle();
+
+/* ---------- 导航高亮 ---------- */
+document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',()=>{
+  document.querySelectorAll('.navlinks a').forEach(x=>x.classList.remove('active'));
+  a.classList.add('active');
+}));
+
+/* ---------- 开机自检序列 ---------- */
+(function(){
+  const lines=[
+    '> BIOS check ......................... <span class="ok">OK</span>',
+    '> Loading <b>Unreal Engine 5</b> runtime ... <span class="ok">OK</span>',
+    '> Init <b>GameplayAbilitySystem</b> ..... <span class="ok">OK</span>',
+    '> Register 8 Mecha cores ............. <span class="ok">OK</span>',
+    '> Load 32 abilities / 8 elements ..... <span class="ok">OK</span>',
+    '> Verify element matrix ............. <span class="ok">OK</span>',
+    '> Calibrate battle simulator ........ <span class="warn">READY</span>',
+    '> <b>TACTICAL SYSTEM ONLINE</b>'
+  ];
+  const box=document.getElementById('bootLines'), bar=document.getElementById('bootBar'), pct=document.getElementById('bootPct');
+  let i=0;
+  const step=()=>{
+    if(i<lines.length){
+      box.innerHTML+=lines[i]+'<br>';
+      i++;
+      const p=Math.round(i/lines.length*100);
+      bar.style.width=p+'%'; pct.textContent='INITIALIZING ... '+p+'%';
+      setTimeout(step, 150+Math.random()*110);
+    }else{
+      pct.textContent='SYSTEM ONLINE ✓';
+      setTimeout(()=>{document.getElementById('boot').classList.add('done');},480);
+    }
+  };
+  setTimeout(step, 380);
+})();
+</script>
+</body>
+</html>
